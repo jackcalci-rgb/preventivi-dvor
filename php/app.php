@@ -159,23 +159,21 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-logo-row { display: grid; grid-template-columns: 1fr 330px; column-gap: 20px; margin-top: 12px; align-items: start; }
 .d-logo { width: 140px; margin-top: 2px; }
 .d-addr { display: grid; grid-template-columns: 130px 1fr; white-space: nowrap; font-size: 11.5px; line-height: 1.35; margin-top: 18px; }
-.d-sec { display: grid; grid-template-columns: 128px 1fr; column-gap: 6px; }
+.d-sec { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .d-sec .k, .d-obj .k, .d-wine .k { font-family: var(--display); font-size: 15px; line-height: 1.1; font-weight: 700; white-space: nowrap; }
-.d-sub { color: #d22b1f; font-family: var(--ui); font-size: 9px; font-weight: 600; line-height: 1.3; white-space: pre-line; margin-top: 3px; }
-.d-items { font-style: italic; }
-.d-obj { display: grid; grid-template-columns: 128px 1fr 330px; column-gap: 6px; margin-top: 50px; align-items: baseline; }
-.d-obj .k { font-weight: 700; }
-.d-obj .ev { display: grid; grid-template-columns: 130px 1fr; }
-.d-obj .ev .k { font-family: var(--ui); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: #555; }
-.d-obj .ev .v { text-align: center; }
-.d-qty { display: grid; grid-template-columns: 128px 1fr; column-gap: 6px; margin-top: 26px; }
-.d-opts { margin-top: 18px; display: flex; flex-direction: column; }
-.d-opt { display: grid; grid-template-columns: 128px 140px auto; column-gap: 6px; }
-.d-opt .p { text-align: right; font-variant-numeric: tabular-nums; }
-.d-opt .l { padding-left: 6px; }
+.d-sub { text-align: center; color: #d22b1f; font-family: var(--ui); font-size: 9px; font-weight: 600; line-height: 1.3; white-space: pre-line; margin-top: 3px; }
+.d-items { font-style: italic; margin-top: 3px; }
+.d-obj { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; margin-top: 50px; text-align: center; align-items: start; }
+.d-obj .k2 { display: block; font-family: var(--ui); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: #555; margin-bottom: 4px; }
+.d-obj b { font-family: var(--display); font-size: 17px; }
+.d-obj .v { font-size: 12px; }
+.d-qty { display: flex; justify-content: center; gap: 30px; margin-top: 26px; }
+.d-opts { margin-top: 12px; display: flex; flex-direction: column; align-items: center; }
+.d-opt { display: flex; justify-content: center; gap: 10px; }
+.d-opt .p { font-weight: 700; font-variant-numeric: tabular-nums; }
 .d-menu { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
 .d-cake { margin-top: 26px; }
-.d-cake .txt { line-height: 1.35; }
+.d-cake .txt { line-height: 1.35; max-width: 430px; margin-top: 3px; }
 /* Minimal tables: hairline rows, a dark rule under the header and above the total, no boxes */
 .tbl { border-collapse: collapse; font-size: 11px; font-variant-numeric: lining-nums tabular-nums; }
 .tbl td { border: 0; border-bottom: 0.5px solid #dcd8d3; padding: 3px 8px; }
@@ -187,10 +185,11 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .tbl tr.t td { border-top: 1px solid #222; border-bottom: 0; font-weight: 700; }
 .tbl tr.p td { border-bottom: 0; font-weight: 700; padding-top: 2px; }
 .tbl tr.lone td { border-bottom: 0.5px solid #dcd8d3; }
-.d-wine { display: grid; grid-template-columns: 128px auto; column-gap: 6px; margin-top: 18px; align-items: start; }
-.d-wine .k { font-weight: 700; padding-top: 22px; }
-.d-wnote { font-family: var(--doc); font-size: 10px; font-weight: 400; font-style: italic; color: #555; margin-top: 3px; white-space: normal; }
-.d-tot { margin-top: 22px; margin-left: 134px; width: auto; }
+.d-wine { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 18px; }
+.d-wine .k { font-weight: 700; margin-bottom: 2px; }
+.d-wine .tbl, .d-cake .tbl { text-align: left; }
+.d-wnote { font-family: var(--doc); font-size: 10px; font-weight: 400; font-style: italic; color: #555; margin-top: 2px; white-space: normal; }
+.d-tot { margin: 22px auto 0; width: auto; }
 .d-tot { border-top: 1px solid #222; }
 .d-tot td { padding: 5px 0; font-size: 11px; }
 .d-tot td.l { width: 290px; color: #333; }
@@ -223,6 +222,15 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .page.compact2 .d-obj { margin-top: 22px; }
 .page.compact2 .d-menu { gap: 6px; }
 .page.compact2 .d-sec .k, .page.compact2 .d-wine .k { font-size: 14px; }
+.page.compact3 { font-size: 10px; line-height: 1.2; padding-top: 38px; padding-bottom: 34px; }
+.page.compact3 .d-obj { margin-top: 14px; }
+.page.compact3 .d-qty { margin-top: 8px; } .page.compact3 .d-opts { margin-top: 4px; }
+.page.compact3 .d-menu { margin-top: 10px; gap: 4px; }
+.page.compact3 .d-sec .k, .page.compact3 .d-wine .k { font-size: 13px; }
+.page.compact3 .d-cake, .page.compact3 .d-tot { margin-top: 8px; }
+.page.compact3 .d-wine { margin-top: 6px; }
+.page.compact3 .tbl td { padding-top: 1px; padding-bottom: 1px; }
+.page.compact3 .d-tot td { padding: 2px 0; }
 .offscreen { position: fixed; left: -12000px; top: 0; }
 .offscreen .page { box-shadow: none; }
 
@@ -506,13 +514,13 @@ const PRESETS = [
       Object.assign(q, { oggetto: "Anniversario", orario: "Pranzo", adulti: 26, bambini: 0, opzioni: [{prezzo:50,label:""}], torta: {on:true,grammi:150,euroKg:40} });
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 3, calici: 30 }];
       return withSections(q, { aperitivo: ["Pancetta cotta nel pane con kren"], antipasti: ["Tortino di zucca con fonduta di formaggio di malga"], primi: ["Fuži Istriani con ragù di San Daniele"], secondi: ["Stinco di Maiale anteriore cucinato lentamente al forno con polenta"], contorni: ["Contorni di stagione"], dessert: ["Sorbetto al limone e menta"] }); } },
-  { name: "Compleanno aperitivo 35 € / con primo 45 €", make(){ const q = blankQuote();
-      Object.assign(q, { oggetto: "Compleanno", orario: "Orario: 19:00", adulti: 12, bambini: 0, opzioni: [{prezzo:35,label:"Solo aperitivo"},{prezzo:45,label:"Aperitivo più primo"}] });
+  { name: "Compleanno aperitivo 45 € / con primo 55 €", make(){ const q = blankQuote();
+      Object.assign(q, { oggetto: "Compleanno", orario: "Orario: 19:00", adulti: 12, bambini: 0, opzioni: [{prezzo:45,label:"Solo aperitivo"},{prezzo:55,label:"Aperitivo più primo"}] });
       q.vinoCasa.righe = [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 1, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 1, calici: "" }];
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: 15 }];
       return withSections(q, { aperitivo: ["Polpettine","Frichetti","Pollo in tempura",TAGLIERE,"Toc in braide con funghi misti"], primi: ["Orzotto con funghi porcini"] }); } },
-  { name: "Pranzo 35 € con torta", make(){ const q = blankQuote();
-      Object.assign(q, { oggetto: "Pranzo", adulti: 30, bambini: 0, opzioni: [{prezzo:35,label:""}], torta: {on:true,grammi:150,euroKg:50} });
+  { name: "Pranzo 45 € con torta", make(){ const q = blankQuote();
+      Object.assign(q, { oggetto: "Pranzo", adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50} });
       q.vinoCasa.righe = [{ nome: "Rosso Sfuso", bott: 2, calici: "" }, { nome: "Bianco Sfuso", bott: 2, calici: "" }];
       q.vinoBott.on = false;
       return withSections(q, { antipasti: [TAGLIERE], primi: ["Orzotto con funghi porcini","Pasta con il goulash cervo"], dessert: ["Carsolina"] }); } },
@@ -521,8 +529,8 @@ const PRESETS = [
       q.vinoCasa.on = false;
       q.vinoBott = { on: true, prezzo: 30, incluso: true, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 3, calici: 25 }] };
       return withSections(q, { dolceBuffet: { items: CATALOG.dolceBuffet["Brunch dolce"].slice(), sub: "Buffet\n3 scelte possibili" }, salatoBuffet: { items: CATALOG.salatoBuffet["Brunch salato"].slice(), sub: "Buffet:\n3 scelte possibili" } }); } },
-  { name: "Battesimo 40 € a scelta (come Carmine Bruno)", make(){ const q = useTerms(blankQuote(), "giardino");
-      Object.assign(q, { oggetto: "Battesimo", adulti: 20, opzioni: [{prezzo:40,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
+  { name: "Battesimo 45 € a scelta (come Carmine Bruno)", make(){ const q = useTerms(blankQuote(), "giardino");
+      Object.assign(q, { oggetto: "Battesimo", adulti: 20, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",4],["Bianco Sfuso",4]]) };
       q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Piedimont Ribolla Metodo Classico 12 mesi",3]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Polpettine","Frittatine","Lecca lecca di Frico","Carpaccio di Manzo"], "Scelta possibile 3 antipasti", "Antipasti Buffet:"],
@@ -548,8 +556,8 @@ const PRESETS = [
         secondi: [["Rollè di Tacchino","Guancette di manzo al refosco","Filetto di Maiale al pepe verde","Costicine di agnello alla griglia"], "Scelta possibile 1 secondo"],
         contorni: [["Verdure cotte","Kipfel","Patate in tecia","Verdure grigliate","Patate al forno","Insalata mista"], "Scelta possibile 3 contorni"],
         dessert: [["Tortino di Frutta di Stagione","Pannacotta","Tortino di cioccolato con il cuore morbido","Tiramisù"], "Scelta possibile 1 dolce"] }); } },
-  { name: "Battesimo 30 € (come Ricky e Norma)", make(){ const q = useTerms(blankQuote(), "giardino");
-      Object.assign(q, { oggetto: "Battesimo", adulti: 50, opzioni: [{prezzo:30,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
+  { name: "Battesimo 45 € (come Ricky e Norma)", make(){ const q = useTerms(blankQuote(), "giardino");
+      Object.assign(q, { oggetto: "Battesimo", adulti: 50, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",5],["Bianco Sfuso",5]]) };
       q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Merlot Collio DOC",1],["Cabernet Collio DOC",1],["Friulano Collio DOC",1],["Malvasia Collio DOC",1],["Ribolla Collio DOC",1],["Piedimont Ribolla Metodo Classico 12 mesi",10],["Piedimont Cuvée Magnum",4]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Lecca lecca di Frico","Carpaccio di Manzo"], "Scelta possibile 3 antipasti", "Antipasti Buffet:"],
@@ -557,24 +565,24 @@ const PRESETS = [
         secondi: [["Ljubljanska alla griglia"], "Scelta possibile 1 secondo"],
         contorni: [["Patate al forno","Verdure grigliate"], "Scelta possibile 2 contorni"],
         dessert: [["Sorbetto analcolico"], "Scelta possibile 1 dessert"] }); } },
-  { name: "Comunione 30 € con bambini (come Daniele)", make(){ const q = useTerms(blankQuote(), "giardino");
-      Object.assign(q, { oggetto: "Comunione", orario: "11:00-20:00", adulti: 30, bambini: 10, opzioni: [{prezzo:30,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
+  { name: "Comunione 45 € con bambini (come Daniele)", make(){ const q = useTerms(blankQuote(), "giardino");
+      Object.assign(q, { oggetto: "Comunione", orario: "11:00-20:00", adulti: 30, bambini: 10, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",5],["Bianco Sfuso",5]]) };
       q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Cabernet Collio DOC",1],["Refosco Collio DOC",1],["Piedimont Cuvée Magnum",1]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Lonza Marinata con Salsa carpione"], "Scelta possibile 3 antipasti", "Antipasti Buffet:"],
         primi: [["Parmigiana di melanzane","Orzotto con salsiccia e radicchio"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Goulash di manzo"], "Scelta possibile 1 secondo"],
         contorni: [["Patate al forno","Insalata mista"], "Scelta possibile 2 contorni"] }); } },
-  { name: "Comunione 35 € (come Katja)", make(){ const q = blankQuote();
-      Object.assign(q, { oggetto: "Comunione", adulti: 15, opzioni: [{prezzo:35,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
+  { name: "Comunione 45 € (come Katja)", make(){ const q = blankQuote();
+      Object.assign(q, { oggetto: "Comunione", adulti: 15, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.vinoCasa.on = false;
       q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blazevi Goriška Brda Sivi Pinot",2],["Blazevi Goriška Brda Merlot",2],["Blazevi Goriška Brda Refošk",1],["Blazevi Goriška Brda Rumena Rebula Charmat",2]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Frittatine","Frico fritto","Polpettine","Tradizionali kipfel di patate"], "Scelta possibile 3 antipasti"],
         primi: [["Pasticcio tradizionale con fonduta di formaggi","Gnocchi con sugo di goulash","Crespelle di verdure di stagione","Orzotto con asparagi"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Ljubljanska alla griglia","Grigliata Mista (Čevapčiči, Spiedini, tagliata di manzo, pollo)","Stinco di Maiale anteriore cucinato lentamente al forno con polenta"], "Scelta possibile 1 secondo"],
         contorni: [["Patate al forno","Spinaci al burro","Insalata mista","Verdure grigliate","Patate in tecia"], "Scelta possibile 3 contorni"] }); } },
-  { name: "Battesimo 40 € con bambini (come Nicole Burello)", make(){ const q = useTerms(blankQuote(), "giardino");
-      Object.assign(q, { oggetto: "Battesimo", orario: "11:00 - 18:00", adulti: 35, bambini: 10, opzioni: [{prezzo:40,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
+  { name: "Battesimo 45 € con bambini (come Nicole Burello)", make(){ const q = useTerms(blankQuote(), "giardino");
+      Object.assign(q, { oggetto: "Battesimo", orario: "11:00 - 18:00", adulti: 35, bambini: 10, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.terms += "\n\n-Offriremo a fine pasto due bottiglie di amaro alle erbe per tutti i partecipanti.";
       q.vinoCasa.on = false;
       q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Merlot Collio DOC",1],["Cabernet Collio DOC",2],["Friulano Collio DOC",1],["Malvasia Collio DOC",1],["Ribolla Collio DOC",1],["Piedimont Ribolla Metodo Classico 12 mesi",2]]) };
@@ -601,8 +609,8 @@ const PRESETS = [
         secondi: [["Costicine di maiale sous vide","Goulash di manzo","Ljubljanska alla griglia","Arrosto di vitello"], "Scelta possibile 1 secondo"],
         contorni: [["Spinaci al burro","Patate al forno","Insalata mista","Verdure grigliate","Verdure cotte"], "Scelta possibile 3 contorni"],
         dessert: [["Sorbetto al limone e fragola","Palačinke con la Nutella o Marmellata"], "Scelta possibile 1 dessert"] }); } },
-  { name: "Compleanno 25 € aperitivo a buffet (come Mario Peresson)", make(){ const q = useTerms(blankQuote(), "giardino");
-      Object.assign(q, { oggetto: "Compleanno", orario: "19:00", adulti: 50, opzioni: [{prezzo:25,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true, nota: "1 celiaca e vegetariani" });
+  { name: "Compleanno 45 € aperitivo a buffet (come Mario Peresson)", make(){ const q = useTerms(blankQuote(), "giardino");
+      Object.assign(q, { oggetto: "Compleanno", orario: "19:00", adulti: 50, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true, nota: "1 celiaca e vegetariani" });
       q.vinoCasa.on = false;
       q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Piedimont Ribolla Metodo Classico 12 mesi",7]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Polpettine","Frittatine","Frichetti (Convisi)","Tradizionali kipfel di patate serviti con maionese al tartufo"], "", "Antipasti Buffet:"],
@@ -622,8 +630,18 @@ const PRESETS = [
       q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Piedimont Ribolla Metodo Classico 12 mesi",2,20]]) };
       return menuScelte(q, { dolceBuffet: [CATALOG.dolceBuffet["Brunch dolce"], "Buffet\n3 scelte possibili"],
         salatoBuffet: [[TAGLIERE,"Frichetti (Convisi)","Frittatine","Couscous alle verdure","Bresaola su letto di rucola"], "Buffet:\n2 scelte possibili"] }); } },
+  { name: "Brunch alla carta Dvor (prezzi del menu brunch)", make(){ const q = useTerms(blankQuote(), "brunch");
+      Object.assign(q, { oggetto: "Brunch", adulti: 20 });
+      q.vinoCasa.on = false; q.vinoBott.on = false;
+      const pick = n => BRUNCH_CARTA.find(r => r[1].startsWith(n))[1];
+      withSections(q, { antipasti: { items: [pick("Frico croccante"), pick("Polenta e pitina")], label: "Per cominciare:" },
+        primi: { items: [pick("Uova Benedict")], label: "Uova:" },
+        dessert: { items: [pick("French toast di gubana"), pick("Cheesecake")], label: "Dolci:" },
+        aperitivo: { items: [pick("Cappuccino"), pick("Spremuta d'arancia"), pick("Mimosa del Collio")], label: "Caffetteria e drink:" } });
+      q.opzioni = [{ prezzo: brunchSum(q), label: "" }];
+      return q; } },
   { name: "Pre Wedding Party in inglese (come Helena Reimnitz)", make(){ const q = setLang(blankQuote(), "en");
-      Object.assign(q, { oggetto: "Pre Wedding Party", orario: "5:30 - 12pm", adulti: 140, opzioni: [{prezzo:35,label:""}] });
+      Object.assign(q, { oggetto: "Pre Wedding Party", orario: "5:30 - 12pm", adulti: 140, opzioni: [{prezzo:45,label:""}] });
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "Tap House Wines:", righe: rows([["Red house wine on tap",20],["White house wine on tap",20]]) };
       q.vinoBott.on = false;
       q.birra = { on: true, prezzo: 0, incluso: true, titolo: "Tap Beers:", righe: rows([["Tap Beer Pilsner",3],["Tap Beer Lager",3],["Tap Beer IPA",3]]) };
@@ -788,7 +806,59 @@ function customEvent(){ return !!Q.oggettoLibero || !EVENT_TYPES.includes(Q.ogge
 function bandOf(g){
   const m = g.match(/\d+/); if (!m) return g;
   const n = +m[0], note = (g.match(/\(.*\)/) || [""])[0];
-  return (n <= 40 ? "Menu fino a 40 €" : n <= 55 ? "Menu 45-55 €" : "Menu 60-75 €") + (note ? " " + note : "");
+  return (n <= 55 ? "Menu 45-55 €" : "Menu 60-75 €") + (note ? " " + note : "");
+}
+// Brunch alla carta (menu "Brunch Osteria Dvor"): [category, item, price €]
+const BRUNCH_CARTA = [
+  ["Per cominciare", "Patate dolci fritte con aioli all'aglio di Resia", 6.5],
+  ["Per cominciare", "Frico croccante – cialda croccante di Montasio con salsa al cren", 7],
+  ["Per cominciare", "Polenta e pitina – crostini di polenta abbrustolita, pitina della Val Tramontina e ricotta affumicata", 8],
+  ["French toast & pancakes", "French toast di gubana (2 pz) – gubana dorata nell'uovo, con un goccio di grappa", 7],
+  ["French toast & pancakes", "Pancakes (3 pz)", 6],
+  ["French toast & pancakes", "Pancakes con cioccolato", 9],
+  ["French toast & pancakes", "Pancakes con salsa ai lamponi e panna", 9],
+  ["French toast & pancakes", "Pancakes con miele di acacia del Friuli", 8],
+  ["French toast & pancakes", "Pancakes con fragole", 9],
+  ["Bagel", "Bagel Tasty – trota affumicata di San Daniele, avocado, crème fraîche, uovo all'occhio di bue", 11],
+  ["Bagel", "Bagel San Daniele – prosciutto crudo di San Daniele DOP, Montasio fresco, rucola e miele di castagno", 11],
+  ["Dall'orto", "Caesar salad – misticanza, petto di pollo alla brace, salsa Caesar, crostini e scaglie di Montasio stravecchio", 13],
+  ["Dall'orto", "Insalata di trota – misticanza, trota affumicata, avocado, mela friulana, sour cream e semi tostati", 13],
+  ["Uova", "Uova Traditional – due uova a piacere, pancetta croccante, luganega friulana, fagioli e funghi", 11.5],
+  ["Uova", "Uova Benedict – muffin salato, uovo in camicia, prosciutto di San Daniele, spinaci e crema d'uovo", 12],
+  ["Uova", "Uova e frico – frico morbido di patate e Montasio, uovo all'occhio di bue e polenta", 12],
+  ["Sapori di confine", "Cjarsons – ravioli carnici dolci e salati, burro fuso, ricotta affumicata e cannella", 12],
+  ["Sapori di confine", "Muset e brovada – musetto caldo, brovada DOP, uovo in camicia e polenta abbrustolita", 13],
+  ["Sapori di confine", "Tagliere del Collio – San Daniele DOP, pitina, Montasio fresco e stagionato, frico, polenta e mostarda", 15],
+  ["Panini & burger", "Club sandwich – prosciutto cotto, Montasio, uovo alla piastra, pancetta croccante, insalata e pomodoro, con patate fritte", 12],
+  ["Panini & burger", "Dvor burger – Angus 180 g alla brace, Montasio fuso, speck, pomodoro, lattuga e maionese al cren, con patate fritte", 16],
+  ["Panini & burger", "Frico burger – Angus 180 g nel frico croccante, uovo all'occhio di bue, pancetta e cipolla alla birra, con patate fritte", 19],
+  ["Dolci", "Yogurt bianco con miele di castagno e noci", 5],
+  ["Dolci", "Gubana", 5],
+  ["Dolci", "Gubana con un bicchierino di grappa o Ramandolo", 8],
+  ["Dolci", "Cheesecake con salsa ai lamponi e lamponi freschi", 5],
+  ["Caffetteria", "Espresso", 1.5],
+  ["Caffetteria", "Doppio espresso", 3],
+  ["Caffetteria", "Cappuccino", 2],
+  ["Caffetteria", "Latte macchiato", 3],
+  ["Caffetteria", "Caffè filtro (200 ml)", 3],
+  ["Caffetteria", "Caffè corretto grappa", 3],
+  ["Caffetteria", "Tè caldo o infuso", 3],
+  ["Centrifugati", "Centrifugato Detox – mela verde friulana, zenzero, sedano", 6],
+  ["Centrifugati", "Centrifugato ACE – carota, arancia, limone", 6],
+  ["Centrifugati", "Spremuta d'arancia", 4],
+  ["Breakfast cocktails", "Bacon old fashioned – bourbon al bacon, sciroppo di zucchero, angostura, scorza d'arancia", 9],
+  ["Breakfast cocktails", "Bloody Dvor – grappa bianca, succo di pomodoro, cren, tabasco, worcester, limone", 9],
+  ["Breakfast cocktails", "Sbagliato di Ribolla – bitter, vermouth rosso, Ribolla Gialla spumante del Collio", 9],
+  ["Breakfast cocktails", "Mimosa del Collio – Ribolla Gialla spumante e spremuta d'arancia", 8],
+  ["Breakfast cocktails", "Spritz Furlan – Friulano del Collio, bitter, soda, scorza d'arancia", 8]
+];
+const BRUNCH_PRICE = Object.fromEntries(BRUNCH_CARTA.map(([, i, p]) => [i, p]));
+const MIN_MENU = 45;
+const isBrunch = q => q.termsKey === "brunch" || /brunch/i.test(q.oggetto || "");
+const brunchSum = q => q.sezioni.reduce((a, s) => a + s.items.reduce((b, i) => b + (BRUNCH_PRICE[i.trim()] || 0), 0), 0);
+function brunchGroups(){
+  const cats = [...new Set(BRUNCH_CARTA.map(r => r[0]))];
+  return cats.map(c => `<optgroup label="${esc("Brunch alla carta · " + c)}">${BRUNCH_CARTA.filter(r => r[0] === c).map(([, i, p]) => `<option value="${esc(i)}">${esc(i)} · ${eurPlain(p)} €</option>`).join("")}</optgroup>`).join("");
 }
 function optGroups(key){
   const merged = {};
@@ -813,7 +883,7 @@ function renderEditor(){
         </div>`).join("")}
       </div>
       <div class="row">
-        <select class="grow" id="pick_${si}" aria-label="Aggiungi piatto dal menu"><option value="">+ Aggiungi dal menu…</option>${optGroups(s.key)}<option value="__free">Scrivi un piatto nuovo…</option></select>
+        <select class="grow" id="pick_${si}" aria-label="Aggiungi piatto dal menu"><option value="">+ Aggiungi dal menu…</option>${isBrunch(Q) || /Buffet$/.test(s.key) ? brunchGroups() : ""}${optGroups(s.key)}<option value="__free">Scrivi un piatto nuovo…</option></select>
       </div>
     </div>`).join("");
 
@@ -882,8 +952,10 @@ function renderEditor(){
         <label class="f grow" for="op_l_${oi}">Descrizione ${two ? "" : "(facoltativa)"}<input id="op_l_${oi}" data-p="opzioni.${oi}.label" value="${esc(o.label)}" placeholder="${two ? "es. Solo aperitivo" : ""}"></label>
         ${oi ? `<button type="button" class="ghost" data-act="oprm" data-i="${oi}" aria-label="Rimuovi opzione" style="align-self:end">✕</button>` : ""}
       </div>`).join("")}
+      ${!isBrunch(Q) && Q.opzioni.some(o => num(o.prezzo) < MIN_MENU) ? `<div class="warn">I menu partono da un minimo di ${MIN_MENU} € a persona (solo il brunch può costare meno).</div>` : ""}
       ${two ? "" : `<div><button type="button" data-act="opadd">+ Seconda opzione di prezzo</button></div>`}
-      <div class="hint">Prezzi usati nei preventivi: brunch 25-30 €; menu 30 · 35 · 40 · 45 · 50 · 55 · 60 · 65 · 70 · 75 €. Bambini fino a 10 anni 15 €.</div>
+      ${brunchSum(Q) ? `<div class="row"><span class="hint grow">Somma delle voci del brunch alla carta: <b>${eurPlain(brunchSum(Q))} €</b> a persona</span><button type="button" data-act="brunchsum">Usa come prezzo</button></div>` : ""}
+      <div class="hint">Menu da ${MIN_MENU} € in su: 45 · 50 · 55 · 60 · 65 · 70 · 75 €. Brunch a buffet 25-30 €, oppure alla carta con i prezzi del menu brunch. Bambini fino a 10 anni 15 €.</div>
     </div>
 
     <div class="card">
@@ -986,12 +1058,12 @@ function renderDoc(q){
   const c = compute(q);
   const T = L[q.lang || "it"];
   const secs = q.sezioni.filter(s => s.items.some(i => i.trim())).map(s => `
-    <div class="d-sec"><div><div class="k">${esc(s.label)}</div>${s.sub ? `<div class="d-sub">${esc(s.sub)}</div>` : ""}</div>
+    <div class="d-sec"><div class="k">${esc(s.label.replace(/:\s*$/, ""))}</div>${s.sub ? `<div class="d-sub">${esc(s.sub)}</div>` : ""}
     <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}</div>`).join("")}</div></div>`).join("");
-  const opts = q.opzioni.map(o => `<div class="d-opt"><span>${T.opzione}</span><span class="p">${eur(num(o.prezzo))}</span><span class="l">${esc(o.label)}</span></div>`).join("");
-  const cake = q.torta.on ? `<div class="d-cake d-sec"><div class="k">${T.torte}</div><div>
+  const opts = q.opzioni.map(o => `<div class="d-opt"><span>${T.opzione}</span><span class="p">${eur(num(o.prezzo))}</span>${o.label ? `<span class="l">${esc(o.label)}</span>` : ""}</div>`).join("");
+  const cake = q.torta.on ? `<div class="d-cake d-sec"><div class="k">${T.torte.replace(/:\s*$/, "")}</div><div style="display:flex;flex-direction:column;align-items:center">
       <div class="txt">${T.torteTxt(eurPlain(num(q.torta.euroKg)).replace(",00", ""))}</div>
-      <table class="tbl" style="margin-top:12px">
+      <table class="tbl" style="margin-top:10px">
         <tr class="lone"><td style="width:250px">${esc(T.grammi(num(q.torta.grammi)))}</td><td class="c" style="width:70px">${kgFmt(c.kg)} kg</td><td style="width:90px"></td></tr>
         <tr class="t"><td>${T.prezzo}</td><td class="c">${eur(c.torta)}</td><td></td></tr>
       </table>
@@ -1000,7 +1072,7 @@ function renderDoc(q){
     const t = drinkTable(q, k, c.d[k], T); if (!t) return "";
     const loose = q[k].righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome));
     const note = k === "vinoCasa" && !loose ? `<div class="d-wnote">${T.litro1}</div>` : "";
-    return `<div class="d-wine"><div class="k">${esc(q[k].titolo || T[k])}${note}</div><div>${t}</div></div>`;
+    return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}${note}</div>${t}</div>`;
   }).join("");
   const tot = totalRows(q, c).map(([l, v, k]) => `<tr class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><td class="l">${esc(l)}</td><td class="r">${eurPlain(v)} €</td></tr>`).join("");
   const paras = t => (t || "").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
@@ -1019,9 +1091,9 @@ function renderDoc(q){
       <img class="d-logo" src="${LOGO}" alt="DVOR">
       <div class="d-addr"><span>Via Castello 5</span><span>Horeca FVG Srl</span><span>37070 Gorizia (Italia)</span><span>P.IVA 01280650316</span><span>San Floriano del Collio</span><span>info@osteriadvor.com</span></div>
     </div>
-    <div class="d-obj"><span class="k">${T.oggetto}</span><span>${esc(q.oggetto)}</span>
-      <div class="ev"><span class="k">${T.dataEvento}</span><span class="v">${T.date(q.dataEvento)}${q.oraInizio ? `<br>${T.inizio} ${esc(q.oraInizio)}` : ""}${q.orario ? `<br>${esc(q.orario)}` : ""}</span></div></div>
-    <div class="d-qty"><span>${T.adulti}</span><span>${esc(num(q.adulti))}</span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini}</span><span>${esc(num(q.bambini))}</span>` : ""}</div>
+    <div class="d-obj"><div><span class="k2">${T.oggetto}</span><b>${esc(q.oggetto)}</b></div>
+      <div class="ev"><span class="k2">${T.dataEvento.replace(/:\s*$/, "")}</span><span class="v">${T.date(q.dataEvento)}${q.oraInizio ? `<br>${T.inizio} ${esc(q.oraInizio)}` : ""}${q.orario ? `<br>${esc(q.orario)}` : ""}</span></div></div>
+    <div class="d-qty"><span>${T.adulti.replace(/:\s*$/, "")}: <b>${esc(num(q.adulti))}</b></span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini.replace(/:\s*$/, "")}: <b>${esc(num(q.bambini))}</b></span>` : ""}</div>
     <div class="d-opts">${opts}</div>
     <div class="d-menu">${secs}</div>
     ${cake}
@@ -1050,6 +1122,7 @@ function fitPage(p1){
   if (!p1) return;
   if (p1.scrollHeight > 1124) p1.classList.add("compact");
   if (p1.scrollHeight > 1124) p1.classList.add("compact2");
+  if (p1.scrollHeight > 1124) p1.classList.add("compact3");
 }
 function fitPreview(){
   const w = viewport.clientWidth;
@@ -1114,6 +1187,7 @@ editor.addEventListener("click", e => {
   else if (a === "wrm") Q[b.dataset.w].righe.splice(ii, 1);
   else if (a === "opadd") { Q.opzioni[0].label = Q.opzioni[0].label || "Opzione 1"; Q.opzioni.push({ prezzo: num(Q.opzioni[0].prezzo) + 10, label: "Opzione 2" }); }
   else if (a === "oprm") Q.opzioni.splice(ii, 1);
+  else if (a === "brunchsum") Q.opzioni[0].prezzo = Math.round(brunchSum(Q) * 100) / 100;
   else if (a === "renum") { assignNumber(Q).then(() => { if (!SERVER) refreshAll(); }); return; }
   else if (a === "open") { Q = store.quotes.find(q => q.id === b.dataset.id) || Q; store.current = Q.id; pendingDelete = null; saveAll(); renderEditor(); renderPreview(); window.scrollTo({ top: 0 }); return; }
   else if (a === "del") { pendingDelete = b.dataset.id; renderEditor(); return; }
