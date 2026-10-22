@@ -156,7 +156,10 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-meta .k { font-family: var(--ui); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: #555; }
 .d-meta .v { font-size: 12px; }
 .d-logo-row { display: grid; grid-template-columns: 1fr 330px; column-gap: 20px; margin-top: 12px; align-items: start; }
-.d-logo { width: 140px; margin-top: 2px; }
+.d-logo { width: 140px; margin-top: 2px; display: block; }
+.d-venue { font-family: var(--display); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-variant-numeric: lining-nums; line-height: 1.55; margin-top: 8px; color: #333; width: 140px; text-align: center; white-space: nowrap; display: flex; flex-direction: column; align-items: center; }
+.d-addr.d-company { display: flex; white-space: nowrap; flex-direction: column; align-items: center; text-align: center; }
+.d-company b { font-family: var(--display); font-size: 15px; letter-spacing: .03em; }
 .d-addr { display: grid; grid-template-columns: 130px 1fr; white-space: nowrap; font-size: 11.5px; line-height: 1.35; margin-top: 18px; }
 .d-sec { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .d-sec .k, .d-obj .k, .d-wine .k { font-family: var(--display); font-size: 15px; line-height: 1.1; font-weight: 700; white-space: nowrap; }
@@ -1105,8 +1108,8 @@ function renderDoc(q){
       <div class="d-meta"><span class="k">${T.numero}</span><span class="v" style="font-size:10px">${esc(q.numero)}</span><span class="k">${T.data}</span><span class="v">${T.date(q.data)}</span></div>
     </div>
     <div class="d-logo-row">
-      <img class="d-logo" src="${LOGO}" alt="DVOR">
-      <div class="d-addr"><span>Via Castello 5</span><span>Horeca FVG Srl</span><span>37070 Gorizia (Italia)</span><span>P.IVA 01280650316</span><span>San Floriano del Collio</span><span>info@osteriadvor.com</span></div>
+      <div><img class="d-logo" src="${LOGO}" alt="DVOR"><div class="d-venue"><span>Via Castello 5</span><span>San Floriano del Collio</span><span>37070 Gorizia (Italia)</span></div></div>
+      <div class="d-addr d-company"><b>Horeca FVG Srl</b><span>P.IVA 01280650316</span><span>info@osteriadvor.com</span></div>
     </div>
     <div class="d-obj"><div><span class="k2">${T.oggetto}</span><b>${esc(q.oggetto)}</b></div>
       <div class="ev"><span class="k2">${T.dataEvento.replace(/:\s*$/, "")}</span><span class="v">${T.date(q.dataEvento)}${q.oraInizio ? `<br>${T.inizio} ${esc(q.oraInizio)}` : ""}${q.orario ? `<br>${esc(q.orario)}` : ""}</span></div></div>
