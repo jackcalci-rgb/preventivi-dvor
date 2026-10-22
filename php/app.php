@@ -189,6 +189,7 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .tbl tr.lone td { border-bottom: 0.5px solid #dcd8d3; }
 .d-wine { display: grid; grid-template-columns: 128px auto; column-gap: 6px; margin-top: 18px; align-items: start; }
 .d-wine .k { font-weight: 700; padding-top: 22px; }
+.d-wnote { font-family: var(--doc); font-size: 10px; font-weight: 400; font-style: italic; color: #555; margin-top: 3px; white-space: normal; }
 .d-tot { margin-top: 22px; margin-left: 134px; width: auto; }
 .d-tot { border-top: 1px solid #222; }
 .d-tot td { padding: 5px 0; font-size: 11px; }
@@ -685,13 +686,13 @@ const lc = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : "";
 const L = {
   it: { tel: "Tel.", cliente: "Cliente:", numero: "Numero preventivo", data: "Data", oggetto: "Oggetto Preventivo", dataEvento: "Data Evento", adulti: "Quantità adulti", bambini: "Quantità bambini", opzione: "Opzione:",
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
-    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino della casa:", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
+    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino della casa:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
     food: "Prezzo food", vini: "Prezzo vini", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
     foodOpt: l => `Prezzo food ${l}`, finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
   en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
-    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "House Wines:", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
+    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "House Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
     food: "Food price", vini: "Drinks price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
     foodOpt: l => `Food price ${l}`, finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
     termini: "Terms & Conditions", allergie: "Allergies and Dietary Preferences", firmaCliente: "Client", date: dateEN }
@@ -995,7 +996,9 @@ function renderDoc(q){
     </div></div>` : "";
   const drinks = DRINKS.map(k => {
     const t = drinkTable(q, k, c.d[k], T); if (!t) return "";
-    return `<div class="d-wine"><div class="k">${esc(q[k].titolo || T[k])}</div><div>${t}</div></div>`;
+    const loose = q[k].righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome));
+    const note = k === "vinoCasa" && !loose ? `<div class="d-wnote">${T.litro1}</div>` : "";
+    return `<div class="d-wine"><div class="k">${esc(q[k].titolo || T[k])}${note}</div><div>${t}</div></div>`;
   }).join("");
   const tot = totalRows(q, c).map(([l, v, k]) => `<tr class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><td class="l">${esc(l)}</td><td class="r">${eurPlain(v)} €</td></tr>`).join("");
   const paras = t => (t || "").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
