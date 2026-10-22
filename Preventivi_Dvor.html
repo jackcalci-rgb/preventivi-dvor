@@ -431,6 +431,7 @@ const TERMS = {
 const pad = n => String(n).padStart(2, "0");
 const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
 // Quote number: date of the quote (DDMMYYYY) + two letters + increasing counter, e.g. 22102026PV001
+const START_TIMES = []; for (let h = 8; h < 24; h++) for (const m of ["00", "15", "30", "45"]) START_TIMES.push(pad(h) + ":" + m);
 const NUM_RE = /^(\d{8})([A-Za-z]{2})(\d+)$/;
 function numDate(iso){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); return m ? m[3] + m[2] + m[1] : numDate(todayISO()); }
 function makeNumber(iso, letters, seq){ return numDate(iso) + letters + String(seq).padStart(3, "0"); }
@@ -442,7 +443,7 @@ function blankQuote(){
   return {
     id: uid(), updated: Date.now(),
     cliente: "", email: "", telefono: "", numero: "", data: todayISO(),
-    oggetto: "Battesimo", dataEvento: "", orario: "",
+    oggetto: "Battesimo", dataEvento: "", oraInizio: "", orario: "",
     adulti: 20, bambini: 0, prezzoBambino: 15,
     opzioni: [{ prezzo: 50, label: "" }],
     sezioni: blankSections(),
@@ -683,13 +684,13 @@ const lc = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : "";
 
 /* Quote wording in each language */
 const L = {
-  it: { tel: "Tel.", cliente: "Cliente:", numero: "Numero preventivo", data: "Data", oggetto: "Oggetto Preventivo", dataEvento: "Data Evento", adulti: "Quantità adulti", bambini: "Quantità bambini", opzione: "Opzione:",
+  it: { tel: "Tel.", cliente: "Cliente:", numero: "Numero preventivo", data: "Data", oggetto: "Oggetto Preventivo", dataEvento: "Data Evento", inizio: "Inizio evento: ore", adulti: "Quantità adulti", bambini: "Quantità bambini", opzione: "Opzione:",
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
     bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino della casa:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
     food: "Prezzo food", vini: "Prezzo vini", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
     foodOpt: l => `Prezzo food ${l}`, finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
-  en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
+  en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", inizio: "Start time:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
     bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "House Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
     food: "Food price", vini: "Drinks price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
@@ -859,6 +860,7 @@ function renderEditor(){
         <label class="f" for="f_oggettoSel">Tipo di evento<select id="f_oggettoSel">${EVENT_TYPES.map(e => `<option ${!customEvent() && Q.oggetto === e ? "selected" : ""}>${esc(e)}</option>`).join("")}<option value="__altro" ${customEvent() ? "selected" : ""}>Altro (scrivi tu)…</option></select></label>
         ${customEvent() ? field("Scrivi il tipo di evento", "oggetto", { ph: "es. Festa dei nonni" }) : ""}
         ${field("Data evento", "dataEvento", { type: "date" })}
+        <label class="f" for="f_oraInizio">Inizio evento<select id="f_oraInizio" data-p="oraInizio"><option value="">Non indicato</option>${START_TIMES.map(t => `<option ${Q.oraInizio === t ? "selected" : ""}>${t}</option>`).join("")}</select></label>
         ${field("Orario / nota sotto la data", "orario", { ph: "es. Ore 12:00 o Pranzo" })}
         <label class="f" for="f_numero">Numero preventivo<div class="row"><input id="f_numero" class="grow" data-p="numero" value="${esc(Q.numero)}"><button type="button" class="ghost" data-act="renum" aria-label="Genera nuovo numero" title="Nuovo numero">↻</button></div></label>
         <label class="f" for="f_letters">Lettere del numero (per i nuovi preventivi)<input id="f_letters" maxlength="2" value="${esc(getLetters())}" style="text-transform:uppercase"></label>
@@ -1017,7 +1019,7 @@ function renderDoc(q){
       <div class="d-addr"><span>Via Castello 5</span><span>Horeca FVG Srl</span><span>37070 Gorizia (Italia)</span><span>P.IVA 01280650316</span><span>San Floriano del Collio</span><span>info@osteriadvor.com</span></div>
     </div>
     <div class="d-obj"><span class="k">${T.oggetto}</span><span>${esc(q.oggetto)}</span>
-      <div class="ev"><span class="k">${T.dataEvento}</span><span class="v">${T.date(q.dataEvento)}${q.orario ? `<br>${esc(q.orario)}` : ""}</span></div></div>
+      <div class="ev"><span class="k">${T.dataEvento}</span><span class="v">${T.date(q.dataEvento)}${q.oraInizio ? `<br>${T.inizio} ${esc(q.oraInizio)}` : ""}${q.orario ? `<br>${esc(q.orario)}` : ""}</span></div></div>
     <div class="d-qty"><span>${T.adulti}</span><span>${esc(num(q.adulti))}</span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini}</span><span>${esc(num(q.bambini))}</span>` : ""}</div>
     <div class="d-opts">${opts}</div>
     <div class="d-menu">${secs}</div>
