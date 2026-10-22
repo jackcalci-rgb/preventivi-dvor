@@ -164,6 +164,7 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-sub { text-align: center; color: #d22b1f; font-family: var(--ui); font-size: 9px; font-weight: 600; line-height: 1.3; white-space: pre-line; margin-top: 3px; }
 .d-items { font-style: italic; margin-top: 6px; }
 .d-items > div + div { margin-top: 5px; }
+.d-pair { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; align-items: start; }
 /* Course names stand out: small caps with a thin red rule each side */
 .d-sec > .k { display: flex; align-items: center; gap: 12px; font-size: 16.5px; text-transform: uppercase; letter-spacing: .16em; }
 .d-sec > .k::before, .d-sec > .k::after { content: ""; width: 28px; height: 1px; background: #c8432c; }
@@ -1066,9 +1067,17 @@ function drinkTable(q, k, cc, T){
 function renderDoc(q){
   const c = compute(q);
   const T = L[q.lang || "it"];
-  const secs = q.sezioni.filter(s => s.items.some(i => i.trim())).map(s => `
+  const secHtml = s => `
     <div class="d-sec"><div class="k">${esc(s.label.replace(/:\s*$/, ""))}</div>${s.sub ? `<div class="d-sub">${esc(s.sub)}</div>` : ""}
-    <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}</div>`).join("")}</div></div>`).join("");
+    <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}</div>`).join("")}</div></div>`;
+  // Primi and Secondi sit side by side; every other course runs the full width
+  const used = q.sezioni.filter(s => s.items.some(i => i.trim()));
+  const pair = ["primi", "secondi"].map(k => used.find(s => s.key === k));
+  const secs = used.map(s => {
+    if (pair[0] && pair[1] && s.key === "primi") return `<div class="d-pair">${secHtml(pair[0])}${secHtml(pair[1])}</div>`;
+    if (pair[0] && pair[1] && s.key === "secondi") return "";
+    return secHtml(s);
+  }).join("");
   const opts = q.opzioni.map(o => `<div class="d-opt"><span>${T.opzione}</span><span class="p">${eur(num(o.prezzo))}</span>${o.label ? `<span class="l">${esc(o.label)}</span>` : ""}</div>`).join("");
   const cake = q.torta.on ? `<div class="d-cake d-sec"><div class="k">${T.torte.replace(/:\s*$/, "")}</div><div style="display:flex;flex-direction:column;align-items:center">
       <div class="txt">${T.torteTxt(eurPlain(num(q.torta.euroKg)).replace(",00", ""))}</div>
