@@ -142,6 +142,14 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
   display: flex; flex-direction: column;
 }
 .page.fixed { height: 1123px; }
+/* Page frame: a black double rule like the DVOR lettering, with the logo's red dot at the corners */
+.frame { position: absolute; inset: 22px; border: 1.3px solid #1c1a19; pointer-events: none; }
+.frame::before { content: ""; position: absolute; inset: 4px; border: .6px solid #1c1a19; }
+.frame .c { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: #c8432c; box-sizing: content-box; border: 3px solid #ffffff; }
+.frame .tl { top: -7.2px; left: -7.2px; } .frame .tr { top: -7.2px; right: -7.2px; }
+.frame .bl { bottom: -7.2px; left: -7.2px; } .frame .br { bottom: -7.2px; right: -7.2px; }
+.frame .b { position: absolute; left: 50%; bottom: -4.6px; width: 34px; height: 8px; margin-left: -17px; background: #ffffff; }
+.frame .b::after { content: ""; position: absolute; left: 13px; top: 0; width: 8px; height: 8px; border-radius: 50%; background: #c8432c; }
 .d-head { display: grid; grid-template-columns: 1fr 330px; column-gap: 20px; }
 .d-client b { font-family: var(--display); font-size: 16px; }
 .d-client div { font-size: 10.5px; }
@@ -190,9 +198,9 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-tot tr.acc td { border-bottom: 0; color: #d22b1f; font-weight: 700; }
 .d-note { margin-top: 18px; text-align: center; font-size: 11px; }
 /* Page 2: terms run the full width of the page, centred between equal margins */
-.p2 { font-size: 11.5px; padding-left: 72px; padding-right: 72px; }
+.p2 { font-size: 11.5px; padding-left: 72px; padding-right: 72px; padding-bottom: 66px; }
 .p2 h3 { font-family: var(--display); font-size: 19px; font-weight: 700; margin: 0 0 16px; text-align: center; letter-spacing: .02em; }
-.p2 > h3:first-child { margin-top: auto; } /* with the signature's auto margin this centres the text vertically */
+.p2 > .frame + h3 { margin-top: auto; } /* with the signature's auto margin this centres the text vertically */
 .p2 .terms { width: 100%; display: flex; flex-direction: column; gap: 11px; text-align: justify; hyphens: auto; line-height: 1.5; }
 .p2 .terms p { margin: 0; white-space: pre-line; }
 .p2 .terms p.bold { font-weight: 700; }
@@ -997,6 +1005,7 @@ function renderDoc(q){
 
   return `
   <div class="page p1">
+    <div class="frame" aria-hidden="true"><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><i class="b"></i></div>
     <div class="d-head">
       <div class="d-client"><b>${T.cliente} ${esc(q.cliente)}</b>${q.email ? `<div>${esc(q.email)}</div>` : ""}${q.telefono ? `<div>${T.tel} ${esc(q.telefono)}</div>` : ""}</div>
       <div class="d-meta"><span class="k">${T.numero}</span><span class="v" style="font-size:10px">${esc(q.numero)}</span><span class="k">${T.data}</span><span class="v">${T.date(q.data)}</span></div>
@@ -1016,6 +1025,7 @@ function renderDoc(q){
     ${q.nota ? `<div class="d-note">${esc(q.nota)}</div>` : ""}
   </div>
   <div class="page p2 fixed">
+    <div class="frame" aria-hidden="true"><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><i class="b"></i></div>
     <h3>${T.termini}</h3>
     <div class="terms">${terms}</div>
     <div class="terms allergy"><h3 style="margin:0 0 7px">${T.allergie}</h3>${allergie}${after}</div>
