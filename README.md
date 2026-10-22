@@ -41,3 +41,25 @@ Il database (`dvor.sqlite`) viene creato da solo nella cartella `dvor-data`, acc
 
 1. Scarica le modifiche: `git pull`.
 2. Ricarica su `public_html` i file di `php/`. Il database non viene toccato.
+
+## Come fare push delle modifiche
+
+La prima volta, sul tuo computer:
+
+```bash
+git clone https://github.com/jackcalci-rgb/preventivi-dvor.git
+cd preventivi-dvor
+```
+
+Ogni volta che modifichi qualcosa:
+
+```bash
+git pull                          # prendi prima le ultime modifiche
+git add -A                        # prepara tutti i file cambiati
+git commit -m "Descrivi la modifica"
+git push                          # carica su GitHub
+```
+
+Se GitHub chiede la password, usa un token: GitHub → Settings → Developer settings → Personal access tokens. In alternativa usa GitHub Desktop, che fa le stesse cose con i pulsanti.
+
+Per aggiornare il sito dopo un push, ricarica i file di `php/` su `public_html`. Se il server ha git, puoi anche usare `git pull` dalla cartella del sito.
