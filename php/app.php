@@ -137,7 +137,7 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .page {
   width: 794px; min-height: 1123px; background: #ffffff; color: #111111;
   font-family: var(--doc); font-size: 11.5px; line-height: 1.45; font-variant-numeric: lining-nums;
-  padding: 58px 70px 50px 76px; position: relative;
+  padding: 52px 72px 50px 72px; position: relative;
   box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 6px 24px rgba(0,0,0,.08);
   display: flex; flex-direction: column;
 }
@@ -150,16 +150,20 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .frame .bl { bottom: -7.2px; left: -7.2px; } .frame .br { bottom: -7.2px; right: -7.2px; }
 .frame .b { position: absolute; left: 50%; bottom: -4.6px; width: 34px; height: 8px; margin-left: -17px; background: #ffffff; }
 .frame .b::after { content: ""; position: absolute; left: 13px; top: 0; width: 8px; height: 8px; border-radius: 50%; background: #c8432c; }
-.d-head { display: grid; grid-template-columns: 1fr 330px; column-gap: 20px; }
-.d-client b { font-family: var(--display); font-size: 16px; }
+.d-head { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; align-items: start; }
+.d-client { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.d-client .k2, .d-obj .k2 { display: block; font-family: var(--ui); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: #555; margin-bottom: 4px; }
+.d-brand { display: flex; flex-direction: column; align-items: center; }
+.d-rule { width: 60px; height: 1px; background: #c8432c; margin: 20px auto 18px; }
+.d-client b { font-family: var(--display); font-size: 17px; }
 .d-client div { font-size: 10.5px; }
-.d-meta { display: grid; grid-template-columns: 130px 1fr; row-gap: 14px; align-items: baseline; }
-.d-meta .k { font-family: var(--ui); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: #555; }
+.d-meta { display: grid; grid-template-columns: auto auto; justify-content: center; column-gap: 14px; row-gap: 8px; align-items: baseline; padding-top: 2px; }
+.d-meta .k { font-family: var(--ui); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: #555; text-align: right; }
 .d-meta .v { font-size: 12px; }
-.d-logo-row { display: grid; grid-template-columns: 1fr 330px; column-gap: 20px; margin-top: 12px; align-items: start; }
+.d-logo-row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; align-items: center; }
 .d-logo { width: 140px; margin-top: 2px; display: block; }
-.d-venue { font-family: var(--display); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-variant-numeric: lining-nums; line-height: 1.55; margin-top: 8px; color: #333; width: 140px; text-align: center; white-space: nowrap; display: flex; flex-direction: column; align-items: center; }
-.d-addr.d-company { display: flex; white-space: nowrap; flex-direction: column; align-items: center; text-align: center; }
+.d-venue { font-family: var(--display); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-variant-numeric: lining-nums; line-height: 1.55; margin-top: 8px; color: #333; text-align: center; white-space: nowrap; display: flex; flex-direction: column; align-items: center; }
+.d-addr.d-company { margin-top: 0; display: flex; white-space: nowrap; flex-direction: column; align-items: center; text-align: center; }
 .d-company b { font-family: var(--display); font-size: 15px; letter-spacing: .03em; }
 .d-addr { display: grid; grid-template-columns: 130px 1fr; white-space: nowrap; font-size: 11.5px; line-height: 1.35; margin-top: 18px; }
 .d-sec { display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -169,15 +173,14 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-items > div + div { margin-top: 5px; }
 .d-pair { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; align-items: start; }
 /* Course names stand out: small caps with a thin red rule each side */
-.d-sec > .k { display: flex; align-items: center; gap: 12px; font-size: 16.5px; text-transform: uppercase; letter-spacing: .16em; }
-.d-sec > .k::before, .d-sec > .k::after { content: ""; width: 28px; height: 1px; background: #c8432c; }
+.d-sec > .k, .d-wine > .k { display: flex; align-items: center; gap: 12px; font-size: 16.5px; text-transform: uppercase; letter-spacing: .16em; }
+.d-sec > .k::before, .d-sec > .k::after, .d-wine > .k::before, .d-wine > .k::after { content: ""; width: 28px; height: 1px; background: #c8432c; }
 .page.compact .d-items > div + div { margin-top: 3px; }
 .page.compact2 .d-items > div + div { margin-top: 2px; }
 .page.compact2 .d-items { margin-top: 4px; }
 .page.compact3 .d-items > div + div { margin-top: 1px; }
 .page.compact3 .d-items { margin-top: 2px; }
-.d-obj { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; margin-top: 50px; text-align: center; align-items: start; }
-.d-obj .k2 { display: block; font-family: var(--ui); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: #555; margin-bottom: 4px; }
+.d-obj { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; margin-top: 28px; text-align: center; align-items: start; }
 .d-obj b { font-family: var(--display); font-size: 17px; }
 .d-obj .v { font-size: 12px; }
 .d-qty { display: flex; justify-content: center; gap: 30px; margin-top: 26px; }
@@ -199,7 +202,8 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .tbl tr.p td { border-bottom: 0; font-weight: 700; padding-top: 2px; }
 .tbl tr.lone td { border-bottom: 0.5px solid #dcd8d3; }
 .d-wine { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 18px; }
-.d-wine .k { font-weight: 700; margin-bottom: 2px; }
+.d-wine .k { font-weight: 700; margin-bottom: 4px; }
+.d-wine .tbl { margin-top: 4px; }
 .d-wine .tbl, .d-cake .tbl { text-align: left; }
 .d-wnote { font-family: var(--doc); font-size: 10px; font-weight: 400; font-style: italic; color: #555; margin-top: 2px; white-space: normal; }
 .d-tot { margin: 22px auto 0; width: auto; }
@@ -223,20 +227,20 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .p2 .sign .c { text-align: center; }
 /* Long menus: tighten page 1 step by step so it still fits one A4 */
 .page.compact { font-size: 11px; line-height: 1.36; }
-.page.compact .d-obj { margin-top: 34px; }
+.page.compact .d-obj { margin-top: 22px; }
+.page.compact .d-rule { margin: 14px auto 12px; }
 .page.compact .d-qty, .page.compact .d-opts { margin-top: 14px; }
 .page.compact .d-menu { margin-top: 20px; gap: 14px; }
 .page.compact .d-cake, .page.compact .d-tot { margin-top: 16px; }
 .page.compact .d-wine { margin-top: 12px; }
 .page.compact .tbl td { padding-top: 2px; padding-bottom: 2px; }
 .page.compact2 { font-size: 10.5px; line-height: 1.28; padding-top: 44px; }
-.page.compact2 .d-logo-row { margin-top: 4px; }
-.page.compact2 .d-addr { margin-top: 8px; }
-.page.compact2 .d-obj { margin-top: 22px; }
+.page.compact2 .d-obj { margin-top: 16px; }
+.page.compact2 .d-rule { margin: 10px auto 8px; }
 .page.compact2 .d-menu { gap: 9px; }
 .page.compact2 .d-sec .k, .page.compact2 .d-wine .k { font-size: 14px; }
 .page.compact3 { font-size: 10px; line-height: 1.2; padding-top: 38px; padding-bottom: 34px; }
-.page.compact3 .d-obj { margin-top: 14px; }
+.page.compact3 .d-obj { margin-top: 10px; }
 .page.compact3 .d-qty { margin-top: 8px; } .page.compact3 .d-opts { margin-top: 4px; }
 .page.compact3 .d-menu { margin-top: 10px; gap: 6px; }
 .page.compact3 .d-sec .k, .page.compact3 .d-wine .k { font-size: 13px; }
@@ -1093,7 +1097,7 @@ function renderDoc(q){
     const t = drinkTable(q, k, c.d[k], T); if (!t) return "";
     const loose = q[k].righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome));
     const note = k === "vinoCasa" && !loose ? `<div class="d-wnote">${T.litro1}</div>` : "";
-    return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}${note}</div>${t}</div>`;
+    return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}</div>${note}${t}</div>`;
   }).join("");
   const tot = totalRows(q, c).map(([l, v, k]) => `<tr class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><td class="l">${esc(l)}</td><td class="r">${eurPlain(v)} €</td></tr>`).join("");
   const paras = t => (t || "").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
@@ -1104,13 +1108,14 @@ function renderDoc(q){
   return `
   <div class="page p1">
     <div class="frame" aria-hidden="true"><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><i class="b"></i></div>
-    <div class="d-head">
-      <div class="d-client"><b>${T.cliente} ${esc(q.cliente)}</b>${q.email ? `<div>${esc(q.email)}</div>` : ""}${q.telefono ? `<div>${T.tel} ${esc(q.telefono)}</div>` : ""}</div>
-      <div class="d-meta"><span class="k">${T.numero}</span><span class="v" style="font-size:10px">${esc(q.numero)}</span><span class="k">${T.data}</span><span class="v">${T.date(q.data)}</span></div>
-    </div>
     <div class="d-logo-row">
-      <div><img class="d-logo" src="${LOGO}" alt="DVOR"><div class="d-venue"><span>Via Castello 5</span><span>San Floriano del Collio</span><span>37070 Gorizia (Italia)</span></div></div>
+      <div class="d-brand"><img class="d-logo" src="${LOGO}" alt="DVOR"><div class="d-venue"><span>Via Castello 5</span><span>San Floriano del Collio</span><span>37070 Gorizia (Italia)</span></div></div>
       <div class="d-addr d-company"><b>Horeca FVG Srl</b><span>P.IVA 01280650316</span><span>info@osteriadvor.com</span></div>
+    </div>
+    <div class="d-rule" aria-hidden="true"></div>
+    <div class="d-head">
+      <div class="d-client"><span class="k2">${T.cliente.replace(/:\s*$/, "")}</span><b>${esc(q.cliente) || "&nbsp;"}</b>${q.email ? `<div>${esc(q.email)}</div>` : ""}${q.telefono ? `<div>${T.tel} ${esc(q.telefono)}</div>` : ""}</div>
+      <div class="d-meta"><span class="k">${T.numero}</span><span class="v">${esc(q.numero)}</span><span class="k">${T.data.replace(/:\s*$/, "")}</span><span class="v">${T.date(q.data)}</span></div>
     </div>
     <div class="d-obj"><div><span class="k2">${T.oggetto}</span><b>${esc(q.oggetto)}</b></div>
       <div class="ev"><span class="k2">${T.dataEvento.replace(/:\s*$/, "")}</span><span class="v">${T.date(q.dataEvento)}${q.oraInizio ? `<br>${T.inizio} ${esc(q.oraInizio)}` : ""}${q.orario ? `<br>${esc(q.orario)}` : ""}</span></div></div>
