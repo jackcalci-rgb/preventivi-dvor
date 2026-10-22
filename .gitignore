@@ -1,0 +1,3 @@
+php/data/*.sqlite*
+dvor-data/
+.DS_Store

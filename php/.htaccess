@@ -1,0 +1,15 @@
+# Preventivi Dvor
+Options -Indexes
+DirectoryIndex index.php
+
+# HTTPS only
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Files that must never be downloaded directly
+<FilesMatch "^(app\.php|lib\.php|README\.md|.*\.sqlite.*)$">
+  Require all denied
+</FilesMatch>
