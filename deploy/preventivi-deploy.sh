@@ -19,4 +19,6 @@ as_user() {
 
 [ -d "$R" ] || as_user git clone -q https://github.com/jackcalci-rgb/preventivi-dvor.git "$R"
 as_user git -C "$R" pull -q
-as_user rsync -rlt --exclude data/ "$R/php/" "$W/"
+# copia come root e dà ai file lo stesso proprietario di public_html, chiunque esso sia
+OWN=$(stat -c %U:%G "$W")
+rsync -rlt --chown="$OWN" --exclude data/ "$R/php/" "$W/"
