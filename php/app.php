@@ -374,6 +374,8 @@ const SUPPL = { "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta
 const LEAF = `<svg class="leaf" viewBox="0 0 16 16" aria-label="vegetariano" role="img"><path d="M14 2C7 2 2.5 5.5 2.5 10.5c0 1.2.3 2.3.8 3.2C5 9.8 7.8 7.4 11 6c-2.8 1.8-5.2 4.6-6.6 8 1 .5 2 .7 3.1.7C12.6 14.7 14 9 14 2z" fill="#3f8f3a"/></svg>`;
 // Preventivi di Natale: un rametto di agrifoglio al posto della linea rossa e gli auguri in fondo
 const isNatale = q => /natal|christmas|xmas/i.test(q.oggetto || "");
+// Pranzi e cene aziendali di Natale: si sceglie solo dal menu di Natale, che negli altri preventivi non compare
+const isNataleAz = q => isNatale(q) && /aziendal|corporate|company/i.test(q.oggetto || "");
 const HOLLY = `<svg class="holly" viewBox="0 0 64 22" aria-hidden="true"><path d="M31 12C26 4 17 3 9 7c3 1 4 3 3 5 3-1 5 0 6 2 2-2 5-2 7-1-1-3 1-4 6-1z" fill="#2f6b3a"/><path d="M33 12c5-8 14-9 22-5-3 1-4 3-3 5-3-1-5 0-6 2-2-2-5-2-7-1 1-3-1-4-6-1z" fill="#3f8f4a"/><circle cx="29.5" cy="14.5" r="3" fill="#c8432c"/><circle cx="34.5" cy="14.5" r="3" fill="#c8432c"/><circle cx="32" cy="10.2" r="3" fill="#b03424"/></svg>`;
 const EN_APPETIZERS = ["Cold cuts and cheese boards (San Daniele prosciutto & cheeses)","Meatballs (small)","Frico lollipops","Arancini"];
 addTo("antipasti", "English", EN_APPETIZERS);
@@ -921,13 +923,15 @@ function brunchGroups(){
 }
 function optGroups(key){
   const merged = {};
-  Object.entries(CATALOG[key]).forEach(([g, arr]) => { const b = bandOf(g); merged[b] = merged[b] || []; arr.forEach(i => { if (!merged[b].includes(i)) merged[b].push(i); }); });
+  // Nei preventivi di Natale si sceglie solo dal menu di Natale
+  Object.entries(CATALOG[key]).filter(([g]) => isNataleAz(Q) ? g === NATALE : g !== NATALE).forEach(([g, arr]) => { const b = bandOf(g); merged[b] = merged[b] || []; arr.forEach(i => { if (!merged[b].includes(i)) merged[b].push(i); }); });
   return Object.entries(merged).map(([g, arr]) => `<optgroup label="${esc(g)}">${arr.map(i => `<option value="${esc(i)}">${esc(i)}${VEG.has(i) ? " 🌿" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} €)` : ""}</option>`).join("")}</optgroup>`).join("");
 }
 
 function renderEditor(){
   const c = compute(Q);
-  const sectHTML = Q.sezioni.map((s, si) => `
+  const natale = isNataleAz(Q);
+  const sectHTML = Q.sezioni.map((s, si) => natale && !s.items.length && !CATALOG[s.key][NATALE] && s.key !== "dessert" ? "" : `
     <div class="sect ${s.items.length ? "" : "empty"}">
       <div class="sect-head">
         <input class="lbl" id="sl_${si}" aria-label="Nome portata" data-p="sezioni.${si}.label" value="${esc(s.label)}">
@@ -943,7 +947,7 @@ function renderEditor(){
         </div>`).join("")}
       </div>
       <div class="row">
-        <select class="grow" id="pick_${si}" aria-label="Aggiungi piatto dal menu"><option value="">+ Aggiungi dal menu…</option>${isBrunch(Q) || /Buffet$/.test(s.key) ? brunchGroups() : ""}${optGroups(s.key)}<option value="__free">Scrivi un piatto nuovo…</option></select>
+        <select class="grow" id="pick_${si}" aria-label="Aggiungi piatto dal menu"><option value="">+ Aggiungi dal menu…</option>${!natale && (isBrunch(Q) || /Buffet$/.test(s.key)) ? brunchGroups() : ""}${optGroups(s.key)}<option value="__free">Scrivi un piatto nuovo…</option></select>
       </div>
     </div>`).join("");
 
