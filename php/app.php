@@ -542,7 +542,7 @@ function blankQuote(){
     vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
-    supplScelti: [], allergeniPag: false, linkVini: "https://www.osteriadvor.com", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
+    supplScelti: [], allergeniPag: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
 }
@@ -552,6 +552,7 @@ function migrate(q){
   const b = blankQuote();
   for (const k of Object.keys(b)) if (q[k] === undefined) q[k] = b[k];
   q.acconto = 50;
+  if (!q.linkVini || q.linkVini === "https://www.osteriadvor.com") q.linkVini = "https://osteriadvor.com/vini.html";
   if (typeof q.terms === "string") q.terms = q.terms.replace(IT25, IT50).replace(EN25, EN50).replace('-Acqua (frizzante-naturale) e pane sono inclusi nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.', '-Il pane è incluso nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.').replace('-Water (sparkling-still) and bread are included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.', '-Bread is included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.');
   if (typeof q.terms === "string" && !/caff[èe] non sono inclusi|Coffee is not included/i.test(q.terms)) {
     q.terms = q.terms.replace(/(-Il pane è incluso nel prezzo[^\n]*)/, "$1\n\n-I caffè non sono inclusi nel preventivo e saranno conteggiati a parte.").replace(/(-Bread is included in the price[^\n]*)/, "$1\n\n-Coffee is not included in the quotation and will be charged separately.");
@@ -1168,7 +1169,7 @@ function totalRows(q, c){
   return rows;
 }
 // Email pronta da copiare per i preventivi aziendali di Natale
-const LINK_VINI = "https://www.osteriadvor.com";
+const LINK_VINI = "https://osteriadvor.com/vini.html";
 function nataleEmail(q){
   const c = compute(q), T = L.it;
   const pasto = /cena|dinner/i.test(q.oggetto) ? "cena" : "pranzo";
