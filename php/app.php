@@ -371,7 +371,7 @@ Object.entries(NATALE_MENU).forEach(([sec, items]) => addTo(sec, NATALE, items))
 // Piatti vegetariani: nel PDF hanno la fogliolina
 const VEG = new Set(["Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
 // Supplemento a persona per alcuni piatti del menu di Natale (45 €)
-const SUPPL = { "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5, "Panettone con crema inglese": 5, "Pannacotta con liquore al Terrano": 5 };
+const SUPPL = { "Carpaccio di manzo su rucola e riduzione di melograno": 5, "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5, "Panettone con crema inglese": 5, "Pannacotta con liquore al Terrano": 5 };
 const LEAF = `<svg class="leaf" viewBox="0 0 16 16" aria-label="vegetariano" role="img"><path d="M14 2C7 2 2.5 5.5 2.5 10.5c0 1.2.3 2.3.8 3.2C5 9.8 7.8 7.4 11 6c-2.8 1.8-5.2 4.6-6.6 8 1 .5 2 .7 3.1.7C12.6 14.7 14 9 14 2z" fill="#3f8f3a"/></svg>`;
 // Preventivi di Natale: un rametto di agrifoglio al posto della linea rossa e gli auguri in fondo
 const isNatale = q => /natal|christmas|xmas/i.test(q.oggetto || "");
