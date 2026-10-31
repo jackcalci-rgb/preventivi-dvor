@@ -542,7 +542,7 @@ function blankQuote(){
     vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
-    supplScelti: [], allergeniPag: false, lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
+    supplScelti: [], allergeniPag: false, linkVini: "https://www.osteriadvor.com", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
 }
@@ -1114,6 +1114,12 @@ function renderEditor(){
       <div class="totals" id="edTotals"></div>
     </div>
 
+    ${isNataleAz(Q) ? `<div class="card">
+      <h2>Email per il cliente<span class="spacer"></span><button type="button" data-act="copymail" style="text-transform:none;letter-spacing:0">Copia email</button></h2>
+      ${field("Link alla carta dei vini sul sito", "linkVini", { full: true })}
+      <label class="f full" for="f_email_txt">Testo pronto da incollare (si aggiorna con il preventivo)<textarea id="f_email_txt" rows="16" readonly>${esc(nataleEmail(Q))}</textarea></label>
+    </div>` : ""}
+
     <div class="card">
       <h2>Termini & condizioni<span class="spacer"></span>
         <select id="termsKey" style="width:auto;text-transform:none;letter-spacing:0;font-weight:500">${Object.entries(TERMS).map(([k, t]) => `<option value="${k}" ${Q.termsKey === k ? "selected" : ""}>${t.name}</option>`).join("")}</select>
@@ -1161,9 +1167,50 @@ function totalRows(q, c){
   if (!two) rows.push([T.acconto, c.acconto, "acc"]);
   return rows;
 }
+// Email pronta da copiare per i preventivi aziendali di Natale
+const LINK_VINI = "https://www.osteriadvor.com";
+function nataleEmail(q){
+  const c = compute(q), T = L.it;
+  const pasto = /cena|dinner/i.test(q.oggetto) ? "cena" : "pranzo";
+  const quando = q.dataEvento ? `il ${dateIT(q.dataEvento)}${q.oraInizio ? ` alle ${q.oraInizio}` : ""}` : "nella data che preferite";
+  const out = [];
+  out.push(`Oggetto: La vostra ${pasto} aziendale di Natale all'Osteria Dvor - preventivo n. ${q.numero}`, "");
+  out.push(`Gentile ${q.cliente.trim() || "Cliente"},`, "");
+  out.push(`grazie per aver scelto l'Osteria Dvor per la vostra ${pasto} aziendale di Natale. Siamo felici di inviarvi il preventivo n. ${q.numero}, pensato per ${num(q.adulti)} persone ${quando}. Lo trovate in allegato in PDF; qui sotto vi riassumiamo tutti i passaggi.`, "");
+  q.opzioni.forEach(o => out.push(`IL MENU: ${eur(num(o.prezzo))} a persona${o.label ? ` (${lc(o.label)})` : ""}`));
+  out.push("Per ogni portata il gruppo sceglie un piatto tra quelli proposti:", "");
+  q.sezioni.filter(s => s.items.some(i => i.trim())).forEach(s => {
+    out.push(s.label.replace(/:\s*$/, ""));
+    s.items.map(i => i.trim()).filter(Boolean).forEach(i => out.push(`- ${i}${VEG.has(i) ? " (vegetariano)" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} € a persona)` : ""}`));
+    out.push("");
+  });
+  if (q.sezioni.some(s => s.items.some(i => SUPPL[i.trim()]))) out.push("I piatti segnati con +5 € prevedono una maggiorazione di 5 € a persona, che aggiungiamo al totale solo se li scegliete.");
+  out.push("Il menu è un punto di partenza: se desiderate un piatto diverso, di qualsiasi tipo, passate a trovarci in osteria e parlatene direttamente con il nostro chef. Costruiremo insieme il menu più adatto al vostro gruppo.", "");
+  const w = q.vinoCasa, d = c.d.vinoCasa;
+  out.push("IL VINO");
+  if (w.on && w.righe.length) {
+    out.push(`Abbiamo previsto il nostro ${(w.titolo || "Vino della casa").replace(/:\s*$/, "")}${/Blazevi/i.test(w.righe.map(r => r.nome).join()) ? " della cantina Blazevi" : ""}, consigliando ${NATALE_CALICI} calici a persona:`);
+    w.righe.filter(r => num(r.bott)).forEach(r => out.push(`- ${r.nome}: ${num(r.bott)} ${num(r.bott) === 1 ? "bottiglia" : "bottiglie"}`));
+    out.push(w.incluso ? "Il vino è incluso nel prezzo." : `In totale ${d.bott} bottiglie da 1 litro a ${eur(num(w.prezzo))} l'una, per ${eur(d.prezzo)}.`);
+  }
+  out.push(`Se preferite qualcosa di diverso, potete scegliere tra le 97 etichette della nostra cantina, che trovate qui: ${q.linkVini || LINK_VINI}`, "");
+  out.push("IL RIEPILOGO");
+  totalRows(q, c).forEach(([l, v]) => out.push(`${l}: ${eur(v)}`));
+  out.push("");
+  out.push(`Per confermare la prenotazione basta rispondere a questa email: vi chiediamo un acconto del 50%${q.opzioni.length > 1 ? "" : ` (${eur(c.acconto)})`} tramite bonifico, mentre il saldo si paga il giorno dell'evento. Nel PDF trovate i termini e le condizioni${q.allergeniPag ? " e la tabella degli allergeni" : ""}; ricordiamo che acqua e caffè non sono compresi e vengono conteggiati a parte.`, "");
+  out.push("Dicembre è il periodo più richiesto dell'anno, quindi vi consigliamo di confermare presto per assicurarvi la data che preferite. Saremo felici di accogliervi a San Floriano del Collio, tra le colline e le vigne, per brindare insieme alla fine dell'anno.", "");
+  out.push("Un caro saluto,", "Osteria Dvor", "Via Castello 5, San Floriano del Collio (GO)", "info@osteriadvor.com");
+  return out.join("\n");
+}
+async function copyText(txt){
+  try { await navigator.clipboard.writeText(txt); return true; } catch (e) {}
+  const ta = $("#f_email_txt"); if (!ta) return false;
+  ta.focus(); ta.select(); try { return document.execCommand("copy"); } catch (e) { return false; }
+}
 function wineSuggTxt(bott){ return `Consigliati ${NATALE_CALICI} calici a testa: ${num(Q.adulti) * NATALE_CALICI} calici, circa <b>${nataleBottiglie(Q)} bottiglie</b> da 1 litro (ora ${bott}).`; }
 function renderTotalsBox(c){
   const ws = $("#wineSugg"); if (ws) ws.innerHTML = wineSuggTxt(c.d.vinoCasa.bott);
+  const em = $("#f_email_txt"); if (em) em.value = nataleEmail(Q);
   const box = $("#edTotals"); if (!box) return;
   const rows = totalRows(Q, c);
   box.innerHTML = rows.map(([l, v, k]) => `<div class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><span>${esc(l)}</span><span>${eur(v)}</span></div>`).join("");
@@ -1357,6 +1404,7 @@ editor.addEventListener("click", e => {
   else if (a === "delno") { pendingDelete = null; renderEditor(); return; }
   else if (a === "delyes") { removeQuote(b.dataset.id); return; }
   else if (a === "export") { exportArchive(); return; }
+  else if (a === "copymail") { copyText(nataleEmail(Q)).then(ok => toast(ok ? "Email copiata: incollala nel programma di posta" : "Seleziona il testo e copialo a mano")); return; }
   else return;
   refreshAll();
 });
