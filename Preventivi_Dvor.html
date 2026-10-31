@@ -548,7 +548,7 @@ function withSections(q, map){
 // Esempi di Natale: stesso menu, pranzo o cena
 function nataleQuote(oggetto){ const q = blankQuote();
   Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo, secondo e dolce"}] });
-  q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
+  q.vinoCasa = { on: true, prezzo: 15, incluso: false, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
   q.vinoBott.on = false;
   return menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
     primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
