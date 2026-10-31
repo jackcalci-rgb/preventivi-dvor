@@ -379,7 +379,7 @@ addTo("salatoBuffet", "Brunch salato", ["Couscous alle verdure","Bresaola su let
 const NATALE = "Pranzi e cene aziendali di Natale 2026";
 const NATALE_MENU = {
   antipasti: ["Toc' in braide","Flan di funghi con guanciale","Fricchetti friulani","Vitello tonnato","Carpaccio di manzo su rucola e riduzione di melograno","Rosa di prosciutto di Osvaldo con spuma di frico"],
-  primi: ["Gnocchi al goulash","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Risotto porro e salsiccia","Risotto radicchio e salsiccia","Lasagna classica"],
+  primi: ["Gnocchi al goulash alla goriziana (guancette di maiale)","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Risotto porro e salsiccia","Risotto radicchio e salsiccia","Lasagna classica"],
   dessert: ["Tiramisù","Panettone con crema inglese","Pannacotta con liquore al Terrano"],
   secondi: ["Arrosto di vitello con patate al forno","Arrosto di maiale con patate in tecia","Guancette brasate al vino rosso con polentina morbida","Pancetta in crosta con finocchi","Filetto di maiale alla Wellington con purè","Scaloppa di sedano rapa con salsa olandese"]
 };
@@ -406,7 +406,7 @@ const ALLERGENI = { it: ["Glutine","Crostacei","Uova","Pesce","Arachidi","Soia",
 const ALLERG = {
   "Toc' in braide": [6], "Flan di funghi con guanciale": [0,2,6], "Fricchetti friulani": [6], "Vitello tonnato": [2,3,11],
   "Carpaccio di manzo su rucola e riduzione di melograno": [11], "Rosa di prosciutto di Osvaldo con spuma di frico": [6],
-  "Gnocchi al goulash": [0,2,8,11], "Gnocchi al radicchio rosso e formaggi": [0,2,6], "Risotto di zucca e amaretti": [2,6,7,8,11],
+  "Gnocchi al goulash alla goriziana (guancette di maiale)": [0,2,8,11], "Gnocchi al radicchio rosso e formaggi": [0,2,6], "Risotto di zucca e amaretti": [2,6,7,8,11],
   "Risotto porro e salsiccia": [6,8,11], "Risotto radicchio e salsiccia": [6,8,11], "Lasagna classica": [0,2,6,8,11],
   "Arrosto di vitello con patate al forno": [8,11], "Arrosto di maiale con patate in tecia": [8,11],
   "Guancette brasate al vino rosso con polentina morbida": [6,8,11], "Pancetta in crosta con finocchi": [0,2,6],
@@ -572,6 +572,7 @@ function migrate(q){
   const b = blankQuote();
   for (const k of Object.keys(b)) if (q[k] === undefined) q[k] = b[k];
   q.acconto = 50;
+  (q.sezioni || []).forEach(sz => { sz.items = sz.items.map(i => i.trim() === "Gnocchi al goulash" ? "Gnocchi al goulash alla goriziana (guancette di maiale)" : i); });
   ["vinoCasa","vinoBott","birra"].forEach(k => q[k] && (q[k].righe || []).forEach(r => { if (typeof r.nome === "string") r.nome = r.nome.replace(/Blazevi/g, "Blaževi"); }));
   if (!q.linkVini || q.linkVini === "https://www.osteriadvor.com") q.linkVini = "https://osteriadvor.com/vini.html";
   if (typeof q.terms === "string") q.terms = q.terms.replace(IT25, IT50).replace(EN25, EN50).replace('-Acqua (frizzante-naturale) e pane sono inclusi nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.', '-Il pane è incluso nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.').replace('-Water (sparkling-still) and bread are included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.', '-Bread is included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.');
