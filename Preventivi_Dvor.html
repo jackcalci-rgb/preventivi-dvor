@@ -585,6 +585,7 @@ function migrate(q){
     else if (/Coffee is not included[^\n]*/.test(q.terms)) q.terms = q.terms.replace(/(-Coffee is not included[^\n]*)/, "$1\n\n-Sparkling and still water is not included in the quotation and will be charged separately.");
     else q.terms = q.terms.trim() + "\n\n" + (q.lang === "en" ? "-Sparkling and still water is not included in the quotation and will be charged separately." : "-L\'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.");
   }
+  if (isNataleAz(q) && q.vinoCasa && !q.vinoCasa.incluso) addVinoConsumo(q);
   ["vinoCasa","vinoBott","birra"].forEach(k => { if (q[k].titolo === undefined) q[k].titolo = ""; });
   SECTIONS.forEach(([key, label]) => { if (!q.sezioni.some(s => s.key === key)) q.sezioni.push({ key, label: SECTION_LABELS[q.lang || "it"][key], sub: "", items: [] }); });
   const order = SECTIONS.map(s => s[0]);
@@ -597,9 +598,10 @@ function setLang(q, lang){
   q.sezioni.forEach(s => { if (!s.label || s.label === SECTION_LABELS[from][s.key]) s.label = SECTION_LABELS[lang][s.key]; });
   const key = lang === "en" ? "en" : (q.termsKey === "en" ? "eventi" : q.termsKey);
   const T = TERMS[key]; q.termsKey = key; q.terms = T.terms; q.termsAfter = T.after; q.allergie = T.allergie;
+  if (isNataleAz(q)) addVinoConsumo(q);
   return q;
 }
-function useTerms(q, key){ const T = TERMS[key]; Object.assign(q, { termsKey: key, terms: T.terms, termsAfter: T.after, allergie: T.allergie }); return q; }
+function useTerms(q, key){ const T = TERMS[key]; Object.assign(q, { termsKey: key, terms: T.terms, termsAfter: T.after, allergie: T.allergie }); if (isNataleAz(q)) addVinoConsumo(q); return q; }
 // m = { sectionKey: [items, red note, label] }
 function menuScelte(q, m){
   q.sezioni.forEach(s => { const v = m[s.key]; if (v) { s.items = v[0].slice(); s.sub = v[1] || ""; if (v[2]) s.label = v[2]; } });
@@ -619,11 +621,21 @@ function nataleQuote(oggetto, M = NATALE_MENU, prezzo = 45){ const q = blankQuot
     primi: [M.primi, "Scelta possibile 1 primo"],
     secondi: [M.secondi, "Scelta possibile 1 secondo"],
     dessert: [M.dessert, "Scelta possibile 1 dolce"] });
+  addVinoConsumo(q);
   return nataleVino(q);
 }
 // Vino del Collio nei preventivi di Natale: consigliati 4 calici a testa (bottiglie Blaževi da 1 litro = 10 calici)
 const NATALE_CALICI = 4;
 const nataleBottiglie = q => Math.ceil(num(q.adulti) * NATALE_CALICI / 10);
+const VINO_CONSUMO = { it: "-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata (4 calici a persona). Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.",
+  en: "-Wine is charged on consumption: the quantity shown in the quotation is the recommended one (4 glasses per person). If less is drunk, the final bill will only include the wine actually consumed." };
+function addVinoConsumo(q){
+  if (typeof q.terms !== "string" || /conteggiato a consumo|charged on consumption/i.test(q.terms)) return q;
+  const en = q.lang === "en", line = VINO_CONSUMO[en ? "en" : "it"];
+  const re = en ? /(-Sparkling and still water is not included[^\n]*)/ : /(-L'acqua frizzante e naturale non è inclusa[^\n]*)/;
+  q.terms = re.test(q.terms) ? q.terms.replace(re, "$1\n\n" + line) : q.terms.trim() + "\n\n" + line;
+  return q;
+}
 function nataleVino(q){
   const righe = q.vinoCasa.righe; if (!righe.length) return q;
   const isW = r => /pinot|bianc|rebula|ribolla|sauvignon|chardonnay|friulano|malvasia/i.test(r.nome);
@@ -1223,7 +1235,7 @@ function nataleEmail(q){
   const vini = w.on ? w.righe.filter(r => num(r.bott)) : [];
   if (vini.length) {
     const cantina = /Bla[zž]evi/i.test(vini.map(r => r.nome).join()) ? " di Blaževi" : "";
-    out.push(`Per il vino ho messo il nostro ${(w.titolo || "vino della casa").replace(/:\s*$/, "")}${cantina}, contando circa ${NATALE_CALICI} calici a testa: ${d.bott} bottiglie da un litro (${vini.map(r => `${num(r.bott)} ${corto(r.nome)}`).join(", ")})${w.incluso ? ", già comprese nel prezzo." : `, a ${eurPlain(num(w.prezzo)).replace(",00", "")} € l'una.`}`);
+    out.push(`Per il vino abbiamo previsto il nostro ${(w.titolo || "vino della casa").replace(/:\s*$/, "")}${cantina} (${vini.map(r => corto(r.nome)).join(", ")}). Per la nostra esperienza con questi eventi consigliamo ${NATALE_CALICI} calici a persona, e su questa base abbiamo calcolato le bottiglie che trovate nel preventivo, con il relativo prezzo.${w.incluso ? "" : " Il vino è conteggiato a consumo: se ne verrà bevuto meno di quanto consigliato, nel conto finale troverete solo quello effettivamente consumato."}`);
   }
   out.push(`Se avete voglia di qualcos'altro, in cantina abbiamo 97 etichette: le trovate tutte qui ${q.linkVini || LINK_VINI}`, "");
   out.push("In totale:");
