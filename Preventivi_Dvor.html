@@ -421,9 +421,9 @@ const SECTION_LABELS = {
   it: Object.fromEntries(SECTIONS),
   en: { aperitivo: "Aperitif:", antipasti: "Appetizers:", primi: "First Courses:", secondi: "Main Courses:", pizze: "Pizzas:", contorni: "Sides:", sorbetto: "Sorbet:", dessert: "Dessert:", dolceBuffet: "Sweet:", salatoBuffet: "Savory:" }
 };
-const WINES_CASA = ["Blazevi Goriška Brda Sivi Pinot","Blazevi Goriška Brda Merlot","Blazevi Goriška Brda Refošk","Rosso Sfuso","Bianco Sfuso","Bollicine Sfuso","Red house wine on tap","White house wine on tap"];
+const WINES_CASA = ["Blaževi Goriška Brda Sivi Pinot","Blaževi Goriška Brda Merlot","Blaževi Goriška Brda Refošk","Rosso Sfuso","Bianco Sfuso","Bollicine Sfuso","Red house wine on tap","White house wine on tap"];
 const BEERS = ["Birra alla spina Pilsner","Birra alla spina Lager","Birra alla spina IPA","Tap Beer Pilsner","Tap Beer Lager","Tap Beer IPA"];
-const WINES_BOTT = ["Piedimont Ribolla Metodo Classico 12 mesi","Piedimont Cuvée Metodo Classico 36 mesi","Piedimont Cuvée Magnum","Pittaro Rosè Metodo Classico","Blazevi Goriška Brda Sivi Pinot","Blazevi Goriška Brda Merlot","Blazevi Goriška Brda Refošk","Blazevi Goriška Brda Rumena Rebula","Blazevi Goriška Brda Rumena Rebula Charmat","Friulano Collio DOC","Malvasia Collio DOC","Chardonnay Collio DOC","Sauvignon Collio DOC","Ribolla Collio DOC","Merlot Collio DOC","Refosco Collio DOC","Cabernet Collio DOC"];
+const WINES_BOTT = ["Piedimont Ribolla Metodo Classico 12 mesi","Piedimont Cuvée Metodo Classico 36 mesi","Piedimont Cuvée Magnum","Pittaro Rosè Metodo Classico","Blaževi Goriška Brda Sivi Pinot","Blaževi Goriška Brda Merlot","Blaževi Goriška Brda Refošk","Blaževi Goriška Brda Rumena Rebula","Blaževi Goriška Brda Rumena Rebula Charmat","Friulano Collio DOC","Malvasia Collio DOC","Chardonnay Collio DOC","Sauvignon Collio DOC","Ribolla Collio DOC","Merlot Collio DOC","Refosco Collio DOC","Cabernet Collio DOC"];
 const EVENT_TYPES = ["Battesimo","Comunione","Cresima","Matrimonio","Fidanzamento","Promessa di matrimonio","Anniversario","Anniversario di matrimonio","Compleanno","Diciottesimo","Laurea","Festa Privata","Festa","Festa Danzante","Festa Pensione","Pre Wedding Party","Festa di Natale","Pranzo aziendale di Natale","Cena aziendale di Natale","Festa di fine anno","Baby shower","Addio al celibato","Addio al nubilato","Rimpatriata","Cena di classe","Cena aziendale","Pranzo aziendale","Evento aziendale","Pranzo","Cena","Brunch","Aperitivo","Rinfresco","Degustazione","Pranzo commemorativo"];
 
 const ALLERGIE = `Il nostro servizio di catering si impegna a garantire la sicurezza e la soddisfazione dei nostri clienti offrendo un'ampia selezione di piatti per soddisfare diverse esigenze alimentari. Tuttavia, vi preghiamo di notare quanto segue:
@@ -538,7 +538,7 @@ function blankQuote(){
     opzioni: [{ prezzo: 50, label: "" }],
     sezioni: blankSections(),
     torta: { on: false, grammi: 150, euroKg: 50 },
-    vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 2, calici: "" }] },
+    vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
     supplScelti: [], allergeniPag: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
@@ -551,6 +551,7 @@ function migrate(q){
   const b = blankQuote();
   for (const k of Object.keys(b)) if (q[k] === undefined) q[k] = b[k];
   q.acconto = 50;
+  ["vinoCasa","vinoBott","birra"].forEach(k => q[k] && (q[k].righe || []).forEach(r => { if (typeof r.nome === "string") r.nome = r.nome.replace(/Blazevi/g, "Blaževi"); }));
   if (!q.linkVini || q.linkVini === "https://www.osteriadvor.com") q.linkVini = "https://osteriadvor.com/vini.html";
   if (typeof q.terms === "string") q.terms = q.terms.replace(IT25, IT50).replace(EN25, EN50).replace('-Acqua (frizzante-naturale) e pane sono inclusi nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.', '-Il pane è incluso nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.').replace('-Water (sparkling-still) and bread are included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.', '-Bread is included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.');
   if (typeof q.terms === "string" && !/caff[èe] non sono inclusi|Coffee is not included/i.test(q.terms)) {
@@ -591,7 +592,7 @@ function withSections(q, map){
 // Esempi di Natale: stesso menu, pranzo o cena
 function nataleQuote(oggetto){ const q = blankQuote();
   Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo, secondo e dolce"}] });
-  q.vinoCasa = { on: true, prezzo: 15, incluso: false, titolo: "Vino del Collio:", righe: rows([["Blazevi Goriška Brda Merlot",2],["Blazevi Goriška Brda Refošk",1],["Blazevi Goriška Brda Sivi Pinot",3]]) };
+  q.vinoCasa = { on: true, prezzo: 15, incluso: false, titolo: "Vino del Collio:", righe: rows([["Blaževi Goriška Brda Merlot",2],["Blaževi Goriška Brda Refošk",1],["Blaževi Goriška Brda Sivi Pinot",3]]) };
   q.vinoBott.on = false; q.allergeniPag = true;
   menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
     primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
@@ -599,7 +600,7 @@ function nataleQuote(oggetto){ const q = blankQuote();
     dessert: [NATALE_MENU.dessert, "Scelta possibile 1 dolce"] });
   return nataleVino(q);
 }
-// Vino del Collio nei preventivi di Natale: consigliati 4 calici a testa (bottiglie Blazevi da 1 litro = 10 calici)
+// Vino del Collio nei preventivi di Natale: consigliati 4 calici a testa (bottiglie Blaževi da 1 litro = 10 calici)
 const NATALE_CALICI = 4;
 const nataleBottiglie = q => Math.ceil(num(q.adulti) * NATALE_CALICI / 10);
 function nataleVino(q){
@@ -621,7 +622,7 @@ const PRESETS = [
       return withSections(q, { antipasti: ["Tortino di zucca con fonduta di formaggio di malga"], primi: ["Orzotto con salsiccia e radicchio"], secondi: ["Arrosto di vitello con funghi porcini"], contorni: ["Contorni di stagione"], sorbetto: ["Sorbetto al limone e menta"], dessert: ["Tortino di Frutta di Stagione"] }); } },
   { name: "Battesimo 55 € con aperitivo", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", orario: "Ore 12:00", adulti: 38, bambini: 0, opzioni: [{prezzo:55,label:""}] });
-      q.vinoCasa.righe = [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 4, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 4, calici: "" }];
+      q.vinoCasa.righe = [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 4, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 4, calici: "" }];
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 5, calici: 38 }];
       return withSections(q, { aperitivo: ["Pancetta cotta nel pane con kren","Frico croccante","Toc in braide","Pollo in tempura"], primi: ["Gnocchi con goulash"], secondi: ["Lingua alla Wellington con spek e senape"], contorni: ["Contorni di stagione"] }); } },
   { name: "Anniversario 50 € (torta 40 €/kg)", make(){ const q = blankQuote();
@@ -630,7 +631,7 @@ const PRESETS = [
       return withSections(q, { aperitivo: ["Pancetta cotta nel pane con kren"], antipasti: ["Tortino di zucca con fonduta di formaggio di malga"], primi: ["Fuži Istriani con ragù di San Daniele"], secondi: ["Stinco di Maiale anteriore cucinato lentamente al forno con polenta"], contorni: ["Contorni di stagione"], dessert: ["Sorbetto al limone e menta"] }); } },
   { name: "Compleanno aperitivo 45 € / con primo 55 €", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Compleanno", orario: "Orario: 19:00", adulti: 12, bambini: 0, opzioni: [{prezzo:45,label:"Solo aperitivo"},{prezzo:55,label:"Aperitivo più primo"}] });
-      q.vinoCasa.righe = [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 1, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 1, calici: "" }];
+      q.vinoCasa.righe = [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 1, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 1, calici: "" }];
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: 15 }];
       return withSections(q, { aperitivo: ["Polpettine","Frichetti","Pollo in tempura",TAGLIERE,"Toc in braide con funghi misti"], primi: ["Orzotto con funghi porcini"] }); } },
   { name: "Pranzo 45 € con torta", make(){ const q = blankQuote();
@@ -690,7 +691,7 @@ const PRESETS = [
   { name: "Comunione 45 € (come Katja)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Comunione", adulti: 15, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.vinoCasa.on = false;
-      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blazevi Goriška Brda Sivi Pinot",2],["Blazevi Goriška Brda Merlot",2],["Blazevi Goriška Brda Refošk",1],["Blazevi Goriška Brda Rumena Rebula Charmat",2]]) };
+      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blaževi Goriška Brda Sivi Pinot",2],["Blaževi Goriška Brda Merlot",2],["Blaževi Goriška Brda Refošk",1],["Blaževi Goriška Brda Rumena Rebula Charmat",2]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Frittatine","Frico fritto","Polpettine","Tradizionali kipfel di patate"], "Scelta possibile 3 antipasti"],
         primi: [["Pasticcio tradizionale con fonduta di formaggi","Gnocchi con sugo di goulash","Crespelle di verdure di stagione","Orzotto con asparagi"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Ljubljanska alla griglia","Grigliata Mista (Čevapčiči, Spiedini, tagliata di manzo, pollo)","Stinco di Maiale anteriore cucinato lentamente al forno con polenta"], "Scelta possibile 1 secondo"],
@@ -717,7 +718,7 @@ const PRESETS = [
       Object.assign(q, { oggetto: "Pranzo", adulti: 20, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.terms = q.terms.split(/\n\s*\n/).filter(p => !/torta venga fornita/.test(p)).join("\n\n");
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",2],["Bianco Sfuso",2]]) };
-      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blazevi Goriška Brda Sivi Pinot",1],["Blazevi Goriška Brda Merlot",1],["Blazevi Goriška Brda Refošk",1],["Blazevi Goriška Brda Rumena Rebula Charmat",3]]) };
+      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blaževi Goriška Brda Sivi Pinot",1],["Blaževi Goriška Brda Merlot",1],["Blaževi Goriška Brda Refošk",1],["Blaževi Goriška Brda Rumena Rebula Charmat",3]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Frittatine","Polpettine","Lecca lecca di Frico","Carpaccio di bresaola"], "Scelta possibile 3 antipasti"],
         primi: [["Fusi con ragù di cortile","Crespelle di verdure di stagione","Pasticcio tradizionale con fonduta di formaggi","Lasagna con ragù salsiccia","Orzotto con asparagi"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Costicine di maiale sous vide","Goulash di manzo","Ljubljanska alla griglia","Arrosto di vitello"], "Scelta possibile 1 secondo"],
@@ -732,7 +733,7 @@ const PRESETS = [
   { name: "Pranzo aziendale 45 € (come Luca Marchioro)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Pranzo aziendale", adulti: 40, opzioni: [{prezzo:45,label:""}] });
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
-      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blazevi Goriška Brda Sivi Pinot",2],["Blazevi Goriška Brda Refošk",2],["Blazevi Goriška Brda Merlot",2],["Blazevi Goriška Brda Rumena Rebula",5]]) };
+      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blaževi Goriška Brda Sivi Pinot",2],["Blaževi Goriška Brda Refošk",2],["Blaževi Goriška Brda Merlot",2],["Blaževi Goriška Brda Rumena Rebula",5]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Frichetti","Carpaccio di bresaola","Lonza Marinata con Salsa carpione"], "Scelta possibile 2 antipasti"],
         primi: [["Fuži Istriani con ragù di cortile","Crespelle con asparagi","Gnocchi con sugo di arrosto","Orzotto con sclopit","Pasticcio tradizionale con fonduta di formaggi","Lasagna con ragù salsiccia"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Ljubljanska alla griglia","Costicine di maiale sous vide","Arrosto di vitello","Lonza di maiale alla birra"], "Scelta possibile 1 secondo"],
@@ -776,11 +777,11 @@ const PRESETS = [
 /* ================= Calculations (same formulas as the Excel sheet) ================= */
 const num = v => { const n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : 0; };
 const r2 = n => Math.round(n * 100) / 100;
-// Glasses per unit, as in the sheets: 1 L of house wine = 10, 0.75 L bottle = 7.5 (1 L Blazevi = 10), 30 L keg = 60 pints
+// Glasses per unit, as in the sheets: 1 L of house wine = 10, 0.75 L bottle = 7.5 (1 L Blaževi = 10), 30 L keg = 60 pints
 function perBottle(kind, nome){
   if (kind === "birra") return 60;
   if (kind === "vinoCasa") return 10;
-  return /blazevi/i.test(nome || "") && !/rebula/i.test(nome || "") ? 10 : 7.5;
+  return /bla[zž]evi/i.test(nome || "") && !/rebula/i.test(nome || "") ? 10 : 7.5;
 }
 function calici(row, kind){ return row.calici !== "" && row.calici != null ? num(row.calici) : Math.round(num(row.bott) * perBottle(kind, row.nome)); }
 const DRINKS = ["vinoCasa", "vinoBott", "birra"];
@@ -1102,7 +1103,7 @@ function renderEditor(){
       ${wineBlock("vinoCasa", "Vino della casa", "dl_casa")}
       ${wineBlock("vinoBott", "Vino bottiglia", "dl_bott")}
       ${wineBlock("birra", "Birra alla spina", "dl_birra")}
-      <div class="hint">Calici se lasci il campo vuoto: 10 per litro di vino della casa, 10 per le bottiglie Blazevi da 1 litro, 7,5 per le bottiglie da 0,75; 60 pinte per fusto da 30 litri. Scrivi un numero per cambiarlo.</div>
+      <div class="hint">Calici se lasci il campo vuoto: 10 per litro di vino della casa, 10 per le bottiglie Blaževi da 1 litro, 7,5 per le bottiglie da 0,75; 60 pinte per fusto da 30 litri. Scrivi un numero per cambiarlo.</div>
     </div>
 
     <div class="card">
@@ -1189,7 +1190,7 @@ function nataleEmail(q){
   const w = q.vinoCasa, d = c.d.vinoCasa;
   out.push("IL VINO");
   if (w.on && w.righe.length) {
-    out.push(`Abbiamo previsto il nostro ${(w.titolo || "Vino della casa").replace(/:\s*$/, "")}${/Blazevi/i.test(w.righe.map(r => r.nome).join()) ? " della cantina Blazevi" : ""}, consigliando ${NATALE_CALICI} calici a persona:`);
+    out.push(`Abbiamo previsto il nostro ${(w.titolo || "Vino della casa").replace(/:\s*$/, "")}${/Bla[zž]evi/i.test(w.righe.map(r => r.nome).join()) ? " della cantina Blaževi" : ""}, consigliando ${NATALE_CALICI} calici a persona:`);
     w.righe.filter(r => num(r.bott)).forEach(r => out.push(`- ${r.nome}: ${num(r.bott)} ${num(r.bott) === 1 ? "bottiglia" : "bottiglie"}`));
     out.push(w.incluso ? "Il vino è incluso nel prezzo." : `In totale ${d.bott} bottiglie da 1 litro a ${eur(num(w.prezzo))} l'una, per ${eur(d.prezzo)}.`);
   }
