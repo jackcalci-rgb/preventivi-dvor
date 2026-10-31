@@ -171,11 +171,13 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-items { font-style: italic; margin-top: 6px; }
 .d-items > div + div { margin-top: 5px; }
 .leaf { width: 1em; height: 1em; vertical-align: -0.12em; margin-left: 4px; }
+.check.suppl { white-space: nowrap; font-size: 12px; color: #d22b1f; font-weight: 600; }
 .d-suppl { font-family: var(--ui); font-style: normal; font-size: 0.8em; font-weight: 600; color: #d22b1f; margin-left: 6px; white-space: nowrap; }
 .d-holly { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px auto 12px; }
 .d-holly::before, .d-holly::after { content: ""; width: 34px; height: 1px; background: #c8432c; }
 .d-holly .holly { width: 46px; height: 16px; }
 .d-xmas { text-align: center; font-family: var(--display); font-style: italic; font-size: 12px; color: #2f6b3a; margin: 10px 0 4px; }
+.d-legend span + span { margin-left: 14px; }
 .d-legend { text-align: center; font-family: var(--ui); font-size: 9px; color: #555; margin-top: 8px; }
 .d-legend .leaf { margin: 0 2px 0 0; }
 .d-pair { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; align-items: start; }
@@ -357,7 +359,7 @@ addTo("secondi", "Gaspare 75", ["Turbante di branzino"]);
 addTo("contorni", "Menu 50 (3 contorni)", ["Caponata"]);
 addTo("salatoBuffet", "Brunch salato", ["Couscous alle verdure","Bresaola su letto di rucola"]);
 // Menu pranzi e cene aziendali di Natale 2026 (un piatto a scelta per portata, base 45 €)
-const NATALE = "Natale aziendale 2026";
+const NATALE = "Pranzi e cene aziendali di Natale 2026";
 const NATALE_MENU = {
   antipasti: ["Toc' in braide","Flan di funghi con guanciale","Fricchetti friulani","Vitello tonnato","Carpaccio di manzo su rucola e riduzione di melograno","Rosa di prosciutto di Osvaldo con spuma di frico"],
   primi: ["Gnocchi al goulash","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Risotto porro e salsiccia","Risotto radicchio e salsiccia","Lasagna classica"],
@@ -500,7 +502,7 @@ function blankQuote(){
     vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
-    lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
+    supplScelti: [], lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
 }
@@ -540,14 +542,18 @@ function withSections(q, map){
   q.sezioni.forEach(s => { const v = map[s.key]; if (v) { s.items = v.items || v; if (v.sub) s.sub = v.sub; if (v.label) s.label = v.label; } });
   return q;
 }
+// Esempi di Natale: stesso menu, pranzo o cena
+function nataleQuote(oggetto){ const q = blankQuote();
+  Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo e secondo"},{prezzo:50,label:"Con il dolce"}] });
+  q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
+  q.vinoBott.on = false;
+  return menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
+    primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
+    secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"] });
+}
 const PRESETS = [
-  { name: "Natale aziendale 2026 · 45 € (50 € con dolce)", make(){ const q = blankQuote();
-      Object.assign(q, { oggetto: "Cena aziendale di Natale", adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo e secondo"},{prezzo:50,label:"Con il dolce"}] });
-      q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
-      q.vinoBott.on = false;
-      return menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
-        primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
-        secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"] }); } },
+  { group: NATALE, name: "Pranzo aziendale di Natale · 45 € (50 € con dolce)", make(){ return nataleQuote("Pranzo aziendale di Natale"); } },
+  { group: NATALE, name: "Cena aziendale di Natale · 45 € (50 € con dolce)", make(){ return nataleQuote("Cena aziendale di Natale"); } },
   { name: "Battesimo 50 € con torta (come Sara Mesiano)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", adulti: 20, bambini: 8, opzioni: [{prezzo:50,label:""}], torta: {on:true,grammi:150,euroKg:50} });
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 4, calici: 40 }];
@@ -732,10 +738,14 @@ function compute(q){
     d[k] = { bott, cal, prezzo: w.on && !w.incluso ? r2(bott * num(w.prezzo)) : 0 };
   });
   const vini = r2(d.vinoCasa.prezzo + d.vinoBott.prezzo + d.birra.prezzo);
-  const finale = food.map(f => r2(f + vini + torta));
+  // supplemento a persona (adulti) per i piatti con maggiorazione segnati come scelti
+  const inMenu = new Set(q.sezioni.flatMap(s => s.items.map(i => i.trim())));
+  const supp = (q.supplScelti || []).filter(n => inMenu.has(n)).reduce((a, n) => a + (SUPPL[n] || 0), 0);
+  const sup = r2(supp * ad);
+  const finale = food.map(f => r2(f + sup + vini + torta));
   const base = q.accontoNoTorta ? finale[0] - torta : finale[0];
   const acconto = r2(base * 0.5); // the deposit is always 50%
-  return { food, kg, torta, d, vini, finale, acconto };
+  return { food, kg, torta, d, vini, supp, sup, finale, acconto };
 }
 
 /* ================= Formatting ================= */
@@ -754,13 +764,13 @@ const L = {
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
     bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino della casa:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
     food: "Prezzo food", vini: "Prezzo vini", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
-    foodOpt: l => `Prezzo food ${l}`, finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
+    foodOpt: l => `Prezzo food ${l}`, suppl: e => `Supplemento piatti scelti (+${eurPlain(e).replace(",00", "")} € a persona)`, supplNota: "maggiorazione di 5 € a persona", finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
   en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", inizio: "Start time:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
     bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "House Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
     food: "Food price", vini: "Drinks price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
-    foodOpt: l => `Food price ${l}`, finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
+    foodOpt: l => `Food price ${l}`, suppl: e => `Supplement for chosen dishes (+${eurPlain(e).replace(",00", "")} € per person)`, supplNota: "supplement of 5 € per person", finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
     termini: "Terms & Conditions", allergie: "Allergies and Dietary Preferences", firmaCliente: "Client", date: dateEN }
 };
 
@@ -825,7 +835,7 @@ async function assignNumber(q){
 }
 let store = loadAll();
 if (SERVER && !store.quotes.length) { const first = blankQuote(); store = { quotes: [first], current: first.id }; setTimeout(() => assignNumber(first)); }
-if (!store || !store.quotes.length) { const first = PRESETS[0].make(); first.cliente = "Esempio – Famiglia Rossi"; first.email = "rossi@example.com"; first.dataEvento = "2026-11-15"; store = { quotes: [first], current: first.id }; first.numero = makeNumber(first.data, getLetters(), localSeq()); }
+if (!store || !store.quotes.length) { const first = PRESETS.find(p => !p.group).make(); first.cliente = "Esempio – Famiglia Rossi"; first.email = "rossi@example.com"; first.dataEvento = "2026-11-15"; store = { quotes: [first], current: first.id }; first.numero = makeNumber(first.data, getLetters(), localSeq()); }
 store.quotes.forEach(migrate);
 let Q = store.quotes.find(q => q.id === store.current) || store.quotes[0];
 
@@ -926,6 +936,7 @@ function renderEditor(){
       <div class="items">
         ${s.items.map((it, ii) => `<div class="item">
           <input id="si_${si}_${ii}" aria-label="Piatto" data-p="sezioni.${si}.items.${ii}" value="${esc(it)}">
+          ${SUPPL[it.trim()] ? `<label class="check suppl" title="Il cliente ha scelto questo piatto: aggiunge ${SUPPL[it.trim()]} € a persona"><input type="checkbox" data-suppl="${esc(it.trim())}" ${(Q.supplScelti || []).includes(it.trim()) ? "checked" : ""}> scelto +${SUPPL[it.trim()]} €</label>` : ""}
           <button type="button" class="ghost" data-act="up" data-s="${si}" data-i="${ii}" aria-label="Sposta su" ${ii ? "" : "disabled"}>↑</button>
           <button type="button" class="ghost" data-act="rm" data-s="${si}" data-i="${ii}" aria-label="Rimuovi">✕</button>
         </div>`).join("")}
@@ -1067,14 +1078,17 @@ function totalRows(q, c){
   const two = q.opzioni.length > 1;
   if (two) {
     q.opzioni.forEach((o, i) => rows.push([T.foodOpt(lc(o.label) || T.opz(i+1)), c.food[i]]));
+    if (c.sup) rows.push([T.suppl(c.supp), c.sup]);
     if (c.torta) rows.push([T.torta, c.torta]);
     if (c.vini > 0) rows.push([T.vini, c.vini]);
     q.opzioni.forEach((o, i) => rows.push([T.finaleOpt(lc(o.label) || T.opz(i+1)), c.finale[i]]));
   } else if (c.vini > 0) {
     rows.push([T.food, c.food[0]]);
+    if (c.sup) rows.push([T.suppl(c.supp), c.sup]);
     rows.push([T.vini, c.vini]);
     rows.push([c.torta ? T.finaleTorta : T.totale, c.finale[0]]);
   } else {
+    if (c.sup) { rows.push([T.food, c.food[0]]); rows.push([T.suppl(c.supp), c.sup]); }
     rows.push([T.finale, r2(c.finale[0] - c.torta)]);
     if (c.torta) rows.push([T.conTorta, c.finale[0]]);
   }
@@ -1153,7 +1167,7 @@ function renderDoc(q){
     <div class="d-qty"><span>${T.adulti.replace(/:\s*$/, "")}: <b>${esc(num(q.adulti))}</b></span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini.replace(/:\s*$/, "")}: <b>${esc(num(q.bambini))}</b></span>` : ""}</div>
     <div class="d-opts">${opts}</div>
     <div class="d-menu">${secs}</div>
-    ${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<div class="d-legend">${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</div>` : ""}
+    ${used.some(s => s.items.some(i => VEG.has(i.trim()) || SUPPL[i.trim()])) ? `<div class="d-legend">${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<span>${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</span>` : ""}${used.some(s => s.items.some(i => SUPPL[i.trim()])) ? `<span><b class="d-suppl" style="margin:0 3px 0 0">+5 €</b>${T.supplNota}</span>` : ""}</div>` : ""}
     ${cake}
     <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}</div>
     <table class="tbl d-tot">${tot}</table>
@@ -1213,6 +1227,7 @@ editor.addEventListener("input", e => {
 });
 editor.addEventListener("change", e => {
   const t = e.target;
+  if (t.dataset.suppl) { const n = t.dataset.suppl; Q.supplScelti = (Q.supplScelti || []).filter(x => x !== n); if (t.checked) Q.supplScelti.push(n); refreshAll(); return; }
   if (t.type === "checkbox" && t.dataset.p) { setPath(Q, t.dataset.p, t.checked); refreshAll(); return; }
   if (t.id === "termsKey") { useTerms(Q, t.value); refreshAll(); return; }
   if (t.id === "f_letters") { setLetters(t.value); return; }
@@ -1269,7 +1284,7 @@ function removeQuote(id){
 $("#btnNew").onclick = () => useQuote(blankQuote());
 $("#btnDup").onclick = () => { const q = JSON.parse(JSON.stringify(Q)); q.id = uid(); q.numero = ""; q.data = todayISO(); q.updated = Date.now(); useQuote(q); toast("Copia creata con un nuovo numero"); };
 const presetSel = $("#preset");
-PRESETS.forEach((p, i) => presetSel.insertAdjacentHTML("beforeend", `<option value="${i}">${esc(p.name)}</option>`));
+[...new Set(PRESETS.map(p => p.group || "Altri esempi"))].forEach(g => presetSel.insertAdjacentHTML("beforeend", `<optgroup label="${esc(g)}">${PRESETS.map((p, i) => (p.group || "Altri esempi") === g ? `<option value="${i}">${esc(p.name)}</option>` : "").join("")}</optgroup>`));
 presetSel.onchange = () => { const i = presetSel.value; presetSel.value = ""; if (i === "") return; useQuote(PRESETS[+i].make()); toast("Nuovo preventivo creato dall'esempio"); };
 
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
