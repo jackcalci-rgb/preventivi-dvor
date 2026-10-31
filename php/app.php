@@ -181,6 +181,21 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-legend span + span { margin-left: 14px; }
 .d-legend { text-align: center; font-family: var(--ui); font-size: 9px; color: #555; margin-top: 8px; }
 .d-legend .leaf { margin: 0 2px 0 0; }
+/* Page 3: allergen table, same frame and type as page 2 */
+.p3 { padding-left: 60px; padding-right: 60px; padding-bottom: 60px; }
+.p3 h3 { font-family: var(--display); font-size: 19px; font-weight: 700; margin: 0 0 2px; text-align: center; letter-spacing: .02em; }
+.p3 .a-sub { text-align: center; font-family: var(--ui); font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; color: #6f6a65; margin-bottom: 18px; }
+.a-tbl { border-collapse: collapse; width: 100%; font-size: 10.5px; table-layout: fixed; }
+.a-tbl th { font-family: var(--ui); font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #6f6a65; vertical-align: bottom; padding: 0 0 5px; border-bottom: 1px solid #222; }
+.a-tbl th.al { width: 24px; height: 92px; }
+.a-tbl th.al span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+.a-tbl td { border-bottom: 0.5px solid #dcd8d3; padding: 4px 0; text-align: center; }
+.a-tbl td.n { text-align: left; padding-right: 8px; line-height: 1.3; }
+.a-tbl tr.g td { border-bottom: 0; padding-top: 10px; font-family: var(--display); font-weight: 700; font-size: 11.5px; text-align: left; color: #111; }
+.a-tbl i.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #c8432c; }
+.a-tbl td.ask { font-style: italic; color: #777; font-size: 9.5px; text-align: left; padding-left: 6px; }
+.p3 .a-note { margin-top: auto; padding-top: 18px; font-size: 10px; line-height: 1.45; text-align: center; color: #333; }
+.p3 .a-note p { margin: 0 0 4px; }
 .d-pair { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; align-items: start; }
 /* Course names stand out: small caps with a thin red rule each side */
 .d-sec > .k, .d-wine > .k { display: flex; align-items: center; gap: 12px; font-size: 16.5px; text-transform: uppercase; letter-spacing: .16em; }
@@ -372,6 +387,19 @@ Object.entries(NATALE_MENU).forEach(([sec, items]) => addTo(sec, NATALE, items))
 const VEG = new Set(["Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
 // Supplemento a persona per alcuni piatti del menu di Natale (45 €)
 const SUPPL = { "Carpaccio di manzo su rucola e riduzione di melograno": 5, "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5, "Panettone con crema inglese": 5, "Pannacotta con liquore al Terrano": 5 };
+// Allergeni (Reg. UE 1169/2011, Allegato II) dei piatti del menu di Natale: da verificare con la cucina
+const ALLERGENI = { it: ["Glutine","Crostacei","Uova","Pesce","Arachidi","Soia","Latte","Frutta a guscio","Sedano","Senape","Sesamo","Solfiti","Lupini","Molluschi"],
+  en: ["Gluten","Crustaceans","Eggs","Fish","Peanuts","Soy","Milk","Tree nuts","Celery","Mustard","Sesame","Sulphites","Lupin","Molluscs"] };
+const ALLERG = {
+  "Toc' in braide": [6], "Flan di funghi con guanciale": [0,2,6], "Fricchetti friulani": [6], "Vitello tonnato": [2,3,11],
+  "Carpaccio di manzo su rucola e riduzione di melograno": [11], "Rosa di prosciutto di Osvaldo con spuma di frico": [6],
+  "Gnocchi al goulash": [0,2,8,11], "Gnocchi al radicchio rosso e formaggi": [0,2,6], "Risotto di zucca e amaretti": [2,6,7,8,11],
+  "Risotto porro e salsiccia": [6,8,11], "Risotto radicchio e salsiccia": [6,8,11], "Lasagna classica": [0,2,6,8,11],
+  "Arrosto di vitello con patate al forno": [8,11], "Arrosto di maiale con patate in tecia": [8,11],
+  "Guancette brasate al vino rosso con polentina morbida": [6,8,11], "Pancetta in crosta con finocchi": [0,2,6],
+  "Filetto di maiale alla Wellington con purè": [0,2,6,9], "Scaloppa di sedano rapa con salsa olandese": [0,2,6,8],
+  "Tiramisù": [0,2,6], "Panettone con crema inglese": [0,2,6], "Pannacotta con liquore al Terrano": [6,7,11]
+};
 const LEAF = `<svg class="leaf" viewBox="0 0 16 16" aria-label="vegetariano" role="img"><path d="M14 2C7 2 2.5 5.5 2.5 10.5c0 1.2.3 2.3.8 3.2C5 9.8 7.8 7.4 11 6c-2.8 1.8-5.2 4.6-6.6 8 1 .5 2 .7 3.1.7C12.6 14.7 14 9 14 2z" fill="#3f8f3a"/></svg>`;
 // Preventivi di Natale: un rametto di agrifoglio al posto della linea rossa e gli auguri in fondo
 const isNatale = q => /natal|christmas|xmas/i.test(q.oggetto || "");
@@ -514,7 +542,7 @@ function blankQuote(){
     vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
-    supplScelti: [], lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
+    supplScelti: [], allergeniPag: false, lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
 }
@@ -564,7 +592,7 @@ function withSections(q, map){
 function nataleQuote(oggetto){ const q = blankQuote();
   Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo, secondo e dolce"}] });
   q.vinoCasa = { on: true, prezzo: 15, incluso: false, titolo: "Vino del Collio:", righe: rows([["Blazevi Goriška Brda Merlot",2],["Blazevi Goriška Brda Refošk",1],["Blazevi Goriška Brda Sivi Pinot",3]]) };
-  q.vinoBott.on = false;
+  q.vinoBott.on = false; q.allergeniPag = true;
   menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
     primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
     secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"],
@@ -1056,6 +1084,8 @@ function renderEditor(){
     <div class="card">
       <h2>Menu</h2>
       ${sectHTML}
+      <label class="check full" style="margin-top:10px"><input type="checkbox" id="f_allergeni" data-p="allergeniPag" ${Q.allergeniPag ? "checked" : ""}> Aggiungi la pagina degli allergeni al PDF</label>
+      ${Q.allergeniPag && allergMancanti(Q).length ? `<div class="hint">Allergeni non ancora registrati per: ${esc(allergMancanti(Q).join(", "))}. Nel PDF compare «chiedere al personale».</div>` : ""}
     </div>
 
     <div class="card">
@@ -1154,6 +1184,25 @@ function drinkTable(q, k, cc, T){
     ${w.incluso ? "" : `<tr class="p"><td></td><td class="c">€</td><td class="c">${cc.prezzo ? eurPlain(cc.prezzo) : "-"}</td></tr>`}
   </table>`;
 }
+const allergMancanti = q => q.sezioni.flatMap(s => s.items.map(i => i.trim()).filter(i => i && !ALLERG[i]));
+function allergPage(q){
+  const en = q.lang === "en", N = ALLERGENI[en ? "en" : "it"];
+  const head = `<tr><th style="text-align:left">${en ? "Dish" : "Piatto"}</th>${N.map(n => `<th class="al"><span>${n}</span></th>`).join("")}</tr>`;
+  const body = q.sezioni.filter(s => s.items.some(i => i.trim())).map(s => `<tr class="g"><td colspan="15">${esc(s.label.replace(/:\s*$/, ""))}</td></tr>` +
+    s.items.map(i => i.trim()).filter(Boolean).map(i => { const a = ALLERG[i];
+      return `<tr><td class="n">${esc(i)}</td>${a ? N.map((_, k) => `<td>${a.includes(k) ? '<i class="dot"></i>' : ""}</td>`).join("") : `<td colspan="14" class="ask">${en ? "please ask our staff" : "chiedere al personale"}</td>`}</tr>`; }).join("")).join("");
+  const note = en ? ["Our staff are available for any information about ingredients and allergens.", "All the allergens listed are used in our kitchen: traces due to cross-contamination cannot be ruled out.", "Pursuant to Reg. (EU) No. 1169/2011 and Legislative Decree No. 231/2017."]
+    : ["Il personale di sala è a disposizione per ogni informazione sugli ingredienti e sugli allergeni.", "In cucina si utilizzano tutti gli allergeni elencati: non si può escludere la presenza di tracce per contaminazione crociata.", "Ai sensi del Reg. (UE) n. 1169/2011 e del D.Lgs. n. 231/2017."];
+  return `
+  <div class="page p3 fixed">
+    <div class="frame" aria-hidden="true"><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><i class="b"></i></div>
+    <h3>${en ? "Allergens" : "Allergeni"}</h3>
+    <div class="a-sub">${en ? "Reg. (EU) No. 1169/2011, Annex II" : "Reg. (UE) n. 1169/2011, Allegato II"}</div>
+    <table class="a-tbl"><colgroup><col>${N.map(() => '<col style="width:24px">').join("")}</colgroup>${head}${body}</table>
+    ${isNatale(q) ? `<div class="d-holly" style="margin:18px auto 0">${HOLLY}</div>` : ""}
+    <div class="a-note">${note.map(t => `<p>${t}</p>`).join("")}</div>
+  </div>`;
+}
 function renderDoc(q){
   const c = compute(q);
   const T = L[q.lang || "it"];
@@ -1219,7 +1268,7 @@ function renderDoc(q){
     <div class="terms allergy"><h3 style="margin:0 0 7px">${T.allergie}</h3>${allergie}${after}</div>
     ${isNatale(q) ? `<div class="d-xmas">${q.lang === "en" ? "Season's Greetings from all of us at Osteria Dvor" : "Con i migliori auguri di Buone Feste da tutta l'Osteria Dvor"}</div>` : ""}
     <div class="sign"><div>Horeca FVG Srl<img src="${SIG}" alt="Firma Horeca FVG Srl"></div><div class="c">${T.firmaCliente}</div></div>
-  </div>`;
+  </div>${q.allergeniPag && q.sezioni.some(s => s.items.some(i => i.trim())) ? allergPage(q) : ""}`;
 }
 
 const pagesEl = $("#pages"), scaler = $("#scaler"), viewport = $("#viewport");
