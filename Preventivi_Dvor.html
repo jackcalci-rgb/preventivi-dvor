@@ -867,13 +867,13 @@ const lc = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : "";
 const L = {
   it: { tel: "Tel.", cliente: "Cliente:", numero: "Numero preventivo", data: "Data", oggetto: "Oggetto Preventivo", dataEvento: "Data Evento", inizio: "Inizio evento: ore", adulti: "Quantità adulti", bambini: "Quantità bambini", opzione: "Opzione:",
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
-    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino della casa:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
+    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino del Collio:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
     food: "Prezzo food", vini: "Prezzo vini", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
     foodOpt: l => `Prezzo food ${l}`, suppl: e => `Supplemento piatti scelti (+${eurPlain(e).replace(",00", "")} € a persona)`, supplNota: "maggiorazione a persona", finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
   en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", inizio: "Start time:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
-    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "House Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
+    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "Collio Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
     food: "Food price", vini: "Drinks price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
     foodOpt: l => `Food price ${l}`, suppl: e => `Supplement for chosen dishes (+${eurPlain(e).replace(",00", "")} € per person)`, supplNota: "supplement per person", finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
     termini: "Terms & Conditions", allergie: "Allergies and Dietary Preferences", firmaCliente: "Client", date: dateEN }
@@ -1143,10 +1143,10 @@ function renderEditor(){
 
     <div class="card">
       <h2>Vini</h2>
-      ${wineBlock("vinoCasa", "Vino della casa", "dl_casa")}
+      ${wineBlock("vinoCasa", "Vino del Collio", "dl_casa")}
       ${wineBlock("vinoBott", "Vino bottiglia", "dl_bott")}
       ${wineBlock("birra", "Birra alla spina", "dl_birra")}
-      <div class="hint">Calici se lasci il campo vuoto: 10 per litro di vino della casa, 10 per le bottiglie Blaževi da 1 litro, 7,5 per le bottiglie da 0,75; 60 pinte per fusto da 30 litri. Scrivi un numero per cambiarlo.</div>
+      <div class="hint">Calici se lasci il campo vuoto: 10 per litro di vino del Collio, 10 per le bottiglie Blaževi da 1 litro, 7,5 per le bottiglie da 0,75; 60 pinte per fusto da 30 litri. Scrivi un numero per cambiarlo.</div>
     </div>
 
     <div class="card">
@@ -1243,7 +1243,7 @@ function nataleEmail(q){
   const vini = w.on ? w.righe.filter(r => num(r.bott)) : [];
   if (vini.length) {
     const cantina = /Bla[zž]evi/i.test(vini.map(r => r.nome).join()) ? " di Blaževi" : "";
-    out.push(`Per il vino abbiamo previsto il nostro ${(w.titolo || "vino della casa").replace(/:\s*$/, "")}${cantina} (${vini.map(r => corto(r.nome)).join(", ")}). Per la nostra esperienza con questi eventi consigliamo ${NATALE_CALICI} calici a persona, e su questa base abbiamo calcolato le bottiglie che trovate nel preventivo, con il relativo prezzo.${w.incluso ? "" : " Il vino è conteggiato a consumo: se ne verrà bevuto meno di quanto consigliato, nel conto finale troverete solo quello effettivamente consumato."}`);
+    out.push(`Per il vino abbiamo previsto il nostro ${(w.titolo || "Vino del Collio").replace(/:\s*$/, "")}${cantina} (${vini.map(r => corto(r.nome)).join(", ")}). Per la nostra esperienza con questi eventi consigliamo ${NATALE_CALICI} calici a persona, e su questa base abbiamo calcolato le bottiglie che trovate nel preventivo, con il relativo prezzo.${w.incluso ? "" : " Il vino è conteggiato a consumo: se ne verrà bevuto meno di quanto consigliato, nel conto finale troverete solo quello effettivamente consumato."}`);
   }
   out.push(`Se avete voglia di qualcos'altro, in cantina abbiamo 97 etichette: le trovate tutte qui ${q.linkVini || LINK_VINI}`, "");
   out.push("In totale:");
