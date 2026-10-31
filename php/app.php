@@ -1179,7 +1179,8 @@ function renderDoc(q){
   const drinks = DRINKS.map(k => {
     const t = drinkTable(q, k, c.d[k], T); if (!t) return "";
     const loose = q[k].righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome));
-    const note = k === "vinoCasa" && !loose ? `<div class="d-wnote">${T.litro1}</div>` : "";
+    const sugg = k === "vinoCasa" && isNataleAz(q) ? (q.lang === "en" ? `Recommended: ${NATALE_CALICI} glasses per person` : `Consigliati ${NATALE_CALICI} calici a persona`) : "";
+    const note = (k === "vinoCasa" && !loose) || sugg ? `<div class="d-wnote">${[k === "vinoCasa" && !loose ? T.litro1 : "", sugg].filter(Boolean).join(" · ")}</div>` : "";
     return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}</div>${note}${t}</div>`;
   }).join("");
   const tot = totalRows(q, c).map(([l, v, k]) => `<tr class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><td class="l">${esc(l)}</td><td class="r">${eurPlain(v)} €</td></tr>`).join("");
