@@ -172,13 +172,31 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-items { font-style: italic; margin-top: 6px; }
 .d-items > div + div { margin-top: 5px; }
 .leaf { width: 1em; height: 1em; vertical-align: -0.12em; margin-left: 4px; }
+.check.suppl { white-space: nowrap; font-size: 12px; color: #d22b1f; font-weight: 600; }
 .d-suppl { font-family: var(--ui); font-style: normal; font-size: 0.8em; font-weight: 600; color: #d22b1f; margin-left: 6px; white-space: nowrap; }
 .d-holly { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px auto 12px; }
 .d-holly::before, .d-holly::after { content: ""; width: 34px; height: 1px; background: #c8432c; }
 .d-holly .holly { width: 46px; height: 16px; }
 .d-xmas { text-align: center; font-family: var(--display); font-style: italic; font-size: 12px; color: #2f6b3a; margin: 10px 0 4px; }
+.d-legend span + span { margin-left: 14px; }
 .d-legend { text-align: center; font-family: var(--ui); font-size: 9px; color: #555; margin-top: 8px; }
 .d-legend .leaf { margin: 0 2px 0 0; }
+.email-box { max-height: 420px; overflow: auto; padding: 10px 12px; border: 1px solid var(--line, #ccc); border-radius: 8px; background: #fff; color: #111; font-weight: 400; text-transform: none; letter-spacing: 0; user-select: text; }
+/* Page 3: allergen table, same frame and type as page 2 */
+.p3 { padding-left: 60px; padding-right: 60px; padding-bottom: 60px; }
+.p3 h3 { font-family: var(--display); font-size: 19px; font-weight: 700; margin: 0 0 2px; text-align: center; letter-spacing: .02em; }
+.p3 .a-sub { text-align: center; font-family: var(--ui); font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; color: #6f6a65; margin-bottom: 18px; }
+.a-tbl { border-collapse: collapse; width: 100%; font-size: 10.5px; table-layout: fixed; }
+.a-tbl th { font-family: var(--ui); font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #6f6a65; vertical-align: bottom; padding: 0 0 5px; border-bottom: 1px solid #222; }
+.a-tbl th.al { width: 24px; height: 92px; }
+.a-tbl th.al span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+.a-tbl td { border-bottom: 0.5px solid #dcd8d3; padding: 4px 0; text-align: center; }
+.a-tbl td.n { text-align: left; padding-right: 8px; line-height: 1.3; }
+.a-tbl tr.g td { border-bottom: 0; padding-top: 10px; font-family: var(--display); font-weight: 700; font-size: 11.5px; text-align: left; color: #111; }
+.a-tbl i.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #c8432c; }
+.a-tbl td.ask { font-style: italic; color: #777; font-size: 9.5px; text-align: left; padding-left: 6px; }
+.p3 .a-note { margin-top: auto; padding-top: 18px; font-size: 10px; line-height: 1.45; text-align: center; color: #333; }
+.p3 .a-note p { margin: 0 0 4px; }
 .d-pair { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; align-items: start; }
 /* Course names stand out: small caps with a thin red rule each side */
 .d-sec > .k, .d-wine > .k { display: flex; align-items: center; gap: 12px; font-size: 16.5px; text-transform: uppercase; letter-spacing: .16em; }
@@ -358,20 +376,55 @@ addTo("secondi", "Gaspare 75", ["Turbante di branzino"]);
 addTo("contorni", "Menu 50 (3 contorni)", ["Caponata"]);
 addTo("salatoBuffet", "Brunch salato", ["Couscous alle verdure","Bresaola su letto di rucola"]);
 // Menu pranzi e cene aziendali di Natale 2026 (un piatto a scelta per portata, base 45 €)
-const NATALE = "Natale aziendale 2026";
+const NATALE = "Pranzi e cene aziendali di Natale 2026";
 const NATALE_MENU = {
   antipasti: ["Toc' in braide","Flan di funghi con guanciale","Fricchetti friulani","Vitello tonnato","Carpaccio di manzo su rucola e riduzione di melograno","Rosa di prosciutto di Osvaldo con spuma di frico"],
-  primi: ["Gnocchi al goulash","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Risotto porro e salsiccia","Risotto radicchio e salsiccia","Lasagna classica"],
+  primi: ["Gnocchi al goulash alla goriziana (guancette di maiale)","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Risotto porro e salsiccia","Risotto radicchio e salsiccia","Lasagna classica"],
+  dessert: ["Tiramisù","Panettone con crema inglese","Pannacotta con liquore al Terrano"],
   secondi: ["Arrosto di vitello con patate al forno","Arrosto di maiale con patate in tecia","Guancette brasate al vino rosso con polentina morbida","Pancetta in crosta con finocchi","Filetto di maiale alla Wellington con purè","Scaloppa di sedano rapa con salsa olandese"]
 };
 Object.entries(NATALE_MENU).forEach(([sec, items]) => addTo(sec, NATALE, items));
+const NATALE65 = "Pranzi e cene aziendali di Natale 2026 · menu 65 €";
+const NATALE_MENU_65 = {
+  antipasti: ["Salmone affumicato con crostini e burro","Tartare di manzo con crostini","Tartare di cervo con crostini","Tartare di tonno","Capasanta con finferli e beurre blanc","Seppie e calamari grigliati con puntarelle","Cosce di rana fritte su patate schiacciate e prezzemolo"],
+  primi: ["Tagliolini al tartufo bianco","Gnocchi al ragù di mare","Risotto con scampi","Žlikrofi con cervo","Risotto allo zafferano con ossobuco","Lasagna ai porcini"],
+  secondi: ["Filetto di scottona francese al tartufo bianco","Petto d'anatra con riduzione al melograno","Trancio di branzino grigliato con purè di sedano rapa","Trancio di salmone grigliato con crema al rafano","Lombo di cervo ai frutti rossi"],
+  dessert: ["Mousse al cioccolato","Panettone albicocca e Collio Picolit DOC","Gubana con slivovitz","Pandoro con crema allo zabaione"]
+};
+Object.entries(NATALE_MENU_65).forEach(([sec, items]) => addTo(sec, NATALE65, items));
+const isNataleGroup = g => g === NATALE || g === NATALE65;
 // Piatti vegetariani: nel PDF hanno la fogliolina
-const VEG = new Set(["Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
-// Supplemento a persona per i piatti che portano il menu di Natale da 45 a 50 €
-const SUPPL = { "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5 };
+const VEG = new Set(["Lasagna ai porcini","Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
+// Supplemento a persona per alcuni piatti del menu di Natale (45 €)
+const SUPPL = { "Carpaccio di manzo su rucola e riduzione di melograno": 5, "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5, "Panettone con crema inglese": 5, "Pannacotta con liquore al Terrano": 5,
+  "Tartare di cervo con crostini": 5, "Tartare di tonno": 5, "Capasanta con finferli e beurre blanc": 10, "Cosce di rana fritte su patate schiacciate e prezzemolo": 5,
+  "Tagliolini al tartufo bianco": 10, "Risotto con scampi": 5, "Risotto allo zafferano con ossobuco": 5,
+  "Filetto di scottona francese al tartufo bianco": 10, "Petto d'anatra con riduzione al melograno": 5, "Panettone albicocca e Collio Picolit DOC": 5 };
+// Allergeni (Reg. UE 1169/2011, Allegato II) dei piatti del menu di Natale: da verificare con la cucina
+const ALLERGENI = { it: ["Glutine","Crostacei","Uova","Pesce","Arachidi","Soia","Latte","Frutta a guscio","Sedano","Senape","Sesamo","Solfiti","Lupini","Molluschi"],
+  en: ["Gluten","Crustaceans","Eggs","Fish","Peanuts","Soy","Milk","Tree nuts","Celery","Mustard","Sesame","Sulphites","Lupin","Molluscs"] };
+const ALLERG = {
+  "Toc' in braide": [6], "Flan di funghi con guanciale": [0,2,6], "Fricchetti friulani": [6], "Vitello tonnato": [2,3,11],
+  "Carpaccio di manzo su rucola e riduzione di melograno": [11], "Rosa di prosciutto di Osvaldo con spuma di frico": [6],
+  "Gnocchi al goulash alla goriziana (guancette di maiale)": [0,2,8,11], "Gnocchi al radicchio rosso e formaggi": [0,2,6], "Risotto di zucca e amaretti": [2,6,7,8,11],
+  "Risotto porro e salsiccia": [6,8,11], "Risotto radicchio e salsiccia": [6,8,11], "Lasagna classica": [0,2,6,8,11],
+  "Arrosto di vitello con patate al forno": [8,11], "Arrosto di maiale con patate in tecia": [8,11],
+  "Guancette brasate al vino rosso con polentina morbida": [6,8,11], "Pancetta in crosta con finocchi": [0,2,6],
+  "Filetto di maiale alla Wellington con purè": [0,2,6,9], "Scaloppa di sedano rapa con salsa olandese": [0,2,6,8],
+  "Tiramisù": [0,2,6], "Panettone con crema inglese": [0,2,6], "Pannacotta con liquore al Terrano": [6,7,11],
+  "Salmone affumicato con crostini e burro": [0,3,6], "Tartare di manzo con crostini": [0,9], "Tartare di cervo con crostini": [0,9], "Tartare di tonno": [3,5,10],
+  "Capasanta con finferli e beurre blanc": [6,11,13], "Seppie e calamari grigliati con puntarelle": [3,13], "Cosce di rana fritte su patate schiacciate e prezzemolo": [0,2],
+  "Tagliolini al tartufo bianco": [0,2,6], "Gnocchi al ragù di mare": [0,1,2,3,8,11,13], "Risotto con scampi": [1,6,8,11], "Žlikrofi con cervo": [0,2,6,8,11],
+  "Risotto allo zafferano con ossobuco": [6,8,11], "Lasagna ai porcini": [0,2,6],
+  "Filetto di scottona francese al tartufo bianco": [6], "Petto d'anatra con riduzione al melograno": [11], "Trancio di branzino grigliato con purè di sedano rapa": [3,6,8],
+  "Trancio di salmone grigliato con crema al rafano": [3,6], "Lombo di cervo ai frutti rossi": [11],
+  "Mousse al cioccolato": [2,5,6], "Panettone albicocca e Collio Picolit DOC": [0,2,6,11], "Gubana con slivovitz": [0,2,6,7,11], "Pandoro con crema allo zabaione": [0,2,6,11]
+};
 const LEAF = `<svg class="leaf" viewBox="0 0 16 16" aria-label="vegetariano" role="img"><path d="M14 2C7 2 2.5 5.5 2.5 10.5c0 1.2.3 2.3.8 3.2C5 9.8 7.8 7.4 11 6c-2.8 1.8-5.2 4.6-6.6 8 1 .5 2 .7 3.1.7C12.6 14.7 14 9 14 2z" fill="#3f8f3a"/></svg>`;
 // Preventivi di Natale: un rametto di agrifoglio al posto della linea rossa e gli auguri in fondo
 const isNatale = q => /natal|christmas|xmas/i.test(q.oggetto || "");
+// Pranzi e cene aziendali di Natale: si sceglie solo dal menu di Natale, che negli altri preventivi non compare
+const isNataleAz = q => isNatale(q) && /aziendal|corporate|company/i.test(q.oggetto || "");
 const HOLLY = `<svg class="holly" viewBox="0 0 64 22" aria-hidden="true"><path d="M31 12C26 4 17 3 9 7c3 1 4 3 3 5 3-1 5 0 6 2 2-2 5-2 7-1-1-3 1-4 6-1z" fill="#2f6b3a"/><path d="M33 12c5-8 14-9 22-5-3 1-4 3-3 5-3-1-5 0-6 2-2-2-5-2-7-1 1-3-1-4-6-1z" fill="#3f8f4a"/><circle cx="29.5" cy="14.5" r="3" fill="#c8432c"/><circle cx="34.5" cy="14.5" r="3" fill="#c8432c"/><circle cx="32" cy="10.2" r="3" fill="#b03424"/></svg>`;
 const EN_APPETIZERS = ["Cold cuts and cheese boards (San Daniele prosciutto & cheeses)","Meatballs (small)","Frico lollipops","Arancini"];
 addTo("antipasti", "English", EN_APPETIZERS);
@@ -389,9 +442,9 @@ const SECTION_LABELS = {
   it: Object.fromEntries(SECTIONS),
   en: { aperitivo: "Aperitif:", antipasti: "Appetizers:", primi: "First Courses:", secondi: "Main Courses:", pizze: "Pizzas:", contorni: "Sides:", sorbetto: "Sorbet:", dessert: "Dessert:", dolceBuffet: "Sweet:", salatoBuffet: "Savory:" }
 };
-const WINES_CASA = ["Blazevi Goriška Brda Sivi Pinot","Blazevi Goriška Brda Merlot","Blazevi Goriška Brda Refošk","Rosso Sfuso","Bianco Sfuso","Bollicine Sfuso","Red house wine on tap","White house wine on tap"];
+const WINES_CASA = ["Blaževi Goriška Brda Sivi Pinot","Blaževi Goriška Brda Merlot","Blaževi Goriška Brda Refošk","Rosso Sfuso","Bianco Sfuso","Bollicine Sfuso","Red house wine on tap","White house wine on tap"];
 const BEERS = ["Birra alla spina Pilsner","Birra alla spina Lager","Birra alla spina IPA","Tap Beer Pilsner","Tap Beer Lager","Tap Beer IPA"];
-const WINES_BOTT = ["Piedimont Ribolla Metodo Classico 12 mesi","Piedimont Cuvée Metodo Classico 36 mesi","Piedimont Cuvée Magnum","Pittaro Rosè Metodo Classico","Blazevi Goriška Brda Sivi Pinot","Blazevi Goriška Brda Merlot","Blazevi Goriška Brda Refošk","Blazevi Goriška Brda Rumena Rebula","Blazevi Goriška Brda Rumena Rebula Charmat","Friulano Collio DOC","Malvasia Collio DOC","Chardonnay Collio DOC","Sauvignon Collio DOC","Ribolla Collio DOC","Merlot Collio DOC","Refosco Collio DOC","Cabernet Collio DOC"];
+const WINES_BOTT = ["Piedimont Ribolla Metodo Classico 12 mesi","Piedimont Cuvée Metodo Classico 36 mesi","Piedimont Cuvée Magnum","Pittaro Rosè Metodo Classico","Blaževi Goriška Brda Sivi Pinot","Blaževi Goriška Brda Merlot","Blaževi Goriška Brda Refošk","Blaževi Goriška Brda Rumena Rebula","Blaževi Goriška Brda Rumena Rebula Charmat","Friulano Collio DOC","Malvasia Collio DOC","Chardonnay Collio DOC","Sauvignon Collio DOC","Ribolla Collio DOC","Merlot Collio DOC","Refosco Collio DOC","Cabernet Collio DOC"];
 const EVENT_TYPES = ["Battesimo","Comunione","Cresima","Matrimonio","Fidanzamento","Promessa di matrimonio","Anniversario","Anniversario di matrimonio","Compleanno","Diciottesimo","Laurea","Festa Privata","Festa","Festa Danzante","Festa Pensione","Pre Wedding Party","Festa di Natale","Pranzo aziendale di Natale","Cena aziendale di Natale","Festa di fine anno","Baby shower","Addio al celibato","Addio al nubilato","Rimpatriata","Cena di classe","Cena aziendale","Pranzo aziendale","Evento aziendale","Pranzo","Cena","Brunch","Aperitivo","Rinfresco","Degustazione","Pranzo commemorativo"];
 
 const ALLERGIE = `Il nostro servizio di catering si impegna a garantire la sicurezza e la soddisfazione dei nostri clienti offrendo un'ampia selezione di piatti per soddisfare diverse esigenze alimentari. Tuttavia, vi preghiamo di notare quanto segue:
@@ -417,6 +470,10 @@ const TERMS = {
 
 -I caffè non sono inclusi nel preventivo e saranno conteggiati a parte.
 
+-L'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.
+
+-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.
+
 -Il costo per i bambini fino a 10 anni è di 15 euro a testa, con un menù a parte che include pasta al pomodoro, pasta al ragù, patatine fritte e succhi di frutta in caraffa.
 
 -Qualora la torta venga fornita dall'esterno, dovrà essere accompagnata da scontrino fiscale. Verrà applicata un'addizionale di €2,00 per ospite per il servizio di taglio, impiattamento e conservazione nella nostra cella frigorifera.
@@ -436,6 +493,10 @@ const TERMS = {
 
 -I caffè non sono inclusi nel preventivo e saranno conteggiati a parte.
 
+-L'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.
+
+-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.
+
 -Succhi di frutta in caraffa inclusi.`,
     after: `-Tutte le spese relative ai diritti d’autore e alla loro gestione connesse all’utilizzo di musica durante l’evento, incluse le tariffe SIAE, saranno interamente a carico del Cliente.
 
@@ -450,6 +511,10 @@ const TERMS = {
 -Il pane è incluso nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.
 
 -I caffè non sono inclusi nel preventivo e saranno conteggiati a parte.
+
+-L'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.
+
+-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.
 
 -Il costo per i bambini fino a 10 anni è di 15 euro a testa, con un menù a parte che include pasta al pomodoro, pasta al ragù, patatine fritte e succhi di frutta in caraffa.`,
     after: `-Rischi Connessi: Consigliamo a ogni cliente di valutare attentamente le proprie esigenze alimentari e di consultare un professionista della salute in caso di dubbi riguardanti allergie o intolleranze alimentari.
@@ -469,6 +534,10 @@ const TERMS = {
 -Bread is included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.
 
 -Coffee is not included in the quotation and will be charged separately.
+
+-Sparkling and still water is not included in the quotation and will be charged separately.
+
+-Wine is charged on consumption: the quantity shown in the quotation is the recommended one. If less is drunk, the final bill will only include the wine actually consumed.
 
 -Soft drinks included in the price: cola, fanta, tonic water, iced tea, and assorted fruit juices (in carafes)
 
@@ -498,10 +567,10 @@ function blankQuote(){
     opzioni: [{ prezzo: 50, label: "" }],
     sezioni: blankSections(),
     torta: { on: false, grammi: 150, euroKg: 50 },
-    vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 2, calici: "" }] },
+    vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
-    lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
+    supplScelti: [], allergeniPag: false, vinoSommelier: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
 }
@@ -511,11 +580,21 @@ function migrate(q){
   const b = blankQuote();
   for (const k of Object.keys(b)) if (q[k] === undefined) q[k] = b[k];
   q.acconto = 50;
+  (q.sezioni || []).forEach(sz => { sz.items = sz.items.map(i => i.trim() === "Gnocchi al goulash" ? "Gnocchi al goulash alla goriziana (guancette di maiale)" : i); });
+  ["vinoCasa","vinoBott","birra"].forEach(k => q[k] && (q[k].righe || []).forEach(r => { if (typeof r.nome === "string") r.nome = r.nome.replace(/Blazevi/g, "Blaževi"); }));
+  if (!q.linkVini || q.linkVini === "https://www.osteriadvor.com") q.linkVini = "https://osteriadvor.com/vini.html";
   if (typeof q.terms === "string") q.terms = q.terms.replace(IT25, IT50).replace(EN25, EN50).replace('-Acqua (frizzante-naturale) e pane sono inclusi nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.', '-Il pane è incluso nel prezzo mentre tutto il resto come superalcolici, cocktail, analcolici, e vini non specificati nel preventivo saranno conteggiati a parte.').replace('-Water (sparkling-still) and bread are included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.', '-Bread is included in the price, while everything else such as spirits, cocktails, and wines not specified in the quotation will be charged separately.');
   if (typeof q.terms === "string" && !/caff[èe] non sono inclusi|Coffee is not included/i.test(q.terms)) {
     q.terms = q.terms.replace(/(-Il pane è incluso nel prezzo[^\n]*)/, "$1\n\n-I caffè non sono inclusi nel preventivo e saranno conteggiati a parte.").replace(/(-Bread is included in the price[^\n]*)/, "$1\n\n-Coffee is not included in the quotation and will be charged separately.");
     q.terms = q.terms.replace("-Caffetteria (Opzione latte soya) incluso e succhi di frutta in caraffa inclusi.", "-Succhi di frutta in caraffa inclusi.");
   }
+  // l'acqua non è inclusa: aggiunto anche ai preventivi già salvati
+  if (typeof q.terms === "string" && !/acqua frizzante e naturale non è inclusa|water is not included/i.test(q.terms)) {
+    if (/caff[èe] non sono inclusi[^\n]*/.test(q.terms)) q.terms = q.terms.replace(/(-I caff[èe] non sono inclusi[^\n]*)/, "$1\n\n-L\'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.");
+    else if (/Coffee is not included[^\n]*/.test(q.terms)) q.terms = q.terms.replace(/(-Coffee is not included[^\n]*)/, "$1\n\n-Sparkling and still water is not included in the quotation and will be charged separately.");
+    else q.terms = q.terms.trim() + "\n\n" + (q.lang === "en" ? "-Sparkling and still water is not included in the quotation and will be charged separately." : "-L\'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.");
+  }
+  addVinoConsumo(q);
   ["vinoCasa","vinoBott","birra"].forEach(k => { if (q[k].titolo === undefined) q[k].titolo = ""; });
   SECTIONS.forEach(([key, label]) => { if (!q.sezioni.some(s => s.key === key)) q.sezioni.push({ key, label: SECTION_LABELS[q.lang || "it"][key], sub: "", items: [] }); });
   const order = SECTIONS.map(s => s[0]);
@@ -528,9 +607,10 @@ function setLang(q, lang){
   q.sezioni.forEach(s => { if (!s.label || s.label === SECTION_LABELS[from][s.key]) s.label = SECTION_LABELS[lang][s.key]; });
   const key = lang === "en" ? "en" : (q.termsKey === "en" ? "eventi" : q.termsKey);
   const T = TERMS[key]; q.termsKey = key; q.terms = T.terms; q.termsAfter = T.after; q.allergie = T.allergie;
+  if (isNataleAz(q)) addVinoConsumo(q);
   return q;
 }
-function useTerms(q, key){ const T = TERMS[key]; Object.assign(q, { termsKey: key, terms: T.terms, termsAfter: T.after, allergie: T.allergie }); return q; }
+function useTerms(q, key){ const T = TERMS[key]; Object.assign(q, { termsKey: key, terms: T.terms, termsAfter: T.after, allergie: T.allergie }); if (isNataleAz(q)) addVinoConsumo(q); return q; }
 // m = { sectionKey: [items, red note, label] }
 function menuScelte(q, m){
   q.sezioni.forEach(s => { const v = m[s.key]; if (v) { s.items = v[0].slice(); s.sub = v[1] || ""; if (v[2]) s.label = v[2]; } });
@@ -541,21 +621,57 @@ function withSections(q, map){
   q.sezioni.forEach(s => { const v = map[s.key]; if (v) { s.items = v.items || v; if (v.sub) s.sub = v.sub; if (v.label) s.label = v.label; } });
   return q;
 }
+// Esempi di Natale: stesso menu, pranzo o cena
+function nataleQuote(oggetto, M = NATALE_MENU, prezzo = 45){ const q = blankQuote();
+  Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo,label:"Antipasto, primo, secondo e dolce"}] });
+  q.vinoCasa = { on: true, prezzo: 15, incluso: false, titolo: "Vino del Collio:", righe: rows([["Blaževi Goriška Brda Merlot",2],["Blaževi Goriška Brda Refošk",1],["Blaževi Goriška Brda Sivi Pinot",3]]) };
+  q.vinoBott.on = false; q.allergeniPag = true;
+  menuScelte(q, { antipasti: [M.antipasti, "Scelta possibile 1 antipasto"],
+    primi: [M.primi, "Scelta possibile 1 primo"],
+    secondi: [M.secondi, "Scelta possibile 1 secondo"],
+    dessert: [M.dessert, "Scelta possibile 1 dolce"] });
+  addVinoConsumo(q);
+  return nataleVino(q);
+}
+// Vino del Collio nei preventivi di Natale: consigliati 4 calici a testa (bottiglie Blaževi da 1 litro = 10 calici)
+const NATALE_CALICI = 4;
+const nataleBottiglie = q => Math.ceil(num(q.adulti) * NATALE_CALICI / 10);
+const VINO_CONSUMO = { it: "-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.",
+  en: "-Wine is charged on consumption: the quantity shown in the quotation is the recommended one. If less is drunk, the final bill will only include the wine actually consumed." };
+function addVinoConsumo(q){
+  if (typeof q.terms !== "string" || /conteggiato a consumo|charged on consumption/i.test(q.terms)) return q;
+  const en = q.lang === "en", line = VINO_CONSUMO[en ? "en" : "it"];
+  const re = en ? /(-Sparkling and still water is not included[^\n]*)/ : /(-L'acqua frizzante e naturale non è inclusa[^\n]*)/;
+  q.terms = re.test(q.terms) ? q.terms.replace(re, "$1\n\n" + line) : q.terms.trim() + "\n\n" + line;
+  return q;
+}
+// Menu da 65 €: niente tabella vini, li sceglie il cliente con la sommelier
+function nataleSommelier(q){ q.vinoCasa.on = false; q.vinoSommelier = true; return q; }
+const sommelierTxt = q => q.lang === "en"
+  ? "Our sommelier will guide you in choosing the wines to pair with your menu. To get an idea already, you can browse our wine list on our website:"
+  : "Per la selezione dei vini ci sarà la nostra sommelier a guidarvi negli abbinamenti con il menu. Per farvi già un'idea potete consultare la nostra carta dei vini sul sito:";
+function nataleVino(q){
+  const righe = q.vinoCasa.righe; if (!righe.length) return q;
+  const isW = r => /pinot|bianc|rebula|ribolla|sauvignon|chardonnay|friulano|malvasia/i.test(r.nome);
+  const whites = righe.filter(isW), reds = righe.filter(r => !isW(r));
+  const tot = nataleBottiglie(q);
+  const share = (rs, n) => rs.forEach((r, i) => { r.bott = Math.floor(n / rs.length) + (i < n % rs.length ? 1 : 0); r.calici = ""; });
+  if (!whites.length || !reds.length) share(righe, tot);
+  else { const w = Math.round(tot / 2); share(whites, w); share(reds, tot - w); }
+  return q;
+}
 const PRESETS = [
-  { name: "Natale aziendale 2026 · 45 € (50 € con dolce)", make(){ const q = blankQuote();
-      Object.assign(q, { oggetto: "Cena aziendale di Natale", adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo e secondo"},{prezzo:50,label:"Con il dolce"}] });
-      q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
-      q.vinoBott.on = false;
-      return menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
-        primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
-        secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"] }); } },
+  { group: NATALE, name: "Pranzo aziendale di Natale · 45 €", make(){ return nataleQuote("Pranzo aziendale di Natale"); } },
+  { group: NATALE, name: "Cena aziendale di Natale · 45 €", make(){ return nataleQuote("Cena aziendale di Natale"); } },
+  { group: NATALE, name: "Pranzo aziendale di Natale · 65 €", make(){ return nataleSommelier(nataleQuote("Pranzo aziendale di Natale", NATALE_MENU_65, 65)); } },
+  { group: NATALE, name: "Cena aziendale di Natale · 65 €", make(){ return nataleSommelier(nataleQuote("Cena aziendale di Natale", NATALE_MENU_65, 65)); } },
   { name: "Battesimo 50 € con torta (come Sara Mesiano)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", adulti: 20, bambini: 8, opzioni: [{prezzo:50,label:""}], torta: {on:true,grammi:150,euroKg:50} });
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 4, calici: 40 }];
       return withSections(q, { antipasti: ["Tortino di zucca con fonduta di formaggio di malga"], primi: ["Orzotto con salsiccia e radicchio"], secondi: ["Arrosto di vitello con funghi porcini"], contorni: ["Contorni di stagione"], sorbetto: ["Sorbetto al limone e menta"], dessert: ["Tortino di Frutta di Stagione"] }); } },
   { name: "Battesimo 55 € con aperitivo", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", orario: "Ore 12:00", adulti: 38, bambini: 0, opzioni: [{prezzo:55,label:""}] });
-      q.vinoCasa.righe = [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 4, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 4, calici: "" }];
+      q.vinoCasa.righe = [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 4, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 4, calici: "" }];
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 5, calici: 38 }];
       return withSections(q, { aperitivo: ["Pancetta cotta nel pane con kren","Frico croccante","Toc in braide","Pollo in tempura"], primi: ["Gnocchi con goulash"], secondi: ["Lingua alla Wellington con spek e senape"], contorni: ["Contorni di stagione"] }); } },
   { name: "Anniversario 50 € (torta 40 €/kg)", make(){ const q = blankQuote();
@@ -564,7 +680,7 @@ const PRESETS = [
       return withSections(q, { aperitivo: ["Pancetta cotta nel pane con kren"], antipasti: ["Tortino di zucca con fonduta di formaggio di malga"], primi: ["Fuži Istriani con ragù di San Daniele"], secondi: ["Stinco di Maiale anteriore cucinato lentamente al forno con polenta"], contorni: ["Contorni di stagione"], dessert: ["Sorbetto al limone e menta"] }); } },
   { name: "Compleanno aperitivo 45 € / con primo 55 €", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Compleanno", orario: "Orario: 19:00", adulti: 12, bambini: 0, opzioni: [{prezzo:45,label:"Solo aperitivo"},{prezzo:55,label:"Aperitivo più primo"}] });
-      q.vinoCasa.righe = [{ nome: "Blazevi Goriška Brda Sivi Pinot", bott: 1, calici: "" }, { nome: "Blazevi Goriška Brda Merlot", bott: 1, calici: "" }];
+      q.vinoCasa.righe = [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 1, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 1, calici: "" }];
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: 15 }];
       return withSections(q, { aperitivo: ["Polpettine","Frichetti","Pollo in tempura",TAGLIERE,"Toc in braide con funghi misti"], primi: ["Orzotto con funghi porcini"] }); } },
   { name: "Pranzo 45 € con torta", make(){ const q = blankQuote();
@@ -624,7 +740,7 @@ const PRESETS = [
   { name: "Comunione 45 € (come Katja)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Comunione", adulti: 15, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.vinoCasa.on = false;
-      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blazevi Goriška Brda Sivi Pinot",2],["Blazevi Goriška Brda Merlot",2],["Blazevi Goriška Brda Refošk",1],["Blazevi Goriška Brda Rumena Rebula Charmat",2]]) };
+      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blaževi Goriška Brda Sivi Pinot",2],["Blaževi Goriška Brda Merlot",2],["Blaževi Goriška Brda Refošk",1],["Blaževi Goriška Brda Rumena Rebula Charmat",2]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Frittatine","Frico fritto","Polpettine","Tradizionali kipfel di patate"], "Scelta possibile 3 antipasti"],
         primi: [["Pasticcio tradizionale con fonduta di formaggi","Gnocchi con sugo di goulash","Crespelle di verdure di stagione","Orzotto con asparagi"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Ljubljanska alla griglia","Grigliata Mista (Čevapčiči, Spiedini, tagliata di manzo, pollo)","Stinco di Maiale anteriore cucinato lentamente al forno con polenta"], "Scelta possibile 1 secondo"],
@@ -651,7 +767,7 @@ const PRESETS = [
       Object.assign(q, { oggetto: "Pranzo", adulti: 20, opzioni: [{prezzo:45,label:""}], torta: {on:true,grammi:150,euroKg:50}, accontoNoTorta: true });
       q.terms = q.terms.split(/\n\s*\n/).filter(p => !/torta venga fornita/.test(p)).join("\n\n");
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",2],["Bianco Sfuso",2]]) };
-      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blazevi Goriška Brda Sivi Pinot",1],["Blazevi Goriška Brda Merlot",1],["Blazevi Goriška Brda Refošk",1],["Blazevi Goriška Brda Rumena Rebula Charmat",3]]) };
+      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blaževi Goriška Brda Sivi Pinot",1],["Blaževi Goriška Brda Merlot",1],["Blaževi Goriška Brda Refošk",1],["Blaževi Goriška Brda Rumena Rebula Charmat",3]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Frittatine","Polpettine","Lecca lecca di Frico","Carpaccio di bresaola"], "Scelta possibile 3 antipasti"],
         primi: [["Fusi con ragù di cortile","Crespelle di verdure di stagione","Pasticcio tradizionale con fonduta di formaggi","Lasagna con ragù salsiccia","Orzotto con asparagi"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Costicine di maiale sous vide","Goulash di manzo","Ljubljanska alla griglia","Arrosto di vitello"], "Scelta possibile 1 secondo"],
@@ -666,7 +782,7 @@ const PRESETS = [
   { name: "Pranzo aziendale 45 € (come Luca Marchioro)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Pranzo aziendale", adulti: 40, opzioni: [{prezzo:45,label:""}] });
       q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
-      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blazevi Goriška Brda Sivi Pinot",2],["Blazevi Goriška Brda Refošk",2],["Blazevi Goriška Brda Merlot",2],["Blazevi Goriška Brda Rumena Rebula",5]]) };
+      q.vinoBott = { on: true, prezzo: 30, incluso: true, titolo: "", righe: rows([["Blaževi Goriška Brda Sivi Pinot",2],["Blaževi Goriška Brda Refošk",2],["Blaževi Goriška Brda Merlot",2],["Blaževi Goriška Brda Rumena Rebula",5]]) };
       return menuScelte(q, { antipasti: [[TAGLIERE,"Frichetti","Carpaccio di bresaola","Lonza Marinata con Salsa carpione"], "Scelta possibile 2 antipasti"],
         primi: [["Fuži Istriani con ragù di cortile","Crespelle con asparagi","Gnocchi con sugo di arrosto","Orzotto con sclopit","Pasticcio tradizionale con fonduta di formaggi","Lasagna con ragù salsiccia"], "Scelta possibile 2 primi (bis)"],
         secondi: [["Ljubljanska alla griglia","Costicine di maiale sous vide","Arrosto di vitello","Lonza di maiale alla birra"], "Scelta possibile 1 secondo"],
@@ -710,11 +826,11 @@ const PRESETS = [
 /* ================= Calculations (same formulas as the Excel sheet) ================= */
 const num = v => { const n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : 0; };
 const r2 = n => Math.round(n * 100) / 100;
-// Glasses per unit, as in the sheets: 1 L of house wine = 10, 0.75 L bottle = 7.5 (1 L Blazevi = 10), 30 L keg = 60 pints
+// Glasses per unit, as in the sheets: 1 L of house wine = 10, 0.75 L bottle = 7.5 (1 L Blaževi = 10), 30 L keg = 60 pints
 function perBottle(kind, nome){
   if (kind === "birra") return 60;
   if (kind === "vinoCasa") return 10;
-  return /blazevi/i.test(nome || "") && !/rebula/i.test(nome || "") ? 10 : 7.5;
+  return /bla[zž]evi/i.test(nome || "") && !/rebula/i.test(nome || "") ? 10 : 7.5;
 }
 function calici(row, kind){ return row.calici !== "" && row.calici != null ? num(row.calici) : Math.round(num(row.bott) * perBottle(kind, row.nome)); }
 const DRINKS = ["vinoCasa", "vinoBott", "birra"];
@@ -733,10 +849,14 @@ function compute(q){
     d[k] = { bott, cal, prezzo: w.on && !w.incluso ? r2(bott * num(w.prezzo)) : 0 };
   });
   const vini = r2(d.vinoCasa.prezzo + d.vinoBott.prezzo + d.birra.prezzo);
-  const finale = food.map(f => r2(f + vini + torta));
+  // supplemento a persona (adulti) per i piatti con maggiorazione segnati come scelti
+  const inMenu = new Set(q.sezioni.flatMap(s => s.items.map(i => i.trim())));
+  const supp = (q.supplScelti || []).filter(n => inMenu.has(n)).reduce((a, n) => a + (SUPPL[n] || 0), 0);
+  const sup = r2(supp * ad);
+  const finale = food.map(f => r2(f + sup + vini + torta));
   const base = q.accontoNoTorta ? finale[0] - torta : finale[0];
   const acconto = r2(base * 0.5); // the deposit is always 50%
-  return { food, kg, torta, d, vini, finale, acconto };
+  return { food, kg, torta, d, vini, supp, sup, finale, acconto };
 }
 
 /* ================= Formatting ================= */
@@ -753,15 +873,15 @@ const lc = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : "";
 const L = {
   it: { tel: "Tel.", cliente: "Cliente:", numero: "Numero preventivo", data: "Data", oggetto: "Oggetto Preventivo", dataEvento: "Data Evento", inizio: "Inizio evento: ore", adulti: "Quantità adulti", bambini: "Quantità bambini", opzione: "Opzione:",
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
-    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino della casa:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
+    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino del Collio:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
     food: "Prezzo food", vini: "Prezzo vini", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
-    foodOpt: l => `Prezzo food ${l}`, finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
+    foodOpt: l => `Prezzo food ${l}`, suppl: e => `Supplemento piatti scelti (+${eurPlain(e).replace(",00", "")} € a persona)`, supplNota: "maggiorazione a persona", finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
   en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", inizio: "Start time:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
-    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "House Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
+    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "Collio Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
     food: "Food price", vini: "Drinks price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
-    foodOpt: l => `Food price ${l}`, finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
+    foodOpt: l => `Food price ${l}`, suppl: e => `Supplement for chosen dishes (+${eurPlain(e).replace(",00", "")} € per person)`, supplNota: "supplement per person", finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
     termini: "Terms & Conditions", allergie: "Allergies and Dietary Preferences", firmaCliente: "Client", date: dateEN }
 };
 
@@ -826,7 +946,7 @@ async function assignNumber(q){
 }
 let store = loadAll();
 if (SERVER && !store.quotes.length) { const first = blankQuote(); store = { quotes: [first], current: first.id }; setTimeout(() => assignNumber(first)); }
-if (!store || !store.quotes.length) { const first = PRESETS[0].make(); first.cliente = "Esempio – Famiglia Rossi"; first.email = "rossi@example.com"; first.dataEvento = "2026-11-15"; store = { quotes: [first], current: first.id }; first.numero = makeNumber(first.data, getLetters(), localSeq()); }
+if (!store || !store.quotes.length) { const first = PRESETS.find(p => !p.group).make(); first.cliente = "Esempio – Famiglia Rossi"; first.email = "rossi@example.com"; first.dataEvento = "2026-11-15"; store = { quotes: [first], current: first.id }; first.numero = makeNumber(first.data, getLetters(), localSeq()); }
 store.quotes.forEach(migrate);
 let Q = store.quotes.find(q => q.id === store.current) || store.quotes[0];
 
@@ -852,7 +972,7 @@ function field(label, path, opts = {}){
 function customEvent(){ return !!Q.oggettoLibero || !EVENT_TYPES.includes(Q.oggetto); }
 // The dropdown groups dishes only by price band (40 / 50 / 60-75 €); groups without a price keep their name
 function bandOf(g){
-  if (g === NATALE) return g;
+  if (isNataleGroup(g)) return g;
   const m = g.match(/\d+/); if (!m) return g;
   const n = +m[0], note = (g.match(/\(.*\)/) || [""])[0];
   return (n <= 55 ? "Menu 45-55 €" : "Menu 60-75 €") + (note ? " " + note : "");
@@ -911,13 +1031,15 @@ function brunchGroups(){
 }
 function optGroups(key){
   const merged = {};
-  Object.entries(CATALOG[key]).forEach(([g, arr]) => { const b = bandOf(g); merged[b] = merged[b] || []; arr.forEach(i => { if (!merged[b].includes(i)) merged[b].push(i); }); });
+  // Nei preventivi di Natale si sceglie solo dal menu di Natale
+  Object.entries(CATALOG[key]).filter(([g]) => isNataleAz(Q) ? isNataleGroup(g) : !isNataleGroup(g)).forEach(([g, arr]) => { const b = bandOf(g); merged[b] = merged[b] || []; arr.forEach(i => { if (!merged[b].includes(i)) merged[b].push(i); }); });
   return Object.entries(merged).map(([g, arr]) => `<optgroup label="${esc(g)}">${arr.map(i => `<option value="${esc(i)}">${esc(i)}${VEG.has(i) ? " 🌿" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} €)` : ""}</option>`).join("")}</optgroup>`).join("");
 }
 
 function renderEditor(){
   const c = compute(Q);
-  const sectHTML = Q.sezioni.map((s, si) => `
+  const natale = isNataleAz(Q);
+  const sectHTML = Q.sezioni.map((s, si) => natale && !s.items.length && !CATALOG[s.key][NATALE] && !CATALOG[s.key][NATALE65] && s.key !== "dessert" ? "" : `
     <div class="sect ${s.items.length ? "" : "empty"}">
       <div class="sect-head">
         <input class="lbl" id="sl_${si}" aria-label="Nome portata" data-p="sezioni.${si}.label" value="${esc(s.label)}">
@@ -927,12 +1049,13 @@ function renderEditor(){
       <div class="items">
         ${s.items.map((it, ii) => `<div class="item">
           <input id="si_${si}_${ii}" aria-label="Piatto" data-p="sezioni.${si}.items.${ii}" value="${esc(it)}">
+          ${SUPPL[it.trim()] ? `<label class="check suppl" title="Il cliente ha scelto questo piatto: aggiunge ${SUPPL[it.trim()]} € a persona"><input type="checkbox" data-suppl="${esc(it.trim())}" ${(Q.supplScelti || []).includes(it.trim()) ? "checked" : ""}> scelto +${SUPPL[it.trim()]} €</label>` : ""}
           <button type="button" class="ghost" data-act="up" data-s="${si}" data-i="${ii}" aria-label="Sposta su" ${ii ? "" : "disabled"}>↑</button>
           <button type="button" class="ghost" data-act="rm" data-s="${si}" data-i="${ii}" aria-label="Rimuovi">✕</button>
         </div>`).join("")}
       </div>
       <div class="row">
-        <select class="grow" id="pick_${si}" aria-label="Aggiungi piatto dal menu"><option value="">+ Aggiungi dal menu…</option>${isBrunch(Q) || /Buffet$/.test(s.key) ? brunchGroups() : ""}${optGroups(s.key)}<option value="__free">Scrivi un piatto nuovo…</option></select>
+        <select class="grow" id="pick_${si}" aria-label="Aggiungi piatto dal menu"><option value="">+ Aggiungi dal menu…</option>${!natale && (isBrunch(Q) || /Buffet$/.test(s.key)) ? brunchGroups() : ""}${optGroups(s.key)}<option value="__free">Scrivi un piatto nuovo…</option></select>
       </div>
     </div>`).join("");
 
@@ -957,6 +1080,7 @@ function renderEditor(){
         <input id="${k}_c_${ri}" aria-label="${beer ? "Pinte" : "Calici"}" inputmode="numeric" data-p="${k}.righe.${ri}.calici" value="${esc(r.calici)}" placeholder="${Math.round(num(r.bott) * perBottle(k, r.nome))}">
         <button type="button" class="ghost" data-act="wrm" data-w="${k}" data-i="${ri}" aria-label="Rimuovi riga">✕</button>
       </div>`).join("")}
+      ${k === "vinoCasa" && isNataleAz(Q) ? `<div class="row"><span class="hint grow" id="wineSugg">${wineSuggTxt(cc.bott)}</span><button type="button" data-act="winesugg">Usa consigliato</button></div>` : ""}
       <div class="row"><button type="button" data-act="wadd" data-w="${k}">+ ${beer ? "Birra" : "Vino"}</button><span class="hint grow" style="text-align:right">${cc.bott} ${beer ? "fusti" : "bott."} · ${cc.cal} ${beer ? "pinte" : "calici"} · ${w.incluso ? "incluso" : eur(cc.prezzo)}</span></div>` : ""}
     </div>`;
   };
@@ -1010,6 +1134,8 @@ function renderEditor(){
     <div class="card">
       <h2>Menu</h2>
       ${sectHTML}
+      <label class="check full" style="margin-top:10px"><input type="checkbox" id="f_allergeni" data-p="allergeniPag" ${Q.allergeniPag ? "checked" : ""}> Aggiungi la pagina degli allergeni al PDF</label>
+      ${Q.allergeniPag && allergMancanti(Q).length ? `<div class="hint">Allergeni non ancora registrati per: ${esc(allergMancanti(Q).join(", "))}. Nel PDF compare «chiedere al personale».</div>` : ""}
     </div>
 
     <div class="card">
@@ -1023,10 +1149,11 @@ function renderEditor(){
 
     <div class="card">
       <h2>Vini</h2>
-      ${wineBlock("vinoCasa", "Vino della casa", "dl_casa")}
+      <label class="check full" style="margin-bottom:8px"><input type="checkbox" id="f_vinoSomm" data-p="vinoSommelier" ${Q.vinoSommelier ? "checked" : ""}> Vini scelti con la sommelier: nel PDF al posto della tabella esce una didascalia con il link alla carta dei vini</label>
+      ${wineBlock("vinoCasa", "Vino del Collio", "dl_casa")}
       ${wineBlock("vinoBott", "Vino bottiglia", "dl_bott")}
       ${wineBlock("birra", "Birra alla spina", "dl_birra")}
-      <div class="hint">Calici se lasci il campo vuoto: 10 per litro di vino della casa, 10 per le bottiglie Blazevi da 1 litro, 7,5 per le bottiglie da 0,75; 60 pinte per fusto da 30 litri. Scrivi un numero per cambiarlo.</div>
+      <div class="hint">Calici se lasci il campo vuoto: 10 per litro di vino del Collio, 10 per le bottiglie Blaževi da 1 litro, 7,5 per le bottiglie da 0,75; 60 pinte per fusto da 30 litri. Scrivi un numero per cambiarlo.</div>
     </div>
 
     <div class="card">
@@ -1037,6 +1164,12 @@ function renderEditor(){
       </div>
       <div class="totals" id="edTotals"></div>
     </div>
+
+    ${isNataleAz(Q) ? `<div class="card">
+      <h2>Email per il cliente<span class="spacer"></span><button type="button" data-act="copymail" style="text-transform:none;letter-spacing:0">Copia email</button></h2>
+      ${field("Link alla carta dei vini sul sito", "linkVini", { full: true })}
+      <div class="f full">Testo pronto da incollare (si aggiorna con il preventivo; i nomi dei piatti restano in grassetto)<div id="f_email_txt" class="email-box">${emailHTML(nataleEmail(Q))}</div></div>
+    </div>` : ""}
 
     <div class="card">
       <h2>Termini & condizioni<span class="spacer"></span>
@@ -1068,21 +1201,82 @@ function totalRows(q, c){
   const two = q.opzioni.length > 1;
   if (two) {
     q.opzioni.forEach((o, i) => rows.push([T.foodOpt(lc(o.label) || T.opz(i+1)), c.food[i]]));
+    if (c.sup) rows.push([T.suppl(c.supp), c.sup]);
     if (c.torta) rows.push([T.torta, c.torta]);
     if (c.vini > 0) rows.push([T.vini, c.vini]);
     q.opzioni.forEach((o, i) => rows.push([T.finaleOpt(lc(o.label) || T.opz(i+1)), c.finale[i]]));
   } else if (c.vini > 0) {
     rows.push([T.food, c.food[0]]);
+    if (c.sup) rows.push([T.suppl(c.supp), c.sup]);
     rows.push([T.vini, c.vini]);
     rows.push([c.torta ? T.finaleTorta : T.totale, c.finale[0]]);
   } else {
+    if (c.sup) { rows.push([T.food, c.food[0]]); rows.push([T.suppl(c.supp), c.sup]); }
     rows.push([T.finale, r2(c.finale[0] - c.torta)]);
     if (c.torta) rows.push([T.conTorta, c.finale[0]]);
   }
   if (!two) rows.push([T.acconto, c.acconto, "acc"]);
   return rows;
 }
+// Email pronta da copiare per i preventivi aziendali di Natale
+const LINK_VINI = "https://osteriadvor.com/vini.html";
+// \u0001…\u0002 = grassetto (nomi dei piatti e titoli); nella copia HTML diventano <b>
+const EB = t => `\u0001${t}\u0002`;
+function emailHTML(txt){ return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5">${esc(txt).replace(/\u0001/g, "<b>").replace(/\u0002/g, "</b>").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1">$1</a>').replace(/\n/g, "<br>")}</div>`; }
+const emailPlain = txt => txt.replace(/[\u0001\u0002]/g, "");
+function nataleEmail(q){
+  const c = compute(q);
+  const pasto = /cena|dinner/i.test(q.oggetto) ? "cena" : "pranzo";
+  const del = pasto === "cena" ? "della cena" : "del pranzo";
+  const nome = q.cliente.trim();
+  const quando = q.dataEvento ? ` del ${dateIT(q.dataEvento)}` : "";
+  const piatti = q.sezioni.filter(s => s.items.some(i => i.trim()));
+  const supp = [...new Set(piatti.flatMap(s => s.items.map(i => SUPPL[i.trim()]).filter(Boolean)))].sort((x, y) => x - y);
+  const out = [];
+  out.push(`Oggetto: Preventivo ${pasto} di Natale - Osteria Dvor`, "");
+  out.push(nome ? `Buongiorno ${nome},` : "Buongiorno,", "");
+  out.push(`vi mando il preventivo ${del} di Natale${quando} per ${num(q.adulti)} persone. In allegato trovate il PDF completo, qui vi riassumo le cose principali.`, "");
+  const o = q.opzioni[0];
+  out.push(`Il menu è a ${EB(`${eurPlain(num(o.prezzo)).replace(",00", "")} € a persona`)} e comprende antipasto, primo, secondo e dolce. Per ogni portata scegliete un piatto, uguale per tutto il gruppo:`, "");
+  piatti.forEach(s => {
+    out.push(s.label.replace(/:\s*$/, ""));
+    s.items.map(i => i.trim()).filter(Boolean).forEach(i => out.push(`- ${EB(i)}${VEG.has(i) ? " (vegetariano)" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} €)` : ""}`));
+    out.push("");
+  });
+  if (supp.length) out.push(`Dove vedete ${supp.map(v => `+${v} €`).join(" o ")} c'è un supplemento a persona, che aggiungiamo solo se scegliete quel piatto.`);
+  out.push("Se volete cambiare qualcosa, o avete in mente un piatto che qui non c'è, passate pure in osteria: ne parlate con lo chef e lo sistemiamo insieme.", "");
+  const w = q.vinoCasa, d = c.d.vinoCasa;
+  const corto = n => n.replace(/^Bla[zž]evi\s+Gori[sš]ka\s+Brda\s+/i, "");
+  const vini = w.on ? w.righe.filter(r => num(r.bott)) : [];
+  if (q.vinoSommelier) {
+    out.push(`Per i vini sarà la nostra sommelier a guidarvi negli abbinamenti con i piatti che sceglierete, e verranno conteggiati a consumo. Intanto potete farvi un'idea guardando la nostra carta, con 97 etichette: ${q.linkVini || LINK_VINI}`, "");
+  } else {
+  if (vini.length) {
+    const cantina = /Bla[zž]evi/i.test(vini.map(r => r.nome).join()) ? " di Blaževi" : "";
+    out.push(`Per il vino abbiamo previsto il nostro ${(w.titolo || "Vino del Collio").replace(/:\s*$/, "")}${cantina} (${vini.map(r => corto(r.nome)).join(", ")}). Per la nostra esperienza con questi eventi consigliamo ${NATALE_CALICI} calici a persona, e su questa base abbiamo calcolato le bottiglie che trovate nel preventivo, con il relativo prezzo.${w.incluso ? "" : " Il vino è conteggiato a consumo: se ne verrà bevuto meno di quanto consigliato, nel conto finale troverete solo quello effettivamente consumato."}`);
+  }
+  out.push(`Se avete voglia di qualcos'altro, in cantina abbiamo 97 etichette: le trovate tutte qui ${q.linkVini || LINK_VINI}`, "");
+  }
+  out.push("In totale:");
+  totalRows(q, c).filter(([, , k]) => k !== "acc").forEach(([l, v]) => out.push(`${l}: ${EB(eur(v))}`));
+  out.push("");
+  out.push(`Per tenere la data basta rispondermi e fare un bonifico di acconto del 50%${q.opzioni.length > 1 ? "" : ` (${eur(c.acconto)})`}; il resto si salda il giorno ${del}. Acqua e caffè sono a parte. Nel PDF trovate anche le condizioni${q.allergeniPag ? " e gli allergeni di ogni piatto" : ""}.`, "");
+  out.push("A dicembre le date si riempiono in fretta, quindi se vi va bene vi consiglio di confermare appena potete.", "");
+  out.push("Per qualsiasi domanda sono qui.", "");
+  out.push("Un saluto,", "Osteria Dvor", "Via Castello 5, San Floriano del Collio (GO)", "info@osteriadvor.com");
+  return out.join("\n");
+}
+async function copyText(txt){
+  const html = emailHTML(txt), plain = emailPlain(txt);
+  try { await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([plain], { type: "text/plain" }) })]); return true; } catch (e) {}
+  const box = $("#f_email_txt");
+  if (box) { const r = document.createRange(); r.selectNodeContents(box); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); try { if (document.execCommand("copy")) return true; } catch (e) {} }
+  try { await navigator.clipboard.writeText(plain); return true; } catch (e) { return false; }
+}
+function wineSuggTxt(bott){ return `Consigliati ${NATALE_CALICI} calici a testa: ${num(Q.adulti) * NATALE_CALICI} calici, circa <b>${nataleBottiglie(Q)} bottiglie</b> da 1 litro (ora ${bott}).`; }
 function renderTotalsBox(c){
+  const ws = $("#wineSugg"); if (ws) ws.innerHTML = wineSuggTxt(c.d.vinoCasa.bott);
+  const em = $("#f_email_txt"); if (em) em.innerHTML = emailHTML(nataleEmail(Q));
   const box = $("#edTotals"); if (!box) return;
   const rows = totalRows(Q, c);
   box.innerHTML = rows.map(([l, v, k]) => `<div class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><span>${esc(l)}</span><span>${eur(v)}</span></div>`).join("");
@@ -1102,6 +1296,25 @@ function drinkTable(q, k, cc, T){
     <tr class="t"><td></td><td class="c">${cc.bott}</td><td class="c">${cc.cal}</td></tr>
     ${w.incluso ? "" : `<tr class="p"><td></td><td class="c">€</td><td class="c">${cc.prezzo ? eurPlain(cc.prezzo) : "-"}</td></tr>`}
   </table>`;
+}
+const allergMancanti = q => q.sezioni.flatMap(s => s.items.map(i => i.trim()).filter(i => i && !ALLERG[i]));
+function allergPage(q){
+  const en = q.lang === "en", N = ALLERGENI[en ? "en" : "it"];
+  const head = `<tr><th style="text-align:left">${en ? "Dish" : "Piatto"}</th>${N.map(n => `<th class="al"><span>${n}</span></th>`).join("")}</tr>`;
+  const body = q.sezioni.filter(s => s.items.some(i => i.trim())).map(s => `<tr class="g"><td colspan="15">${esc(s.label.replace(/:\s*$/, ""))}</td></tr>` +
+    s.items.map(i => i.trim()).filter(Boolean).map(i => { const a = ALLERG[i];
+      return `<tr><td class="n">${esc(i)}</td>${a ? N.map((_, k) => `<td>${a.includes(k) ? '<i class="dot"></i>' : ""}</td>`).join("") : `<td colspan="14" class="ask">${en ? "please ask our staff" : "chiedere al personale"}</td>`}</tr>`; }).join("")).join("");
+  const note = en ? ["Our staff are available for any information about ingredients and allergens.", "All the allergens listed are used in our kitchen: traces due to cross-contamination cannot be ruled out.", "Pursuant to Reg. (EU) No. 1169/2011 and Legislative Decree No. 231/2017."]
+    : ["Il personale di sala è a disposizione per ogni informazione sugli ingredienti e sugli allergeni.", "In cucina si utilizzano tutti gli allergeni elencati: non si può escludere la presenza di tracce per contaminazione crociata.", "Ai sensi del Reg. (UE) n. 1169/2011 e del D.Lgs. n. 231/2017."];
+  return `
+  <div class="page p3 fixed">
+    <div class="frame" aria-hidden="true"><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><i class="b"></i></div>
+    <h3>${en ? "Allergens" : "Allergeni"}</h3>
+    <div class="a-sub">${en ? "Reg. (EU) No. 1169/2011, Annex II" : "Reg. (UE) n. 1169/2011, Allegato II"}</div>
+    <table class="a-tbl"><colgroup><col>${N.map(() => '<col style="width:24px">').join("")}</colgroup>${head}${body}</table>
+    ${isNatale(q) ? `<div class="d-holly" style="margin:18px auto 0">${HOLLY}</div>` : ""}
+    <div class="a-note">${note.map(t => `<p>${t}</p>`).join("")}</div>
+  </div>`;
 }
 function renderDoc(q){
   const c = compute(q);
@@ -1128,8 +1341,10 @@ function renderDoc(q){
   const drinks = DRINKS.map(k => {
     const t = drinkTable(q, k, c.d[k], T); if (!t) return "";
     const loose = q[k].righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome));
-    const note = k === "vinoCasa" && !loose ? `<div class="d-wnote">${T.litro1}</div>` : "";
-    return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}</div>${note}${t}</div>`;
+    const sugg = k === "vinoCasa" && isNataleAz(q) ? (q.lang === "en" ? `Recommended: ${NATALE_CALICI} glasses per person` : `Consigliati ${NATALE_CALICI} calici a persona`) : "";
+    const note = (k === "vinoCasa" && !loose) || sugg ? `<div class="d-wnote">${[k === "vinoCasa" && !loose ? T.litro1 : "", sugg].filter(Boolean).join(" · ")}</div>` : "";
+    const consumo = k !== "birra" && !q[k].incluso ? `<div class="d-wnote" style="margin-top:4px">${q.lang === "en" ? "Recommended quantity, charged on consumption: the final bill will only include the wine actually drunk." : "Quantità consigliata, conteggiata a consumo: nel conto finale solo il vino effettivamente bevuto."}</div>` : "";
+    return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}</div>${note}${t}${consumo}</div>`;
   }).join("");
   const tot = totalRows(q, c).map(([l, v, k]) => `<tr class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><td class="l">${esc(l)}</td><td class="r">${eurPlain(v)} €</td></tr>`).join("");
   const paras = t => (t || "").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
@@ -1154,9 +1369,9 @@ function renderDoc(q){
     <div class="d-qty"><span>${T.adulti.replace(/:\s*$/, "")}: <b>${esc(num(q.adulti))}</b></span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini.replace(/:\s*$/, "")}: <b>${esc(num(q.bambini))}</b></span>` : ""}</div>
     <div class="d-opts">${opts}</div>
     <div class="d-menu">${secs}</div>
-    ${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<div class="d-legend">${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</div>` : ""}
+    ${used.some(s => s.items.some(i => VEG.has(i.trim()) || SUPPL[i.trim()])) ? `<div class="d-legend">${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<span>${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</span>` : ""}${used.some(s => s.items.some(i => SUPPL[i.trim()])) ? `<span><b class="d-suppl" style="margin:0 3px 0 0">${[...new Set(used.flatMap(s => s.items.map(i => SUPPL[i.trim()]).filter(Boolean)))].sort((a, b) => a - b).map(v => `+${v} €`).join(" / ")}</b>${T.supplNota}</span>` : ""}</div>` : ""}
     ${cake}
-    <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}</div>
+    <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}${q.vinoSommelier ? `<div class="d-wine"><div class="k">${q.lang === "en" ? "Wines" : "Vini"}</div><div class="d-wnote" style="font-size:11px;max-width:470px">${esc(sommelierTxt(q))} <span style="font-style:normal;color:#c8432c">${esc((q.linkVini || LINK_VINI).replace(/^https?:\/\//, ""))}</span></div></div>` : ""}</div>
     <table class="tbl d-tot">${tot}</table>
     ${q.nota ? `<div class="d-note">${esc(q.nota)}</div>` : ""}
   </div>
@@ -1167,7 +1382,7 @@ function renderDoc(q){
     <div class="terms allergy"><h3 style="margin:0 0 7px">${T.allergie}</h3>${allergie}${after}</div>
     ${isNatale(q) ? `<div class="d-xmas">${q.lang === "en" ? "Season's Greetings from all of us at Osteria Dvor" : "Con i migliori auguri di Buone Feste da tutta l'Osteria Dvor"}</div>` : ""}
     <div class="sign"><div>Horeca FVG Srl<img src="${SIG}" alt="Firma Horeca FVG Srl"></div><div class="c">${T.firmaCliente}</div></div>
-  </div>`;
+  </div>${q.allergeniPag && q.sezioni.some(s => s.items.some(i => i.trim())) ? allergPage(q) : ""}`;
 }
 
 const pagesEl = $("#pages"), scaler = $("#scaler"), viewport = $("#viewport");
@@ -1214,6 +1429,7 @@ editor.addEventListener("input", e => {
 });
 editor.addEventListener("change", e => {
   const t = e.target;
+  if (t.dataset.suppl) { const n = t.dataset.suppl; Q.supplScelti = (Q.supplScelti || []).filter(x => x !== n); if (t.checked) Q.supplScelti.push(n); refreshAll(); return; }
   if (t.type === "checkbox" && t.dataset.p) { setPath(Q, t.dataset.p, t.checked); refreshAll(); return; }
   if (t.id === "termsKey") { useTerms(Q, t.value); refreshAll(); return; }
   if (t.id === "f_letters") { setLetters(t.value); return; }
@@ -1244,6 +1460,7 @@ editor.addEventListener("click", e => {
   if (a === "rm") Q.sezioni[si].items.splice(ii, 1);
   else if (a === "up") { const it = Q.sezioni[si].items; [it[ii-1], it[ii]] = [it[ii], it[ii-1]]; }
   else if (a === "wadd") Q[b.dataset.w].righe.push({ nome: "", bott: 1, calici: "" });
+  else if (a === "winesugg") nataleVino(Q);
   else if (a === "wrm") Q[b.dataset.w].righe.splice(ii, 1);
   else if (a === "opadd") { Q.opzioni[0].label = Q.opzioni[0].label || "Opzione 1"; Q.opzioni.push({ prezzo: num(Q.opzioni[0].prezzo) + 10, label: "Opzione 2" }); }
   else if (a === "oprm") Q.opzioni.splice(ii, 1);
@@ -1254,6 +1471,7 @@ editor.addEventListener("click", e => {
   else if (a === "delno") { pendingDelete = null; renderEditor(); return; }
   else if (a === "delyes") { removeQuote(b.dataset.id); return; }
   else if (a === "export") { exportArchive(); return; }
+  else if (a === "copymail") { copyText(nataleEmail(Q)).then(ok => toast(ok ? "Email copiata: incollala nel programma di posta" : "Seleziona il testo e copialo a mano")); return; }
   else return;
   refreshAll();
 });
@@ -1270,7 +1488,7 @@ function removeQuote(id){
 $("#btnNew").onclick = () => useQuote(blankQuote());
 $("#btnDup").onclick = () => { const q = JSON.parse(JSON.stringify(Q)); q.id = uid(); q.numero = ""; q.data = todayISO(); q.updated = Date.now(); useQuote(q); toast("Copia creata con un nuovo numero"); };
 const presetSel = $("#preset");
-PRESETS.forEach((p, i) => presetSel.insertAdjacentHTML("beforeend", `<option value="${i}">${esc(p.name)}</option>`));
+[...new Set(PRESETS.map(p => p.group || "Altri esempi"))].forEach(g => presetSel.insertAdjacentHTML("beforeend", `<optgroup label="${esc(g)}">${PRESETS.map((p, i) => (p.group || "Altri esempi") === g ? `<option value="${i}">${esc(p.name)}</option>` : "").join("")}</optgroup>`));
 presetSel.onchange = () => { const i = presetSel.value; presetSel.value = ""; if (i === "") return; useQuote(PRESETS[+i].make()); toast("Nuovo preventivo creato dall'esempio"); };
 
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
