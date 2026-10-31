@@ -170,6 +170,14 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-sub { text-align: center; color: #d22b1f; font-family: var(--ui); font-size: 9px; font-weight: 600; line-height: 1.3; white-space: pre-line; margin-top: 3px; }
 .d-items { font-style: italic; margin-top: 6px; }
 .d-items > div + div { margin-top: 5px; }
+.leaf { width: 1em; height: 1em; vertical-align: -0.12em; margin-left: 4px; }
+.d-suppl { font-family: var(--ui); font-style: normal; font-size: 0.8em; font-weight: 600; color: #d22b1f; margin-left: 6px; white-space: nowrap; }
+.d-holly { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px auto 12px; }
+.d-holly::before, .d-holly::after { content: ""; width: 34px; height: 1px; background: #c8432c; }
+.d-holly .holly { width: 46px; height: 16px; }
+.d-xmas { text-align: center; font-family: var(--display); font-style: italic; font-size: 12px; color: #2f6b3a; margin: 10px 0 4px; }
+.d-legend { text-align: center; font-family: var(--ui); font-size: 9px; color: #555; margin-top: 8px; }
+.d-legend .leaf { margin: 0 2px 0 0; }
 .d-pair { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; align-items: start; }
 /* Course names stand out: small caps with a thin red rule each side */
 .d-sec > .k, .d-wine > .k { display: flex; align-items: center; gap: 12px; font-size: 16.5px; text-transform: uppercase; letter-spacing: .16em; }
@@ -348,6 +356,22 @@ addTo("primi", "Gaspare 50", ["Pasticcio di carne"]);
 addTo("secondi", "Gaspare 75", ["Turbante di branzino"]);
 addTo("contorni", "Menu 50 (3 contorni)", ["Caponata"]);
 addTo("salatoBuffet", "Brunch salato", ["Couscous alle verdure","Bresaola su letto di rucola"]);
+// Menu pranzi e cene aziendali di Natale 2026 (un piatto a scelta per portata, base 45 €)
+const NATALE = "Natale aziendale 2026";
+const NATALE_MENU = {
+  antipasti: ["Toc' in braide","Flan di funghi con guanciale","Fricchetti friulani","Vitello tonnato","Carpaccio di manzo su rucola e riduzione di melograno","Rosa di prosciutto di Osvaldo con spuma di frico"],
+  primi: ["Gnocchi al goulash","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Risotto porro e salsiccia","Risotto radicchio e salsiccia","Lasagna classica"],
+  secondi: ["Arrosto di vitello con patate al forno","Arrosto di maiale con patate in tecia","Guancette brasate al vino rosso con polentina morbida","Pancetta in crosta con finocchi","Filetto di maiale alla Wellington con purè","Scaloppa di sedano rapa con salsa olandese"]
+};
+Object.entries(NATALE_MENU).forEach(([sec, items]) => addTo(sec, NATALE, items));
+// Piatti vegetariani: nel PDF hanno la fogliolina
+const VEG = new Set(["Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
+// Supplemento a persona per i piatti che portano il menu di Natale da 45 a 50 €
+const SUPPL = { "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5 };
+const LEAF = `<svg class="leaf" viewBox="0 0 16 16" aria-label="vegetariano" role="img"><path d="M14 2C7 2 2.5 5.5 2.5 10.5c0 1.2.3 2.3.8 3.2C5 9.8 7.8 7.4 11 6c-2.8 1.8-5.2 4.6-6.6 8 1 .5 2 .7 3.1.7C12.6 14.7 14 9 14 2z" fill="#3f8f3a"/></svg>`;
+// Preventivi di Natale: un rametto di agrifoglio al posto della linea rossa e gli auguri in fondo
+const isNatale = q => /natal|christmas|xmas/i.test(q.oggetto || "");
+const HOLLY = `<svg class="holly" viewBox="0 0 64 22" aria-hidden="true"><path d="M31 12C26 4 17 3 9 7c3 1 4 3 3 5 3-1 5 0 6 2 2-2 5-2 7-1-1-3 1-4 6-1z" fill="#2f6b3a"/><path d="M33 12c5-8 14-9 22-5-3 1-4 3-3 5-3-1-5 0-6 2-2-2-5-2-7-1 1-3-1-4-6-1z" fill="#3f8f4a"/><circle cx="29.5" cy="14.5" r="3" fill="#c8432c"/><circle cx="34.5" cy="14.5" r="3" fill="#c8432c"/><circle cx="32" cy="10.2" r="3" fill="#b03424"/></svg>`;
 const EN_APPETIZERS = ["Cold cuts and cheese boards (San Daniele prosciutto & cheeses)","Meatballs (small)","Frico lollipops","Arancini"];
 addTo("antipasti", "English", EN_APPETIZERS);
 addTo("aperitivo", "English", EN_APPETIZERS);
@@ -367,7 +391,7 @@ const SECTION_LABELS = {
 const WINES_CASA = ["Blazevi Goriška Brda Sivi Pinot","Blazevi Goriška Brda Merlot","Blazevi Goriška Brda Refošk","Rosso Sfuso","Bianco Sfuso","Bollicine Sfuso","Red house wine on tap","White house wine on tap"];
 const BEERS = ["Birra alla spina Pilsner","Birra alla spina Lager","Birra alla spina IPA","Tap Beer Pilsner","Tap Beer Lager","Tap Beer IPA"];
 const WINES_BOTT = ["Piedimont Ribolla Metodo Classico 12 mesi","Piedimont Cuvée Metodo Classico 36 mesi","Piedimont Cuvée Magnum","Pittaro Rosè Metodo Classico","Blazevi Goriška Brda Sivi Pinot","Blazevi Goriška Brda Merlot","Blazevi Goriška Brda Refošk","Blazevi Goriška Brda Rumena Rebula","Blazevi Goriška Brda Rumena Rebula Charmat","Friulano Collio DOC","Malvasia Collio DOC","Chardonnay Collio DOC","Sauvignon Collio DOC","Ribolla Collio DOC","Merlot Collio DOC","Refosco Collio DOC","Cabernet Collio DOC"];
-const EVENT_TYPES = ["Battesimo","Comunione","Cresima","Matrimonio","Fidanzamento","Promessa di matrimonio","Anniversario","Anniversario di matrimonio","Compleanno","Diciottesimo","Laurea","Festa Privata","Festa","Festa Danzante","Festa Pensione","Pre Wedding Party","Festa di Natale","Festa di fine anno","Baby shower","Addio al celibato","Addio al nubilato","Rimpatriata","Cena di classe","Cena aziendale","Pranzo aziendale","Evento aziendale","Pranzo","Cena","Brunch","Aperitivo","Rinfresco","Degustazione","Pranzo commemorativo"];
+const EVENT_TYPES = ["Battesimo","Comunione","Cresima","Matrimonio","Fidanzamento","Promessa di matrimonio","Anniversario","Anniversario di matrimonio","Compleanno","Diciottesimo","Laurea","Festa Privata","Festa","Festa Danzante","Festa Pensione","Pre Wedding Party","Festa di Natale","Pranzo aziendale di Natale","Cena aziendale di Natale","Festa di fine anno","Baby shower","Addio al celibato","Addio al nubilato","Rimpatriata","Cena di classe","Cena aziendale","Pranzo aziendale","Evento aziendale","Pranzo","Cena","Brunch","Aperitivo","Rinfresco","Degustazione","Pranzo commemorativo"];
 
 const ALLERGIE = `Il nostro servizio di catering si impegna a garantire la sicurezza e la soddisfazione dei nostri clienti offrendo un'ampia selezione di piatti per soddisfare diverse esigenze alimentari. Tuttavia, vi preghiamo di notare quanto segue:
 
@@ -517,6 +541,13 @@ function withSections(q, map){
   return q;
 }
 const PRESETS = [
+  { name: "Natale aziendale 2026 · 45 € (50 € con dolce)", make(){ const q = blankQuote();
+      Object.assign(q, { oggetto: "Cena aziendale di Natale", adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo e secondo"},{prezzo:50,label:"Con il dolce"}] });
+      q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
+      q.vinoBott.on = false;
+      return menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
+        primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
+        secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"] }); } },
   { name: "Battesimo 50 € con torta (come Sara Mesiano)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", adulti: 20, bambini: 8, opzioni: [{prezzo:50,label:""}], torta: {on:true,grammi:150,euroKg:50} });
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 4, calici: 40 }];
@@ -820,6 +851,7 @@ function field(label, path, opts = {}){
 function customEvent(){ return !!Q.oggettoLibero || !EVENT_TYPES.includes(Q.oggetto); }
 // The dropdown groups dishes only by price band (40 / 50 / 60-75 €); groups without a price keep their name
 function bandOf(g){
+  if (g === NATALE) return g;
   const m = g.match(/\d+/); if (!m) return g;
   const n = +m[0], note = (g.match(/\(.*\)/) || [""])[0];
   return (n <= 55 ? "Menu 45-55 €" : "Menu 60-75 €") + (note ? " " + note : "");
@@ -879,7 +911,7 @@ function brunchGroups(){
 function optGroups(key){
   const merged = {};
   Object.entries(CATALOG[key]).forEach(([g, arr]) => { const b = bandOf(g); merged[b] = merged[b] || []; arr.forEach(i => { if (!merged[b].includes(i)) merged[b].push(i); }); });
-  return Object.entries(merged).map(([g, arr]) => `<optgroup label="${esc(g)}">${arr.map(i => `<option>${esc(i)}</option>`).join("")}</optgroup>`).join("");
+  return Object.entries(merged).map(([g, arr]) => `<optgroup label="${esc(g)}">${arr.map(i => `<option value="${esc(i)}">${esc(i)}${VEG.has(i) ? " 🌿" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} €)` : ""}</option>`).join("")}</optgroup>`).join("");
 }
 
 function renderEditor(){
@@ -1075,7 +1107,7 @@ function renderDoc(q){
   const T = L[q.lang || "it"];
   const secHtml = s => `
     <div class="d-sec"><div class="k">${esc(s.label.replace(/:\s*$/, ""))}</div>${s.sub ? `<div class="d-sub">${esc(s.sub)}</div>` : ""}
-    <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}</div>`).join("")}</div></div>`;
+    <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}${VEG.has(i.trim()) ? LEAF : ""}${SUPPL[i.trim()] ? `<span class="d-suppl">+${SUPPL[i.trim()]} €</span>` : ""}</div>`).join("")}</div></div>`;
   // Primi and Secondi sit side by side; every other course runs the full width
   const used = q.sezioni.filter(s => s.items.some(i => i.trim()));
   const pair = ["primi", "secondi"].map(k => used.find(s => s.key === k));
@@ -1111,7 +1143,7 @@ function renderDoc(q){
       <div class="d-brand"><img class="d-logo" src="${LOGO}" alt="DVOR"><div class="d-venue"><span>Via Castello 5</span><span>San Floriano del Collio</span><span>37070 Gorizia (Italia)</span></div></div>
       <div class="d-addr d-company"><b>Horeca FVG Srl</b><span>P.IVA 01280650316</span><span>info@osteriadvor.com</span></div>
     </div>
-    <div class="d-rule" aria-hidden="true"></div>
+    ${isNatale(q) ? `<div class="d-holly">${HOLLY}</div>` : `<div class="d-rule" aria-hidden="true"></div>`}
     <div class="d-head">
       <div class="d-client"><span class="k2">${T.cliente.replace(/:\s*$/, "")}</span><b>${esc(q.cliente) || "&nbsp;"}</b>${q.email ? `<div>${esc(q.email)}</div>` : ""}${q.telefono ? `<div>${T.tel} ${esc(q.telefono)}</div>` : ""}</div>
       <div class="d-meta"><span class="k">${T.numero}</span><span class="v">${esc(q.numero)}</span><span class="k">${T.data.replace(/:\s*$/, "")}</span><span class="v">${T.date(q.data)}</span></div>
@@ -1121,6 +1153,7 @@ function renderDoc(q){
     <div class="d-qty"><span>${T.adulti.replace(/:\s*$/, "")}: <b>${esc(num(q.adulti))}</b></span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini.replace(/:\s*$/, "")}: <b>${esc(num(q.bambini))}</b></span>` : ""}</div>
     <div class="d-opts">${opts}</div>
     <div class="d-menu">${secs}</div>
+    ${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<div class="d-legend">${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</div>` : ""}
     ${cake}
     <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}</div>
     <table class="tbl d-tot">${tot}</table>
@@ -1131,6 +1164,7 @@ function renderDoc(q){
     <h3>${T.termini}</h3>
     <div class="terms">${terms}</div>
     <div class="terms allergy"><h3 style="margin:0 0 7px">${T.allergie}</h3>${allergie}${after}</div>
+    ${isNatale(q) ? `<div class="d-xmas">${q.lang === "en" ? "Season's Greetings from all of us at Osteria Dvor" : "Con i migliori auguri di Buone Feste da tutta l'Osteria Dvor"}</div>` : ""}
     <div class="sign"><div>Horeca FVG Srl<img src="${SIG}" alt="Firma Horeca FVG Srl"></div><div class="c">${T.firmaCliente}</div></div>
   </div>`;
 }
