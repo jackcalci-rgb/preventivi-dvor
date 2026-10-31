@@ -363,6 +363,7 @@ const NATALE = "Pranzi e cene aziendali di Natale 2026";
 const NATALE_MENU = {
   antipasti: ["Toc' in braide","Flan di funghi con guanciale","Fricchetti friulani","Vitello tonnato","Carpaccio di manzo su rucola e riduzione di melograno","Rosa di prosciutto di Osvaldo con spuma di frico"],
   primi: ["Gnocchi al goulash","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Risotto porro e salsiccia","Risotto radicchio e salsiccia","Lasagna classica"],
+  dessert: ["Tiramisù"],
   secondi: ["Arrosto di vitello con patate al forno","Arrosto di maiale con patate in tecia","Guancette brasate al vino rosso con polentina morbida","Pancetta in crosta con finocchi","Filetto di maiale alla Wellington con purè","Scaloppa di sedano rapa con salsa olandese"]
 };
 Object.entries(NATALE_MENU).forEach(([sec, items]) => addTo(sec, NATALE, items));
@@ -551,7 +552,8 @@ function nataleQuote(oggetto){ const q = blankQuote();
   q.vinoBott.on = false;
   return menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
     primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
-    secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"] });
+    secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"],
+    dessert: [NATALE_MENU.dessert, "Incluso nel menu da 50 €"] });
 }
 const PRESETS = [
   { group: NATALE, name: "Pranzo aziendale di Natale · 45 € (50 € con dolce)", make(){ return nataleQuote("Pranzo aziendale di Natale"); } },
