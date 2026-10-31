@@ -1333,7 +1333,8 @@ function renderDoc(q){
     const loose = q[k].righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome));
     const sugg = k === "vinoCasa" && isNataleAz(q) ? (q.lang === "en" ? `Recommended: ${NATALE_CALICI} glasses per person` : `Consigliati ${NATALE_CALICI} calici a persona`) : "";
     const note = (k === "vinoCasa" && !loose) || sugg ? `<div class="d-wnote">${[k === "vinoCasa" && !loose ? T.litro1 : "", sugg].filter(Boolean).join(" · ")}</div>` : "";
-    return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}</div>${note}${t}</div>`;
+    const consumo = k !== "birra" && !q[k].incluso ? `<div class="d-wnote" style="margin-top:4px">${q.lang === "en" ? "Recommended quantity, charged on consumption: the final bill will only include the wine actually drunk." : "Quantità consigliata, conteggiata a consumo: nel conto finale solo il vino effettivamente bevuto."}</div>` : "";
+    return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}</div>${note}${t}${consumo}</div>`;
   }).join("");
   const tot = totalRows(q, c).map(([l, v, k]) => `<tr class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><td class="l">${esc(l)}</td><td class="r">${eurPlain(v)} €</td></tr>`).join("");
   const paras = t => (t || "").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
