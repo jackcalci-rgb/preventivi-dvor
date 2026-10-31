@@ -181,6 +181,7 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-legend span + span { margin-left: 14px; }
 .d-legend { text-align: center; font-family: var(--ui); font-size: 9px; color: #555; margin-top: 8px; }
 .d-legend .leaf { margin: 0 2px 0 0; }
+.email-box { max-height: 420px; overflow: auto; padding: 10px 12px; border: 1px solid var(--line, #ccc); border-radius: 8px; background: #fff; color: #111; font-weight: 400; text-transform: none; letter-spacing: 0; user-select: text; }
 /* Page 3: allergen table, same frame and type as page 2 */
 .p3 { padding-left: 60px; padding-right: 60px; padding-bottom: 60px; }
 .p3 h3 { font-family: var(--display); font-size: 19px; font-weight: 700; margin: 0 0 2px; text-align: center; letter-spacing: .02em; }
@@ -383,10 +384,22 @@ const NATALE_MENU = {
   secondi: ["Arrosto di vitello con patate al forno","Arrosto di maiale con patate in tecia","Guancette brasate al vino rosso con polentina morbida","Pancetta in crosta con finocchi","Filetto di maiale alla Wellington con purè","Scaloppa di sedano rapa con salsa olandese"]
 };
 Object.entries(NATALE_MENU).forEach(([sec, items]) => addTo(sec, NATALE, items));
+const NATALE65 = "Pranzi e cene aziendali di Natale 2026 · menu 65 €";
+const NATALE_MENU_65 = {
+  antipasti: ["Salmone affumicato con crostini e burro","Tartare di manzo con crostini","Tartare di cervo con crostini","Tartare di tonno","Capasanta con finferli e beurre blanc","Seppie e calamari grigliati con puntarelle","Cosce di rana fritte su patate schiacciate e prezzemolo"],
+  primi: ["Tagliolini al tartufo bianco","Gnocchi al ragù di mare","Risotto con scampi","Žlikrofi con cervo","Risotto allo zafferano con ossobuco","Lasagna ai porcini"],
+  secondi: ["Filetto di scottona francese al tartufo bianco","Petto d'anatra con riduzione al melograno","Trancio di branzino grigliato con purè di sedano rapa","Trancio di salmone grigliato con crema al rafano","Lombo di cervo ai frutti rossi"],
+  dessert: ["Mousse al cioccolato","Panettone albicocca e Collio Picolit DOC","Gubana con slivovitz","Pandoro con crema allo zabaione"]
+};
+Object.entries(NATALE_MENU_65).forEach(([sec, items]) => addTo(sec, NATALE65, items));
+const isNataleGroup = g => g === NATALE || g === NATALE65;
 // Piatti vegetariani: nel PDF hanno la fogliolina
-const VEG = new Set(["Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
+const VEG = new Set(["Lasagna ai porcini","Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
 // Supplemento a persona per alcuni piatti del menu di Natale (45 €)
-const SUPPL = { "Carpaccio di manzo su rucola e riduzione di melograno": 5, "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5, "Panettone con crema inglese": 5, "Pannacotta con liquore al Terrano": 5 };
+const SUPPL = { "Carpaccio di manzo su rucola e riduzione di melograno": 5, "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5, "Panettone con crema inglese": 5, "Pannacotta con liquore al Terrano": 5,
+  "Tartare di cervo con crostini": 5, "Tartare di tonno": 5, "Capasanta con finferli e beurre blanc": 10, "Cosce di rana fritte su patate schiacciate e prezzemolo": 5,
+  "Tagliolini al tartufo bianco": 10, "Risotto con scampi": 5, "Risotto allo zafferano con ossobuco": 5,
+  "Filetto di scottona francese al tartufo bianco": 10, "Petto d'anatra con riduzione al melograno": 5, "Panettone albicocca e Collio Picolit DOC": 5 };
 // Allergeni (Reg. UE 1169/2011, Allegato II) dei piatti del menu di Natale: da verificare con la cucina
 const ALLERGENI = { it: ["Glutine","Crostacei","Uova","Pesce","Arachidi","Soia","Latte","Frutta a guscio","Sedano","Senape","Sesamo","Solfiti","Lupini","Molluschi"],
   en: ["Gluten","Crustaceans","Eggs","Fish","Peanuts","Soy","Milk","Tree nuts","Celery","Mustard","Sesame","Sulphites","Lupin","Molluscs"] };
@@ -398,7 +411,14 @@ const ALLERG = {
   "Arrosto di vitello con patate al forno": [8,11], "Arrosto di maiale con patate in tecia": [8,11],
   "Guancette brasate al vino rosso con polentina morbida": [6,8,11], "Pancetta in crosta con finocchi": [0,2,6],
   "Filetto di maiale alla Wellington con purè": [0,2,6,9], "Scaloppa di sedano rapa con salsa olandese": [0,2,6,8],
-  "Tiramisù": [0,2,6], "Panettone con crema inglese": [0,2,6], "Pannacotta con liquore al Terrano": [6,7,11]
+  "Tiramisù": [0,2,6], "Panettone con crema inglese": [0,2,6], "Pannacotta con liquore al Terrano": [6,7,11],
+  "Salmone affumicato con crostini e burro": [0,3,6], "Tartare di manzo con crostini": [0,9], "Tartare di cervo con crostini": [0,9], "Tartare di tonno": [3,5,10],
+  "Capasanta con finferli e beurre blanc": [6,11,13], "Seppie e calamari grigliati con puntarelle": [3,13], "Cosce di rana fritte su patate schiacciate e prezzemolo": [0,2],
+  "Tagliolini al tartufo bianco": [0,2,6], "Gnocchi al ragù di mare": [0,1,2,3,8,11,13], "Risotto con scampi": [1,6,8,11], "Žlikrofi con cervo": [0,2,6,8,11],
+  "Risotto allo zafferano con ossobuco": [6,8,11], "Lasagna ai porcini": [0,2,6],
+  "Filetto di scottona francese al tartufo bianco": [6], "Petto d'anatra con riduzione al melograno": [11], "Trancio di branzino grigliato con purè di sedano rapa": [3,6,8],
+  "Trancio di salmone grigliato con crema al rafano": [3,6], "Lombo di cervo ai frutti rossi": [11],
+  "Mousse al cioccolato": [2,5,6], "Panettone albicocca e Collio Picolit DOC": [0,2,6,11], "Gubana con slivovitz": [0,2,6,7,11], "Pandoro con crema allo zabaione": [0,2,6,11]
 };
 const LEAF = `<svg class="leaf" viewBox="0 0 16 16" aria-label="vegetariano" role="img"><path d="M14 2C7 2 2.5 5.5 2.5 10.5c0 1.2.3 2.3.8 3.2C5 9.8 7.8 7.4 11 6c-2.8 1.8-5.2 4.6-6.6 8 1 .5 2 .7 3.1.7C12.6 14.7 14 9 14 2z" fill="#3f8f3a"/></svg>`;
 // Preventivi di Natale: un rametto di agrifoglio al posto della linea rossa e gli auguri in fondo
@@ -591,14 +611,14 @@ function withSections(q, map){
   return q;
 }
 // Esempi di Natale: stesso menu, pranzo o cena
-function nataleQuote(oggetto){ const q = blankQuote();
-  Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo, secondo e dolce"}] });
+function nataleQuote(oggetto, M = NATALE_MENU, prezzo = 45){ const q = blankQuote();
+  Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo,label:"Antipasto, primo, secondo e dolce"}] });
   q.vinoCasa = { on: true, prezzo: 15, incluso: false, titolo: "Vino del Collio:", righe: rows([["Blaževi Goriška Brda Merlot",2],["Blaževi Goriška Brda Refošk",1],["Blaževi Goriška Brda Sivi Pinot",3]]) };
   q.vinoBott.on = false; q.allergeniPag = true;
-  menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
-    primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
-    secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"],
-    dessert: [NATALE_MENU.dessert, "Scelta possibile 1 dolce"] });
+  menuScelte(q, { antipasti: [M.antipasti, "Scelta possibile 1 antipasto"],
+    primi: [M.primi, "Scelta possibile 1 primo"],
+    secondi: [M.secondi, "Scelta possibile 1 secondo"],
+    dessert: [M.dessert, "Scelta possibile 1 dolce"] });
   return nataleVino(q);
 }
 // Vino del Collio nei preventivi di Natale: consigliati 4 calici a testa (bottiglie Blaževi da 1 litro = 10 calici)
@@ -617,6 +637,8 @@ function nataleVino(q){
 const PRESETS = [
   { group: NATALE, name: "Pranzo aziendale di Natale · 45 €", make(){ return nataleQuote("Pranzo aziendale di Natale"); } },
   { group: NATALE, name: "Cena aziendale di Natale · 45 €", make(){ return nataleQuote("Cena aziendale di Natale"); } },
+  { group: NATALE, name: "Pranzo aziendale di Natale · 65 €", make(){ return nataleQuote("Pranzo aziendale di Natale", NATALE_MENU_65, 65); } },
+  { group: NATALE, name: "Cena aziendale di Natale · 65 €", make(){ return nataleQuote("Cena aziendale di Natale", NATALE_MENU_65, 65); } },
   { name: "Battesimo 50 € con torta (come Sara Mesiano)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", adulti: 20, bambini: 8, opzioni: [{prezzo:50,label:""}], torta: {on:true,grammi:150,euroKg:50} });
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 4, calici: 40 }];
@@ -827,13 +849,13 @@ const L = {
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
     bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino della casa:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
     food: "Prezzo food", vini: "Prezzo vini", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
-    foodOpt: l => `Prezzo food ${l}`, suppl: e => `Supplemento piatti scelti (+${eurPlain(e).replace(",00", "")} € a persona)`, supplNota: "maggiorazione di 5 € a persona", finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
+    foodOpt: l => `Prezzo food ${l}`, suppl: e => `Supplemento piatti scelti (+${eurPlain(e).replace(",00", "")} € a persona)`, supplNota: "maggiorazione a persona", finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
   en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", inizio: "Start time:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
     bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "House Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
     food: "Food price", vini: "Drinks price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
-    foodOpt: l => `Food price ${l}`, suppl: e => `Supplement for chosen dishes (+${eurPlain(e).replace(",00", "")} € per person)`, supplNota: "supplement of 5 € per person", finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
+    foodOpt: l => `Food price ${l}`, suppl: e => `Supplement for chosen dishes (+${eurPlain(e).replace(",00", "")} € per person)`, supplNota: "supplement per person", finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
     termini: "Terms & Conditions", allergie: "Allergies and Dietary Preferences", firmaCliente: "Client", date: dateEN }
 };
 
@@ -924,7 +946,7 @@ function field(label, path, opts = {}){
 function customEvent(){ return !!Q.oggettoLibero || !EVENT_TYPES.includes(Q.oggetto); }
 // The dropdown groups dishes only by price band (40 / 50 / 60-75 €); groups without a price keep their name
 function bandOf(g){
-  if (g === NATALE) return g;
+  if (isNataleGroup(g)) return g;
   const m = g.match(/\d+/); if (!m) return g;
   const n = +m[0], note = (g.match(/\(.*\)/) || [""])[0];
   return (n <= 55 ? "Menu 45-55 €" : "Menu 60-75 €") + (note ? " " + note : "");
@@ -984,14 +1006,14 @@ function brunchGroups(){
 function optGroups(key){
   const merged = {};
   // Nei preventivi di Natale si sceglie solo dal menu di Natale
-  Object.entries(CATALOG[key]).filter(([g]) => isNataleAz(Q) ? g === NATALE : g !== NATALE).forEach(([g, arr]) => { const b = bandOf(g); merged[b] = merged[b] || []; arr.forEach(i => { if (!merged[b].includes(i)) merged[b].push(i); }); });
+  Object.entries(CATALOG[key]).filter(([g]) => isNataleAz(Q) ? isNataleGroup(g) : !isNataleGroup(g)).forEach(([g, arr]) => { const b = bandOf(g); merged[b] = merged[b] || []; arr.forEach(i => { if (!merged[b].includes(i)) merged[b].push(i); }); });
   return Object.entries(merged).map(([g, arr]) => `<optgroup label="${esc(g)}">${arr.map(i => `<option value="${esc(i)}">${esc(i)}${VEG.has(i) ? " 🌿" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} €)` : ""}</option>`).join("")}</optgroup>`).join("");
 }
 
 function renderEditor(){
   const c = compute(Q);
   const natale = isNataleAz(Q);
-  const sectHTML = Q.sezioni.map((s, si) => natale && !s.items.length && !CATALOG[s.key][NATALE] && s.key !== "dessert" ? "" : `
+  const sectHTML = Q.sezioni.map((s, si) => natale && !s.items.length && !CATALOG[s.key][NATALE] && !CATALOG[s.key][NATALE65] && s.key !== "dessert" ? "" : `
     <div class="sect ${s.items.length ? "" : "empty"}">
       <div class="sect-head">
         <input class="lbl" id="sl_${si}" aria-label="Nome portata" data-p="sezioni.${si}.label" value="${esc(s.label)}">
@@ -1119,7 +1141,7 @@ function renderEditor(){
     ${isNataleAz(Q) ? `<div class="card">
       <h2>Email per il cliente<span class="spacer"></span><button type="button" data-act="copymail" style="text-transform:none;letter-spacing:0">Copia email</button></h2>
       ${field("Link alla carta dei vini sul sito", "linkVini", { full: true })}
-      <label class="f full" for="f_email_txt">Testo pronto da incollare (si aggiorna con il preventivo)<textarea id="f_email_txt" rows="16" readonly>${esc(nataleEmail(Q))}</textarea></label>
+      <div class="f full">Testo pronto da incollare (si aggiorna con il preventivo; i nomi dei piatti restano in grassetto)<div id="f_email_txt" class="email-box">${emailHTML(nataleEmail(Q))}</div></div>
     </div>` : ""}
 
     <div class="card">
@@ -1171,48 +1193,59 @@ function totalRows(q, c){
 }
 // Email pronta da copiare per i preventivi aziendali di Natale
 const LINK_VINI = "https://osteriadvor.com/vini.html";
+// \u0001…\u0002 = grassetto (nomi dei piatti e titoli); nella copia HTML diventano <b>
+const EB = t => `\u0001${t}\u0002`;
+function emailHTML(txt){ return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5">${esc(txt).replace(/\u0001/g, "<b>").replace(/\u0002/g, "</b>").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1">$1</a>').replace(/\n/g, "<br>")}</div>`; }
+const emailPlain = txt => txt.replace(/[\u0001\u0002]/g, "");
 function nataleEmail(q){
-  const c = compute(q), T = L.it;
+  const c = compute(q);
   const pasto = /cena|dinner/i.test(q.oggetto) ? "cena" : "pranzo";
-  const quando = q.dataEvento ? `il ${dateIT(q.dataEvento)}${q.oraInizio ? ` alle ${q.oraInizio}` : ""}` : "nella data che preferite";
+  const del = pasto === "cena" ? "della cena" : "del pranzo";
+  const nome = q.cliente.trim();
+  const quando = q.dataEvento ? ` del ${dateIT(q.dataEvento)}` : "";
+  const piatti = q.sezioni.filter(s => s.items.some(i => i.trim()));
+  const supp = [...new Set(piatti.flatMap(s => s.items.map(i => SUPPL[i.trim()]).filter(Boolean)))].sort((x, y) => x - y);
   const out = [];
-  out.push(`Oggetto: La vostra ${pasto} aziendale di Natale all'Osteria Dvor - preventivo n. ${q.numero}`, "");
-  out.push(`Gentile ${q.cliente.trim() || "Cliente"},`, "");
-  out.push(`grazie per aver scelto l'Osteria Dvor per la vostra ${pasto} aziendale di Natale. Siamo felici di inviarvi il preventivo n. ${q.numero}, pensato per ${num(q.adulti)} persone ${quando}. Lo trovate in allegato in PDF; qui sotto vi riassumiamo tutti i passaggi.`, "");
-  q.opzioni.forEach(o => out.push(`IL MENU: ${eur(num(o.prezzo))} a persona${o.label ? ` (${lc(o.label)})` : ""}`));
-  out.push("Per ogni portata il gruppo sceglie un piatto tra quelli proposti:", "");
-  q.sezioni.filter(s => s.items.some(i => i.trim())).forEach(s => {
+  out.push(`Oggetto: Preventivo ${pasto} di Natale - Osteria Dvor`, "");
+  out.push(nome ? `Buongiorno ${nome},` : "Buongiorno,", "");
+  out.push(`vi mando il preventivo ${del} di Natale${quando} per ${num(q.adulti)} persone. In allegato trovate il PDF completo, qui vi riassumo le cose principali.`, "");
+  const o = q.opzioni[0];
+  out.push(`Il menu è a ${EB(`${eurPlain(num(o.prezzo)).replace(",00", "")} € a persona`)} e comprende antipasto, primo, secondo e dolce. Per ogni portata scegliete un piatto, uguale per tutto il gruppo:`, "");
+  piatti.forEach(s => {
     out.push(s.label.replace(/:\s*$/, ""));
-    s.items.map(i => i.trim()).filter(Boolean).forEach(i => out.push(`- ${i}${VEG.has(i) ? " (vegetariano)" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} € a persona)` : ""}`));
+    s.items.map(i => i.trim()).filter(Boolean).forEach(i => out.push(`- ${EB(i)}${VEG.has(i) ? " (vegetariano)" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} €)` : ""}`));
     out.push("");
   });
-  if (q.sezioni.some(s => s.items.some(i => SUPPL[i.trim()]))) out.push("I piatti segnati con +5 € prevedono una maggiorazione di 5 € a persona, che aggiungiamo al totale solo se li scegliete.");
-  out.push("Il menu è un punto di partenza: se desiderate un piatto diverso, di qualsiasi tipo, passate a trovarci in osteria e parlatene direttamente con il nostro chef. Costruiremo insieme il menu più adatto al vostro gruppo.", "");
+  if (supp.length) out.push(`Dove vedete ${supp.map(v => `+${v} €`).join(" o ")} c'è un supplemento a persona, che aggiungiamo solo se scegliete quel piatto.`);
+  out.push("Se volete cambiare qualcosa, o avete in mente un piatto che qui non c'è, passate pure in osteria: ne parlate con lo chef e lo sistemiamo insieme.", "");
   const w = q.vinoCasa, d = c.d.vinoCasa;
-  out.push("IL VINO");
-  if (w.on && w.righe.length) {
-    out.push(`Abbiamo previsto il nostro ${(w.titolo || "Vino della casa").replace(/:\s*$/, "")}${/Bla[zž]evi/i.test(w.righe.map(r => r.nome).join()) ? " della cantina Blaževi" : ""}, consigliando ${NATALE_CALICI} calici a persona:`);
-    w.righe.filter(r => num(r.bott)).forEach(r => out.push(`- ${r.nome}: ${num(r.bott)} ${num(r.bott) === 1 ? "bottiglia" : "bottiglie"}`));
-    out.push(w.incluso ? "Il vino è incluso nel prezzo." : `In totale ${d.bott} bottiglie da 1 litro a ${eur(num(w.prezzo))} l'una, per ${eur(d.prezzo)}.`);
+  const corto = n => n.replace(/^Bla[zž]evi\s+Gori[sš]ka\s+Brda\s+/i, "");
+  const vini = w.on ? w.righe.filter(r => num(r.bott)) : [];
+  if (vini.length) {
+    const cantina = /Bla[zž]evi/i.test(vini.map(r => r.nome).join()) ? " di Blaževi" : "";
+    out.push(`Per il vino ho messo il nostro ${(w.titolo || "vino della casa").replace(/:\s*$/, "")}${cantina}, contando circa ${NATALE_CALICI} calici a testa: ${d.bott} bottiglie da un litro (${vini.map(r => `${num(r.bott)} ${corto(r.nome)}`).join(", ")})${w.incluso ? ", già comprese nel prezzo." : `, a ${eurPlain(num(w.prezzo)).replace(",00", "")} € l'una.`}`);
   }
-  out.push(`Se preferite qualcosa di diverso, potete scegliere tra le 97 etichette della nostra cantina, che trovate qui: ${q.linkVini || LINK_VINI}`, "");
-  out.push("IL RIEPILOGO");
-  totalRows(q, c).forEach(([l, v]) => out.push(`${l}: ${eur(v)}`));
+  out.push(`Se avete voglia di qualcos'altro, in cantina abbiamo 97 etichette: le trovate tutte qui ${q.linkVini || LINK_VINI}`, "");
+  out.push("In totale:");
+  totalRows(q, c).filter(([, , k]) => k !== "acc").forEach(([l, v]) => out.push(`${l}: ${EB(eur(v))}`));
   out.push("");
-  out.push(`Per confermare la prenotazione basta rispondere a questa email: vi chiediamo un acconto del 50%${q.opzioni.length > 1 ? "" : ` (${eur(c.acconto)})`} tramite bonifico, mentre il saldo si paga il giorno dell'evento. Nel PDF trovate i termini e le condizioni${q.allergeniPag ? " e la tabella degli allergeni" : ""}; ricordiamo che acqua e caffè non sono compresi e vengono conteggiati a parte.`, "");
-  out.push("Dicembre è il periodo più richiesto dell'anno, quindi vi consigliamo di confermare presto per assicurarvi la data che preferite. Saremo felici di accogliervi a San Floriano del Collio, tra le colline e le vigne, per brindare insieme alla fine dell'anno.", "");
-  out.push("Un caro saluto,", "Osteria Dvor", "Via Castello 5, San Floriano del Collio (GO)", "info@osteriadvor.com");
+  out.push(`Per tenere la data basta rispondermi e fare un bonifico di acconto del 50%${q.opzioni.length > 1 ? "" : ` (${eur(c.acconto)})`}; il resto si salda il giorno ${del}. Acqua e caffè sono a parte. Nel PDF trovate anche le condizioni${q.allergeniPag ? " e gli allergeni di ogni piatto" : ""}.`, "");
+  out.push("A dicembre le date si riempiono in fretta, quindi se vi va bene vi consiglio di confermare appena potete.", "");
+  out.push("Per qualsiasi domanda sono qui.", "");
+  out.push("Un saluto,", "Osteria Dvor", "Via Castello 5, San Floriano del Collio (GO)", "info@osteriadvor.com");
   return out.join("\n");
 }
 async function copyText(txt){
-  try { await navigator.clipboard.writeText(txt); return true; } catch (e) {}
-  const ta = $("#f_email_txt"); if (!ta) return false;
-  ta.focus(); ta.select(); try { return document.execCommand("copy"); } catch (e) { return false; }
+  const html = emailHTML(txt), plain = emailPlain(txt);
+  try { await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([plain], { type: "text/plain" }) })]); return true; } catch (e) {}
+  const box = $("#f_email_txt");
+  if (box) { const r = document.createRange(); r.selectNodeContents(box); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); try { if (document.execCommand("copy")) return true; } catch (e) {} }
+  try { await navigator.clipboard.writeText(plain); return true; } catch (e) { return false; }
 }
 function wineSuggTxt(bott){ return `Consigliati ${NATALE_CALICI} calici a testa: ${num(Q.adulti) * NATALE_CALICI} calici, circa <b>${nataleBottiglie(Q)} bottiglie</b> da 1 litro (ora ${bott}).`; }
 function renderTotalsBox(c){
   const ws = $("#wineSugg"); if (ws) ws.innerHTML = wineSuggTxt(c.d.vinoCasa.bott);
-  const em = $("#f_email_txt"); if (em) em.value = nataleEmail(Q);
+  const em = $("#f_email_txt"); if (em) em.innerHTML = emailHTML(nataleEmail(Q));
   const box = $("#edTotals"); if (!box) return;
   const rows = totalRows(Q, c);
   box.innerHTML = rows.map(([l, v, k]) => `<div class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><span>${esc(l)}</span><span>${eur(v)}</span></div>`).join("");
@@ -1304,7 +1337,7 @@ function renderDoc(q){
     <div class="d-qty"><span>${T.adulti.replace(/:\s*$/, "")}: <b>${esc(num(q.adulti))}</b></span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini.replace(/:\s*$/, "")}: <b>${esc(num(q.bambini))}</b></span>` : ""}</div>
     <div class="d-opts">${opts}</div>
     <div class="d-menu">${secs}</div>
-    ${used.some(s => s.items.some(i => VEG.has(i.trim()) || SUPPL[i.trim()])) ? `<div class="d-legend">${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<span>${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</span>` : ""}${used.some(s => s.items.some(i => SUPPL[i.trim()])) ? `<span><b class="d-suppl" style="margin:0 3px 0 0">+5 €</b>${T.supplNota}</span>` : ""}</div>` : ""}
+    ${used.some(s => s.items.some(i => VEG.has(i.trim()) || SUPPL[i.trim()])) ? `<div class="d-legend">${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<span>${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</span>` : ""}${used.some(s => s.items.some(i => SUPPL[i.trim()])) ? `<span><b class="d-suppl" style="margin:0 3px 0 0">${[...new Set(used.flatMap(s => s.items.map(i => SUPPL[i.trim()]).filter(Boolean)))].sort((a, b) => a - b).map(v => `+${v} €`).join(" / ")}</b>${T.supplNota}</span>` : ""}</div>` : ""}
     ${cake}
     <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}</div>
     <table class="tbl d-tot">${tot}</table>
