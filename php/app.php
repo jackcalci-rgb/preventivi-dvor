@@ -570,7 +570,7 @@ function blankQuote(){
     vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
-    supplScelti: [], allergeniPag: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
+    supplScelti: [], allergeniPag: false, vinoSommelier: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
 }
@@ -645,6 +645,11 @@ function addVinoConsumo(q){
   q.terms = re.test(q.terms) ? q.terms.replace(re, "$1\n\n" + line) : q.terms.trim() + "\n\n" + line;
   return q;
 }
+// Menu da 65 €: niente tabella vini, li sceglie il cliente con la sommelier
+function nataleSommelier(q){ q.vinoCasa.on = false; q.vinoSommelier = true; return q; }
+const sommelierTxt = q => q.lang === "en"
+  ? "Our sommelier will guide you in choosing the wines to pair with your menu. To get an idea already, you can browse our wine list on our website:"
+  : "Per la selezione dei vini ci sarà la nostra sommelier a guidarvi negli abbinamenti con il menu. Per farvi già un'idea potete consultare la nostra carta dei vini sul sito:";
 function nataleVino(q){
   const righe = q.vinoCasa.righe; if (!righe.length) return q;
   const isW = r => /pinot|bianc|rebula|ribolla|sauvignon|chardonnay|friulano|malvasia/i.test(r.nome);
@@ -658,8 +663,8 @@ function nataleVino(q){
 const PRESETS = [
   { group: NATALE, name: "Pranzo aziendale di Natale · 45 €", make(){ return nataleQuote("Pranzo aziendale di Natale"); } },
   { group: NATALE, name: "Cena aziendale di Natale · 45 €", make(){ return nataleQuote("Cena aziendale di Natale"); } },
-  { group: NATALE, name: "Pranzo aziendale di Natale · 65 €", make(){ return nataleQuote("Pranzo aziendale di Natale", NATALE_MENU_65, 65); } },
-  { group: NATALE, name: "Cena aziendale di Natale · 65 €", make(){ return nataleQuote("Cena aziendale di Natale", NATALE_MENU_65, 65); } },
+  { group: NATALE, name: "Pranzo aziendale di Natale · 65 €", make(){ return nataleSommelier(nataleQuote("Pranzo aziendale di Natale", NATALE_MENU_65, 65)); } },
+  { group: NATALE, name: "Cena aziendale di Natale · 65 €", make(){ return nataleSommelier(nataleQuote("Cena aziendale di Natale", NATALE_MENU_65, 65)); } },
   { name: "Battesimo 50 € con torta (come Sara Mesiano)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", adulti: 20, bambini: 8, opzioni: [{prezzo:50,label:""}], torta: {on:true,grammi:150,euroKg:50} });
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 4, calici: 40 }];
@@ -1144,6 +1149,7 @@ function renderEditor(){
 
     <div class="card">
       <h2>Vini</h2>
+      <label class="check full" style="margin-bottom:8px"><input type="checkbox" id="f_vinoSomm" data-p="vinoSommelier" ${Q.vinoSommelier ? "checked" : ""}> Vini scelti con la sommelier: nel PDF al posto della tabella esce una didascalia con il link alla carta dei vini</label>
       ${wineBlock("vinoCasa", "Vino del Collio", "dl_casa")}
       ${wineBlock("vinoBott", "Vino bottiglia", "dl_bott")}
       ${wineBlock("birra", "Birra alla spina", "dl_birra")}
@@ -1242,11 +1248,15 @@ function nataleEmail(q){
   const w = q.vinoCasa, d = c.d.vinoCasa;
   const corto = n => n.replace(/^Bla[zž]evi\s+Gori[sš]ka\s+Brda\s+/i, "");
   const vini = w.on ? w.righe.filter(r => num(r.bott)) : [];
+  if (q.vinoSommelier) {
+    out.push(`Per i vini sarà la nostra sommelier a guidarvi negli abbinamenti con i piatti che sceglierete, e verranno conteggiati a consumo. Intanto potete farvi un'idea guardando la nostra carta, con 97 etichette: ${q.linkVini || LINK_VINI}`, "");
+  } else {
   if (vini.length) {
     const cantina = /Bla[zž]evi/i.test(vini.map(r => r.nome).join()) ? " di Blaževi" : "";
     out.push(`Per il vino abbiamo previsto il nostro ${(w.titolo || "Vino del Collio").replace(/:\s*$/, "")}${cantina} (${vini.map(r => corto(r.nome)).join(", ")}). Per la nostra esperienza con questi eventi consigliamo ${NATALE_CALICI} calici a persona, e su questa base abbiamo calcolato le bottiglie che trovate nel preventivo, con il relativo prezzo.${w.incluso ? "" : " Il vino è conteggiato a consumo: se ne verrà bevuto meno di quanto consigliato, nel conto finale troverete solo quello effettivamente consumato."}`);
   }
   out.push(`Se avete voglia di qualcos'altro, in cantina abbiamo 97 etichette: le trovate tutte qui ${q.linkVini || LINK_VINI}`, "");
+  }
   out.push("In totale:");
   totalRows(q, c).filter(([, , k]) => k !== "acc").forEach(([l, v]) => out.push(`${l}: ${EB(eur(v))}`));
   out.push("");
@@ -1361,7 +1371,7 @@ function renderDoc(q){
     <div class="d-menu">${secs}</div>
     ${used.some(s => s.items.some(i => VEG.has(i.trim()) || SUPPL[i.trim()])) ? `<div class="d-legend">${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<span>${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</span>` : ""}${used.some(s => s.items.some(i => SUPPL[i.trim()])) ? `<span><b class="d-suppl" style="margin:0 3px 0 0">${[...new Set(used.flatMap(s => s.items.map(i => SUPPL[i.trim()]).filter(Boolean)))].sort((a, b) => a - b).map(v => `+${v} €`).join(" / ")}</b>${T.supplNota}</span>` : ""}</div>` : ""}
     ${cake}
-    <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}</div>
+    <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}${q.vinoSommelier ? `<div class="d-wine"><div class="k">${q.lang === "en" ? "Wines" : "Vini"}</div><div class="d-wnote" style="font-size:11px;max-width:470px">${esc(sommelierTxt(q))} <span style="font-style:normal;color:#c8432c">${esc((q.linkVini || LINK_VINI).replace(/^https?:\/\//, ""))}</span></div></div>` : ""}</div>
     <table class="tbl d-tot">${tot}</table>
     ${q.nota ? `<div class="d-note">${esc(q.nota)}</div>` : ""}
   </div>
