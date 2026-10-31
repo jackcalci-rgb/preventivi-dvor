@@ -472,6 +472,8 @@ const TERMS = {
 
 -L'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.
 
+-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.
+
 -Il costo per i bambini fino a 10 anni è di 15 euro a testa, con un menù a parte che include pasta al pomodoro, pasta al ragù, patatine fritte e succhi di frutta in caraffa.
 
 -Qualora la torta venga fornita dall'esterno, dovrà essere accompagnata da scontrino fiscale. Verrà applicata un'addizionale di €2,00 per ospite per il servizio di taglio, impiattamento e conservazione nella nostra cella frigorifera.
@@ -493,6 +495,8 @@ const TERMS = {
 
 -L'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.
 
+-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.
+
 -Succhi di frutta in caraffa inclusi.`,
     after: `-Tutte le spese relative ai diritti d’autore e alla loro gestione connesse all’utilizzo di musica durante l’evento, incluse le tariffe SIAE, saranno interamente a carico del Cliente.
 
@@ -509,6 +513,8 @@ const TERMS = {
 -I caffè non sono inclusi nel preventivo e saranno conteggiati a parte.
 
 -L'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.
+
+-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.
 
 -Il costo per i bambini fino a 10 anni è di 15 euro a testa, con un menù a parte che include pasta al pomodoro, pasta al ragù, patatine fritte e succhi di frutta in caraffa.`,
     after: `-Rischi Connessi: Consigliamo a ogni cliente di valutare attentamente le proprie esigenze alimentari e di consultare un professionista della salute in caso di dubbi riguardanti allergie o intolleranze alimentari.
@@ -530,6 +536,8 @@ const TERMS = {
 -Coffee is not included in the quotation and will be charged separately.
 
 -Sparkling and still water is not included in the quotation and will be charged separately.
+
+-Wine is charged on consumption: the quantity shown in the quotation is the recommended one. If less is drunk, the final bill will only include the wine actually consumed.
 
 -Soft drinks included in the price: cola, fanta, tonic water, iced tea, and assorted fruit juices (in carafes)
 
@@ -586,7 +594,7 @@ function migrate(q){
     else if (/Coffee is not included[^\n]*/.test(q.terms)) q.terms = q.terms.replace(/(-Coffee is not included[^\n]*)/, "$1\n\n-Sparkling and still water is not included in the quotation and will be charged separately.");
     else q.terms = q.terms.trim() + "\n\n" + (q.lang === "en" ? "-Sparkling and still water is not included in the quotation and will be charged separately." : "-L\'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.");
   }
-  if (isNataleAz(q) && q.vinoCasa && !q.vinoCasa.incluso) addVinoConsumo(q);
+  addVinoConsumo(q);
   ["vinoCasa","vinoBott","birra"].forEach(k => { if (q[k].titolo === undefined) q[k].titolo = ""; });
   SECTIONS.forEach(([key, label]) => { if (!q.sezioni.some(s => s.key === key)) q.sezioni.push({ key, label: SECTION_LABELS[q.lang || "it"][key], sub: "", items: [] }); });
   const order = SECTIONS.map(s => s[0]);
@@ -628,8 +636,8 @@ function nataleQuote(oggetto, M = NATALE_MENU, prezzo = 45){ const q = blankQuot
 // Vino del Collio nei preventivi di Natale: consigliati 4 calici a testa (bottiglie Blaževi da 1 litro = 10 calici)
 const NATALE_CALICI = 4;
 const nataleBottiglie = q => Math.ceil(num(q.adulti) * NATALE_CALICI / 10);
-const VINO_CONSUMO = { it: "-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata (4 calici a persona). Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.",
-  en: "-Wine is charged on consumption: the quantity shown in the quotation is the recommended one (4 glasses per person). If less is drunk, the final bill will only include the wine actually consumed." };
+const VINO_CONSUMO = { it: "-Il vino è conteggiato a consumo: la quantità indicata nel preventivo è quella consigliata. Se ne verrà bevuto meno, il conto finale riporterà solo il vino effettivamente consumato.",
+  en: "-Wine is charged on consumption: the quantity shown in the quotation is the recommended one. If less is drunk, the final bill will only include the wine actually consumed." };
 function addVinoConsumo(q){
   if (typeof q.terms !== "string" || /conteggiato a consumo|charged on consumption/i.test(q.terms)) return q;
   const en = q.lang === "en", line = VINO_CONSUMO[en ? "en" : "it"];
