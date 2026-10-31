@@ -370,7 +370,7 @@ const NATALE_MENU = {
 Object.entries(NATALE_MENU).forEach(([sec, items]) => addTo(sec, NATALE, items));
 // Piatti vegetariani: nel PDF hanno la fogliolina
 const VEG = new Set(["Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
-// Supplemento a persona per i piatti che portano il menu di Natale da 45 a 50 €
+// Supplemento a persona per alcuni piatti del menu di Natale (45 €)
 const SUPPL = { "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5 };
 const LEAF = `<svg class="leaf" viewBox="0 0 16 16" aria-label="vegetariano" role="img"><path d="M14 2C7 2 2.5 5.5 2.5 10.5c0 1.2.3 2.3.8 3.2C5 9.8 7.8 7.4 11 6c-2.8 1.8-5.2 4.6-6.6 8 1 .5 2 .7 3.1.7C12.6 14.7 14 9 14 2z" fill="#3f8f3a"/></svg>`;
 // Preventivi di Natale: un rametto di agrifoglio al posto della linea rossa e gli auguri in fondo
@@ -548,17 +548,17 @@ function withSections(q, map){
 }
 // Esempi di Natale: stesso menu, pranzo o cena
 function nataleQuote(oggetto){ const q = blankQuote();
-  Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo e secondo"},{prezzo:50,label:"Con il dolce"}] });
+  Object.assign(q, { oggetto, adulti: 30, bambini: 0, opzioni: [{prezzo:45,label:"Antipasto, primo, secondo e dolce"}] });
   q.vinoCasa = { on: true, prezzo: 15, incluso: true, titolo: "", righe: rows([["Rosso Sfuso",3],["Bianco Sfuso",3]]) };
   q.vinoBott.on = false;
   return menuScelte(q, { antipasti: [NATALE_MENU.antipasti, "Scelta possibile 1 antipasto"],
     primi: [NATALE_MENU.primi, "Scelta possibile 1 primo"],
     secondi: [NATALE_MENU.secondi, "Scelta possibile 1 secondo"],
-    dessert: [NATALE_MENU.dessert, "Incluso nel menu da 50 €"] });
+    dessert: [NATALE_MENU.dessert, ""] });
 }
 const PRESETS = [
-  { group: NATALE, name: "Pranzo aziendale di Natale · 45 € (50 € con dolce)", make(){ return nataleQuote("Pranzo aziendale di Natale"); } },
-  { group: NATALE, name: "Cena aziendale di Natale · 45 € (50 € con dolce)", make(){ return nataleQuote("Cena aziendale di Natale"); } },
+  { group: NATALE, name: "Pranzo aziendale di Natale · 45 €", make(){ return nataleQuote("Pranzo aziendale di Natale"); } },
+  { group: NATALE, name: "Cena aziendale di Natale · 45 €", make(){ return nataleQuote("Cena aziendale di Natale"); } },
   { name: "Battesimo 50 € con torta (come Sara Mesiano)", make(){ const q = blankQuote();
       Object.assign(q, { oggetto: "Battesimo", adulti: 20, bambini: 8, opzioni: [{prezzo:50,label:""}], torta: {on:true,grammi:150,euroKg:50} });
       q.vinoBott.righe = [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 4, calici: 40 }];
