@@ -442,6 +442,7 @@ const SECTION_LABELS = {
   en: { aperitivo: "Aperitif:", antipasti: "Appetizers:", primi: "First Courses:", secondi: "Main Courses:", pizze: "Pizzas:", contorni: "Sides:", sorbetto: "Sorbet:", dessert: "Dessert:", dolceBuffet: "Sweet:", salatoBuffet: "Savory:" }
 };
 const WINES_CASA = ["Blaževi Goriška Brda Sivi Pinot","Blaževi Goriška Brda Merlot","Blaževi Goriška Brda Refošk","Rosso Sfuso","Bianco Sfuso","Bollicine Sfuso","Red house wine on tap","White house wine on tap"];
+const APERITIVI = ["Caraffa Hugo spritz 1,5 L","Caraffa Aperol spritz 1,5 L","Caraffa Campari spritz 1,5 L","Caraffa birra Krombacher 1,5 L"];
 const BEERS = ["Birra alla spina Pilsner","Birra alla spina Lager","Birra alla spina IPA","Tap Beer Pilsner","Tap Beer Lager","Tap Beer IPA"];
 const WINES_BOTT = ["Piedimont Ribolla Metodo Classico 12 mesi","Piedimont Cuvée Metodo Classico 36 mesi","Piedimont Cuvée Magnum","Pittaro Rosè Metodo Classico","Blaževi Goriška Brda Sivi Pinot","Blaževi Goriška Brda Merlot","Blaževi Goriška Brda Refošk","Blaževi Goriška Brda Rumena Rebula","Blaževi Goriška Brda Rumena Rebula Charmat","Friulano Collio DOC","Malvasia Collio DOC","Chardonnay Collio DOC","Sauvignon Collio DOC","Ribolla Collio DOC","Merlot Collio DOC","Refosco Collio DOC","Cabernet Collio DOC"];
 const EVENT_TYPES = ["Battesimo","Comunione","Cresima","Matrimonio","Fidanzamento","Promessa di matrimonio","Anniversario","Anniversario di matrimonio","Compleanno","Diciottesimo","Laurea","Festa Privata","Festa","Festa Danzante","Festa Pensione","Pre Wedding Party","Festa di Natale","Pranzo aziendale di Natale","Cena aziendale di Natale","Festa di fine anno","Baby shower","Addio al celibato","Addio al nubilato","Rimpatriata","Cena di classe","Cena aziendale","Pranzo aziendale","Evento aziendale","Pranzo","Cena","Brunch","Aperitivo","Rinfresco","Degustazione","Pranzo commemorativo"];
@@ -569,6 +570,7 @@ function blankQuote(){
     vinoCasa: { on: true, prezzo: 15, incluso: false, righe: [{ nome: "Blaževi Goriška Brda Sivi Pinot", bott: 2, calici: "" }, { nome: "Blaževi Goriška Brda Merlot", bott: 2, calici: "" }] },
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
+    aperitivi: { on: false, prezzo: 22, incluso: false, titolo: "", righe: [{ nome: "Caraffa Aperol spritz 1,5 L", bott: 2, calici: "" }] },
     supplScelti: [], allergeniPag: false, vinoSommelier: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
@@ -594,7 +596,7 @@ function migrate(q){
     else q.terms = q.terms.trim() + "\n\n" + (q.lang === "en" ? "-Sparkling and still water is not included in the quotation and will be charged separately." : "-L\'acqua frizzante e naturale non è inclusa nel preventivo e sarà conteggiata a parte.");
   }
   addVinoConsumo(q);
-  ["vinoCasa","vinoBott","birra"].forEach(k => { if (q[k].titolo === undefined) q[k].titolo = ""; });
+  ["vinoCasa","vinoBott","birra","aperitivi"].forEach(k => { if (q[k].titolo === undefined) q[k].titolo = ""; });
   SECTIONS.forEach(([key, label]) => { if (!q.sezioni.some(s => s.key === key)) q.sezioni.push({ key, label: SECTION_LABELS[q.lang || "it"][key], sub: "", items: [] }); });
   const order = SECTIONS.map(s => s[0]);
   q.sezioni.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
@@ -825,14 +827,16 @@ const PRESETS = [
 /* ================= Calculations (same formulas as the Excel sheet) ================= */
 const num = v => { const n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : 0; };
 const r2 = n => Math.round(n * 100) / 100;
-// Glasses per unit, as in the sheets: 1 L of house wine = 10, 0.75 L bottle = 7.5 (1 L Blaževi = 10), 30 L keg = 60 pints
+// Glasses per unit, as in the sheets: 1 L of house wine = 10, 0.75 L bottle = 7.5 (1 L Blaževi = 10), 30 L keg = 60 pints,
+// 1,5 L aperitivo carafe = 6 glasses of 25 cl
 function perBottle(kind, nome){
   if (kind === "birra") return 60;
+  if (kind === "aperitivi") return 6;
   if (kind === "vinoCasa") return 10;
   return /bla[zž]evi/i.test(nome || "") && !/rebula/i.test(nome || "") ? 10 : 7.5;
 }
 function calici(row, kind){ return row.calici !== "" && row.calici != null ? num(row.calici) : Math.round(num(row.bott) * perBottle(kind, row.nome)); }
-const DRINKS = ["vinoCasa", "vinoBott", "birra"];
+const DRINKS = ["aperitivi", "vinoCasa", "vinoBott", "birra"];
 function compute(q){
   const ad = num(q.adulti), bb = num(q.bambini);
   const kids = bb * num(q.prezzoBambino);
@@ -848,14 +852,16 @@ function compute(q){
     d[k] = { bott, cal, prezzo: w.on && !w.incluso ? r2(bott * num(w.prezzo)) : 0 };
   });
   const vini = r2(d.vinoCasa.prezzo + d.vinoBott.prezzo + d.birra.prezzo);
+  const aper = d.aperitivi.prezzo;
+  const bere = r2(vini + aper);
   // supplemento a persona (adulti) per i piatti con maggiorazione segnati come scelti
   const inMenu = new Set(q.sezioni.flatMap(s => s.items.map(i => i.trim())));
   const supp = (q.supplScelti || []).filter(n => inMenu.has(n)).reduce((a, n) => a + (SUPPL[n] || 0), 0);
   const sup = r2(supp * ad);
-  const finale = food.map(f => r2(f + sup + vini + torta));
+  const finale = food.map(f => r2(f + sup + bere + torta));
   const base = q.accontoNoTorta ? finale[0] - torta : finale[0];
   const acconto = r2(base * 0.5); // the deposit is always 50%
-  return { food, kg, torta, d, vini, supp, sup, finale, acconto };
+  return { food, kg, torta, d, vini, aper, bere, supp, sup, finale, acconto };
 }
 
 /* ================= Formatting ================= */
@@ -872,14 +878,14 @@ const lc = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : "";
 const L = {
   it: { tel: "Tel.", cliente: "Cliente:", numero: "Numero preventivo", data: "Data", oggetto: "Oggetto Preventivo", dataEvento: "Data Evento", inizio: "Inizio evento: ore", adulti: "Quantità adulti", bambini: "Quantità bambini", opzione: "Opzione:",
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
-    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", vinoCasa: "Vino del Collio:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
-    food: "Prezzo food", vini: "Prezzo vini", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
+    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", aperitivi: "Aperitivi:", caraffe: "Caraffe (1,5 L)", bicchieri: "Bicchieri", vinoCasa: "Vino del Collio:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
+    food: "Prezzo food", vini: "Prezzo vini", aper: "Prezzo aperitivi", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
     foodOpt: l => `Prezzo food ${l}`, suppl: e => `Supplemento piatti scelti (+${eurPlain(e).replace(",00", "")} € a persona)`, supplNota: "maggiorazione a persona", finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
   en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", inizio: "Start time:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
-    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", vinoCasa: "Collio Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
-    food: "Food price", vini: "Drinks price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
+    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", aperitivi: "Aperitifs:", caraffe: "Carafes (1.5 L)", bicchieri: "Glasses", vinoCasa: "Collio Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
+    food: "Food price", vini: "Drinks price", aper: "Aperitif price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
     foodOpt: l => `Food price ${l}`, suppl: e => `Supplement for chosen dishes (+${eurPlain(e).replace(",00", "")} € per person)`, supplNota: "supplement per person", finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
     termini: "Terms & Conditions", allergie: "Allergies and Dietary Preferences", firmaCliente: "Client", date: dateEN }
 };
@@ -1059,8 +1065,9 @@ function renderEditor(){
     </div>`).join("");
 
   const wineBlock = (k, title, list) => {
-    const w = Q[k]; const cc = c.d[k]; const beer = k === "birra";
-    const unit = beer ? "Fusti" : (k === "vinoCasa" ? "Litri/bott." : "Bottiglie");
+    const w = Q[k]; const cc = c.d[k]; const beer = k === "birra", ap = k === "aperitivi";
+    const unit = ap ? "Caraffe" : beer ? "Fusti" : (k === "vinoCasa" ? "Litri/bott." : "Bottiglie");
+    const what = ap ? "Aperitivo" : beer ? "Birra" : "Vino", glass = beer ? "Pinte" : ap ? "Bicchieri" : "Calici";
     return `<div class="sect">
       <div class="row" style="flex-wrap:wrap">
         <label class="check"><input type="checkbox" id="${k}_on" data-p="${k}.on" ${w.on ? "checked" : ""}> <b>${title}</b></label>
@@ -1070,17 +1077,17 @@ function renderEditor(){
       ${w.on ? `
       <div class="row">
         <label class="f grow" for="${k}_t">Titolo nel PDF<input id="${k}_t" data-p="${k}.titolo" value="${esc(w.titolo || "")}" placeholder="${esc(L[Q.lang || "it"][k])}"></label>
-        <label class="f" for="${k}_pr" style="width:96px">€ ${beer ? "a fusto" : "a bottiglia"}<input id="${k}_pr" inputmode="decimal" data-p="${k}.prezzo" value="${esc(w.prezzo)}"></label>
+        <label class="f" for="${k}_pr" style="width:96px">€ ${beer ? "a fusto" : ap ? "a caraffa" : "a bottiglia"}<input id="${k}_pr" inputmode="decimal" data-p="${k}.prezzo" value="${esc(w.prezzo)}"></label>
       </div>
-      <div class="wine-row wine-head"><span>${beer ? "Birra" : "Vino"}</span><span>${unit}</span><span>${beer ? "Pinte" : "Calici"}</span><span></span></div>
+      <div class="wine-row wine-head"><span>${what}</span><span>${unit}</span><span>${glass}</span><span></span></div>
       ${w.righe.map((r, ri) => `<div class="wine-row">
-        <input id="${k}_n_${ri}" aria-label="${beer ? "Birra" : "Vino"}" list="${list}" data-p="${k}.righe.${ri}.nome" value="${esc(r.nome)}">
+        <input id="${k}_n_${ri}" aria-label="${what}" list="${list}" data-p="${k}.righe.${ri}.nome" value="${esc(r.nome)}">
         <input id="${k}_b_${ri}" aria-label="${unit}" inputmode="decimal" data-p="${k}.righe.${ri}.bott" value="${esc(r.bott)}">
-        <input id="${k}_c_${ri}" aria-label="${beer ? "Pinte" : "Calici"}" inputmode="numeric" data-p="${k}.righe.${ri}.calici" value="${esc(r.calici)}" placeholder="${Math.round(num(r.bott) * perBottle(k, r.nome))}">
+        <input id="${k}_c_${ri}" aria-label="${glass}" inputmode="numeric" data-p="${k}.righe.${ri}.calici" value="${esc(r.calici)}" placeholder="${Math.round(num(r.bott) * perBottle(k, r.nome))}">
         <button type="button" class="ghost" data-act="wrm" data-w="${k}" data-i="${ri}" aria-label="Rimuovi riga">✕</button>
       </div>`).join("")}
       ${k === "vinoCasa" && isNataleAz(Q) ? `<div class="row"><span class="hint grow" id="wineSugg">${wineSuggTxt(cc.bott)}</span><button type="button" data-act="winesugg">Usa consigliato</button></div>` : ""}
-      <div class="row"><button type="button" data-act="wadd" data-w="${k}">+ ${beer ? "Birra" : "Vino"}</button><span class="hint grow" style="text-align:right">${cc.bott} ${beer ? "fusti" : "bott."} · ${cc.cal} ${beer ? "pinte" : "calici"} · ${w.incluso ? "incluso" : eur(cc.prezzo)}</span></div>` : ""}
+      <div class="row"><button type="button" data-act="wadd" data-w="${k}">+ ${what}</button><span class="hint grow" style="text-align:right">${cc.bott} ${beer ? "fusti" : ap ? "caraffe" : "bott."} · ${cc.cal} ${glass.toLowerCase()} · ${w.incluso ? "incluso" : eur(cc.prezzo)}</span></div>` : ""}
     </div>`;
   };
 
@@ -1147,6 +1154,12 @@ function renderEditor(){
     </div>
 
     <div class="card">
+      <h2>Aperitivi</h2>
+      ${wineBlock("aperitivi", "Caraffe da 1,5 litri", "dl_aper")}
+      <div class="hint">Caraffe da 1,5 litri a 22 €: Hugo spritz, Aperol spritz, Campari spritz e birra Krombacher. Bicchieri se lasci il campo vuoto: 6 a caraffa.</div>
+    </div>
+
+    <div class="card">
       <h2>Vini</h2>
       <label class="check full" style="margin-bottom:8px"><input type="checkbox" id="f_vinoSomm" data-p="vinoSommelier" ${Q.vinoSommelier ? "checked" : ""}> Vini scelti con la sommelier: nel PDF al posto della tabella esce una didascalia con il link alla carta dei vini</label>
       ${wineBlock("vinoCasa", "Vino del Collio", "dl_casa")}
@@ -1187,6 +1200,7 @@ function renderEditor(){
     </div>
 
     <datalist id="dl_casa">${WINES_CASA.map(e => `<option value="${esc(e)}">`).join("")}</datalist>
+    <datalist id="dl_aper">${APERITIVI.map(e => `<option value="${esc(e)}">`).join("")}</datalist>
     <datalist id="dl_birra">${BEERS.map(e => `<option value="${esc(e)}">`).join("")}</datalist>
     <datalist id="dl_bott">${WINES_BOTT.map(e => `<option value="${esc(e)}">`).join("")}</datalist>
   `;
@@ -1202,12 +1216,14 @@ function totalRows(q, c){
     q.opzioni.forEach((o, i) => rows.push([T.foodOpt(lc(o.label) || T.opz(i+1)), c.food[i]]));
     if (c.sup) rows.push([T.suppl(c.supp), c.sup]);
     if (c.torta) rows.push([T.torta, c.torta]);
+    if (c.aper > 0) rows.push([T.aper, c.aper]);
     if (c.vini > 0) rows.push([T.vini, c.vini]);
     q.opzioni.forEach((o, i) => rows.push([T.finaleOpt(lc(o.label) || T.opz(i+1)), c.finale[i]]));
-  } else if (c.vini > 0) {
+  } else if (c.bere > 0) {
     rows.push([T.food, c.food[0]]);
     if (c.sup) rows.push([T.suppl(c.supp), c.sup]);
-    rows.push([T.vini, c.vini]);
+    if (c.aper > 0) rows.push([T.aper, c.aper]);
+    if (c.vini > 0) rows.push([T.vini, c.vini]);
     rows.push([c.torta ? T.finaleTorta : T.totale, c.finale[0]]);
   } else {
     if (c.sup) { rows.push([T.food, c.food[0]]); rows.push([T.suppl(c.supp), c.sup]); }
@@ -1286,8 +1302,8 @@ function renderTotalsBox(c){
 function drinkTable(q, k, cc, T){
   const w = q[k];
   if (!w.on || !w.righe.length) return "";
-  const unit = k === "birra" ? T.fusti : (k === "vinoCasa" && w.righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome)) ? T.litri : T.bottiglie);
-  const glass = k === "birra" ? T.pinte : T.calici;
+  const unit = k === "aperitivi" ? T.caraffe : k === "birra" ? T.fusti : (k === "vinoCasa" && w.righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome)) ? T.litri : T.bottiglie);
+  const glass = k === "aperitivi" ? T.bicchieri : k === "birra" ? T.pinte : T.calici;
   const rows = w.righe.map(r => `<tr><td style="width:250px;white-space:nowrap">${esc(r.nome)}</td><td class="c" style="width:70px">${esc(num(r.bott))}</td><td class="c" style="width:90px">${calici(r, k)}</td></tr>`).join("");
   return `<table class="tbl">
     <tr class="h"><td></td><td class="c">${unit}</td><td class="c">${glass}</td></tr>
@@ -1342,7 +1358,7 @@ function renderDoc(q){
     const loose = q[k].righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome));
     const sugg = k === "vinoCasa" && isNataleAz(q) ? (q.lang === "en" ? `Recommended: ${NATALE_CALICI} glasses per person` : `Consigliati ${NATALE_CALICI} calici a persona`) : "";
     const note = (k === "vinoCasa" && !loose) || sugg ? `<div class="d-wnote">${[k === "vinoCasa" && !loose ? T.litro1 : "", sugg].filter(Boolean).join(" · ")}</div>` : "";
-    const consumo = k !== "birra" && !q[k].incluso ? `<div class="d-wnote" style="margin-top:4px">${q.lang === "en" ? "Recommended quantity, charged on consumption: the final bill will only include the wine actually drunk." : "Quantità consigliata, conteggiata a consumo: nel conto finale solo il vino effettivamente bevuto."}</div>` : "";
+    const consumo = k !== "birra" && k !== "aperitivi" && !q[k].incluso ? `<div class="d-wnote" style="margin-top:4px">${q.lang === "en" ? "Recommended quantity, charged on consumption: the final bill will only include the wine actually drunk." : "Quantità consigliata, conteggiata a consumo: nel conto finale solo il vino effettivamente bevuto."}</div>` : "";
     return `<div class="d-wine"><div class="k">${esc((q[k].titolo || T[k]).replace(/:\s*$/, ""))}</div>${note}${t}${consumo}</div>`;
   }).join("");
   const tot = totalRows(q, c).map(([l, v, k]) => `<tr class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><td class="l">${esc(l)}</td><td class="r">${eurPlain(v)} €</td></tr>`).join("");
@@ -1413,7 +1429,7 @@ function touch(){ Q.updated = Date.now(); clearTimeout(saveT); saveT = setTimeou
 function refreshLight(){ clearTimeout(pvT); pvT = setTimeout(() => { renderPreview(); renderTotalsBox(compute(Q)); }, 120); touch(); }
 function refreshAll(){ renderEditor(); renderPreview(); touch(); }
 
-const NUMERIC = /^(adulti|bambini|prezzoBambino|opzioni\.\d+\.prezzo|torta\.(grammi|euroKg)|(vino\w+|birra)\.prezzo|(vino\w+|birra)\.righe\.\d+\.bott)$/;
+const NUMERIC = /^(adulti|bambini|prezzoBambino|opzioni\.\d+\.prezzo|torta\.(grammi|euroKg)|(vino\w+|birra|aperitivi)\.prezzo|(vino\w+|birra|aperitivi)\.righe\.\d+\.bott)$/;
 editor.addEventListener("input", e => {
   const t = e.target, p = t.dataset.p; if (!p) return;
   if (t.type === "checkbox") return;
@@ -1421,7 +1437,7 @@ editor.addEventListener("input", e => {
   if (/^sezioni\.\d+\.sub$/.test(p)) v = v.split(/\s*\/\s*/).join("\n");
   if (NUMERIC.test(p)) v = v.replace(",", ".");
   setPath(Q, p, v);
-  if (/^(vino\w+|birra)\.righe\.\d+\.(bott|nome)$/.test(p)) { const k = p.split(".")[0]; const row = getPath(Q, p.replace(/\.(bott|nome)$/, "")); const ci = t.parentElement.querySelector('[data-p$=".calici"]'); if (ci) ci.placeholder = Math.round(num(row.bott) * perBottle(k, row.nome)); }
+  if (/^(vino\w+|birra|aperitivi)\.righe\.\d+\.(bott|nome)$/.test(p)) { const k = p.split(".")[0]; const row = getPath(Q, p.replace(/\.(bott|nome)$/, "")); const ci = t.parentElement.querySelector('[data-p$=".calici"]'); if (ci) ci.placeholder = Math.round(num(row.bott) * perBottle(k, row.nome)); }
   if (p === "data") { const m = NUM_RE.exec(Q.numero || ""); if (m && /^\d{4}-\d{2}-\d{2}$/.test(v)) { Q.numero = numDate(v) + m[2] + m[3]; const f = $("#f_numero"); if (f) f.value = Q.numero; } }
   if (p === "cliente" || p === "numero" || p === "data") $("#curName").textContent = (Q.cliente ? Q.cliente + " · " : "") + Q.numero;
   refreshLight();
