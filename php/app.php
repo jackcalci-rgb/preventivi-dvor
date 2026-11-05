@@ -173,9 +173,8 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-items { font-style: italic; margin-top: 8px; }
 .d-items > div + div { margin-top: 8px; }
 .d-items .nw { white-space: nowrap; }
-/* two-column courses: two left-aligned lists, side by side and centred together under the course title */
-.d-items.two { display: grid; grid-template-columns: minmax(0, max-content) minmax(0, max-content); justify-content: center; column-gap: 48px; width: 100%; align-items: start; text-align: left; }
-.d-items.two > div { max-width: 300px; }
+/* two-column courses: two equal halves, symmetric around the page centre, each dish centred in its half */
+.d-items.two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; align-items: start; text-align: center; }
 .d-items.two > div + div { margin-top: 0 !important; }
 .d-items.two > div > div + div { margin-top: 8px; }
 .page.compact .d-items.two > div > div + div { margin-top: 6px; }
