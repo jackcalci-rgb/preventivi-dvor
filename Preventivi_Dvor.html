@@ -102,6 +102,7 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .items { display: flex; flex-direction: column; gap: 6px; }
 .item { display: flex; gap: 4px; align-items: center; }
 .item input { flex: 1; font-style: italic; }
+.item input.sup-in { flex: 0 0 56px; font-style: normal; text-align: right; color: #d22b1f; font-weight: 600; }
 .count { font-size: 11px; font-weight: 700; background: var(--accent-soft); color: var(--accent); border-radius: 99px; padding: 2px 7px; }
 .sect.empty .count { background: var(--field); color: var(--muted); }
 
@@ -395,6 +396,8 @@ const isNataleGroup = g => g === NATALE || g === NATALE65;
 // Piatti vegetariani: nel PDF hanno la fogliolina
 const VEG = new Set(["Lasagna ai porcini","Toc' in braide","Fricchetti friulani","Gnocchi al radicchio rosso e formaggi","Risotto di zucca e amaretti","Scaloppa di sedano rapa con salsa olandese"]);
 // Supplemento a persona per alcuni piatti del menu di Natale (45 €)
+// supplement per person for a dish: the price typed in this quote, else the catalog one
+const supOf = (q, i) => { const k = String(i).trim(), c = (q.supplCustom || {})[k]; return c !== undefined && c !== "" ? num(c) : (SUPPL[k] || 0); };
 const SUPPL = { "Carpaccio di manzo su rucola e riduzione di melograno": 5, "Rosa di prosciutto di Osvaldo con spuma di frico": 5, "Pancetta in crosta con finocchi": 5, "Filetto di maiale alla Wellington con purè": 5, "Panettone con crema inglese": 5, "Pannacotta con liquore al Terrano": 5,
   "Tartare di cervo con crostini": 5, "Tartare di tonno": 5, "Capasanta con finferli e beurre blanc": 10, "Cosce di rana fritte su patate schiacciate e prezzemolo": 5,
   "Tagliolini al tartufo bianco": 10, "Risotto con scampi": 5, "Risotto allo zafferano con ossobuco": 5,
@@ -571,7 +574,7 @@ function blankQuote(){
     vinoBott: { on: true, prezzo: 30, incluso: false, righe: [{ nome: "Piedimont Ribolla Metodo Classico 12 mesi", bott: 2, calici: "" }] },
     birra: { on: false, prezzo: 0, incluso: true, righe: [{ nome: "Birra alla spina Pilsner", bott: 1, calici: "" }] },
     aperitivi: { on: false, prezzo: 22, incluso: false, titolo: "", righe: [{ nome: "Caraffa Aperol spritz 1,5 L", bott: 2, calici: "" }] },
-    supplScelti: [], allergeniPag: false, vinoSommelier: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
+    supplScelti: [], supplCustom: {}, allergeniPag: false, vinoSommelier: false, linkVini: "https://osteriadvor.com/vini.html", lang: "it", acconto: 50, accontoNoTorta: false, accontoLabel: "", accontoFisso: "", nota: "",
     termsKey: "eventi", terms: TERMS.eventi.terms, termsAfter: TERMS.eventi.after, allergie: ALLERGIE
   };
 }
@@ -856,7 +859,7 @@ function compute(q){
   const bere = r2(vini + aper);
   // supplemento a persona (adulti) per i piatti con maggiorazione segnati come scelti
   const inMenu = new Set(q.sezioni.flatMap(s => s.items.map(i => i.trim())));
-  const supp = (q.supplScelti || []).filter(n => inMenu.has(n)).reduce((a, n) => a + (SUPPL[n] || 0), 0);
+  const supp = (q.supplScelti || []).filter(n => inMenu.has(n)).reduce((a, n) => a + supOf(q, n), 0);
   const sup = r2(supp * ad);
   const finale = food.map(f => r2(f + sup + bere + torta));
   const base = q.accontoNoTorta ? finale[0] - torta : finale[0];
@@ -1054,7 +1057,8 @@ function renderEditor(){
       <div class="items">
         ${s.items.map((it, ii) => `<div class="item">
           <input id="si_${si}_${ii}" aria-label="Piatto" data-p="sezioni.${si}.items.${ii}" value="${esc(it)}">
-          ${SUPPL[it.trim()] ? `<label class="check suppl" title="Il cliente ha scelto questo piatto: aggiunge ${SUPPL[it.trim()]} € a persona"><input type="checkbox" data-suppl="${esc(it.trim())}" ${(Q.supplScelti || []).includes(it.trim()) ? "checked" : ""}> scelto +${SUPPL[it.trim()]} €</label>` : ""}
+          <input class="sup-in" data-supitem="${esc(it.trim())}" inputmode="decimal" placeholder="+ €" value="${esc((Q.supplCustom || {})[it.trim()] ?? "")}" title="Supplemento a persona per questo piatto (€). Vuoto = prezzo del menu, 0 = nessun supplemento" aria-label="Supplemento in euro a persona">
+          ${supOf(Q, it) ? `<label class="check suppl" title="Il cliente ha scelto questo piatto: aggiunge ${eurPlain(supOf(Q, it)).replace(",00", "")} € a persona"><input type="checkbox" data-suppl="${esc(it.trim())}" ${(Q.supplScelti || []).includes(it.trim()) ? "checked" : ""}> scelto</label>` : ""}
           <button type="button" class="ghost" data-act="up" data-s="${si}" data-i="${ii}" aria-label="Sposta su" ${ii ? "" : "disabled"}>↑</button>
           <button type="button" class="ghost" data-act="rm" data-s="${si}" data-i="${ii}" aria-label="Rimuovi">✕</button>
         </div>`).join("")}
@@ -1246,7 +1250,7 @@ function nataleEmail(q){
   const nome = q.cliente.trim();
   const quando = q.dataEvento ? ` del ${dateIT(q.dataEvento)}` : "";
   const piatti = q.sezioni.filter(s => s.items.some(i => i.trim()));
-  const supp = [...new Set(piatti.flatMap(s => s.items.map(i => SUPPL[i.trim()]).filter(Boolean)))].sort((x, y) => x - y);
+  const supp = [...new Set(piatti.flatMap(s => s.items.map(i => supOf(q, i)).filter(Boolean)))].sort((x, y) => x - y);
   const out = [];
   out.push(`Oggetto: Preventivo ${pasto} di Natale - Osteria Dvor`, "");
   out.push(nome ? `Buongiorno ${nome},` : "Buongiorno,", "");
@@ -1255,10 +1259,10 @@ function nataleEmail(q){
   out.push(`Il menu è a ${EB(`${eurPlain(num(o.prezzo)).replace(",00", "")} € a persona`)} e comprende antipasto, primo, secondo e dolce. Per ogni portata scegliete un piatto, uguale per tutto il gruppo:`, "");
   piatti.forEach(s => {
     out.push(s.label.replace(/:\s*$/, ""));
-    s.items.map(i => i.trim()).filter(Boolean).forEach(i => out.push(`- ${EB(i)}${VEG.has(i) ? " (vegetariano)" : ""}${SUPPL[i] ? ` (+${SUPPL[i]} €)` : ""}`));
+    s.items.map(i => i.trim()).filter(Boolean).forEach(i => out.push(`- ${EB(i)}${VEG.has(i) ? " (vegetariano)" : ""}${supOf(q, i) ? ` (+${eurPlain(supOf(q, i)).replace(",00", "")} €)` : ""}`));
     out.push("");
   });
-  if (supp.length) out.push(`Dove vedete ${supp.map(v => `+${v} €`).join(" o ")} c'è un supplemento a persona, che aggiungiamo solo se scegliete quel piatto.`);
+  if (supp.length) out.push(`Dove vedete ${supp.map(v => `+${eurPlain(v).replace(",00", "")} €`).join(" o ")} c'è un supplemento a persona, che aggiungiamo solo se scegliete quel piatto.`);
   out.push("Se volete cambiare qualcosa, o avete in mente un piatto che qui non c'è, passate pure in osteria: ne parlate con lo chef e lo sistemiamo insieme.", "");
   const w = q.vinoCasa, d = c.d.vinoCasa;
   const corto = n => n.replace(/^Bla[zž]evi\s+Gori[sš]ka\s+Brda\s+/i, "");
@@ -1336,7 +1340,7 @@ function renderDoc(q){
   const T = L[q.lang || "it"];
   const secHtml = s => `
     <div class="d-sec"><div class="k">${esc(s.label.replace(/:\s*$/, ""))}</div>${s.sub ? `<div class="d-sub">${esc(s.sub)}</div>` : ""}
-    <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}${VEG.has(i.trim()) ? LEAF : ""}${SUPPL[i.trim()] ? `<span class="d-suppl">+${SUPPL[i.trim()]} €</span>` : ""}</div>`).join("")}</div></div>`;
+    <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}${VEG.has(i.trim()) ? LEAF : ""}${supOf(q, i) ? `<span class="d-suppl">+${eurPlain(supOf(q, i)).replace(",00", "")} €</span>` : ""}</div>`).join("")}</div></div>`;
   // Primi and Secondi sit side by side; every other course runs the full width
   const used = q.sezioni.filter(s => s.items.some(i => i.trim()));
   const pair = ["primi", "secondi"].map(k => used.find(s => s.key === k));
@@ -1384,7 +1388,7 @@ function renderDoc(q){
     <div class="d-qty"><span>${T.adulti.replace(/:\s*$/, "")}: <b>${esc(num(q.adulti))}</b></span>${num(q.bambini) || q.opzioni.length > 1 ? `<span>${T.bambini.replace(/:\s*$/, "")}: <b>${esc(num(q.bambini))}</b></span>` : ""}</div>
     <div class="d-opts">${opts}</div>
     <div class="d-menu">${secs}</div>
-    ${used.some(s => s.items.some(i => VEG.has(i.trim()) || SUPPL[i.trim()])) ? `<div class="d-legend">${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<span>${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</span>` : ""}${used.some(s => s.items.some(i => SUPPL[i.trim()])) ? `<span><b class="d-suppl" style="margin:0 3px 0 0">${[...new Set(used.flatMap(s => s.items.map(i => SUPPL[i.trim()]).filter(Boolean)))].sort((a, b) => a - b).map(v => `+${v} €`).join(" / ")}</b>${T.supplNota}</span>` : ""}</div>` : ""}
+    ${used.some(s => s.items.some(i => VEG.has(i.trim()) || supOf(q, i))) ? `<div class="d-legend">${used.some(s => s.items.some(i => VEG.has(i.trim()))) ? `<span>${LEAF} ${q.lang === "en" ? "Vegetarian dish" : "Piatto vegetariano"}</span>` : ""}${used.some(s => s.items.some(i => supOf(q, i))) ? `<span><b class="d-suppl" style="margin:0 3px 0 0">${[...new Set(used.flatMap(s => s.items.map(i => supOf(q, i)).filter(Boolean)))].sort((a, b) => a - b).map(v => `+${eurPlain(v).replace(",00", "")} €`).join(" / ")}</b>${T.supplNota}</span>` : ""}</div>` : ""}
     ${cake}
     <div style="margin-top:${q.torta.on ? 8 : 26}px">${drinks}${q.vinoSommelier ? `<div class="d-wine"><div class="k">${q.lang === "en" ? "Wines" : "Vini"}</div><div class="d-wnote" style="font-size:11px;max-width:470px">${esc(sommelierTxt(q))} <span style="font-style:normal;color:#c8432c">${esc((q.linkVini || LINK_VINI).replace(/^https?:\/\//, ""))}</span></div></div>` : ""}</div>
     <table class="tbl d-tot">${tot}</table>
@@ -1431,7 +1435,9 @@ function refreshAll(){ renderEditor(); renderPreview(); touch(); }
 
 const NUMERIC = /^(adulti|bambini|prezzoBambino|opzioni\.\d+\.prezzo|torta\.(grammi|euroKg)|(vino\w+|birra|aperitivi)\.prezzo|(vino\w+|birra|aperitivi)\.righe\.\d+\.bott)$/;
 editor.addEventListener("input", e => {
-  const t = e.target, p = t.dataset.p; if (!p) return;
+  const t = e.target, p = t.dataset.p;
+  if (t.dataset.supitem !== undefined) { const n = t.dataset.supitem, v = t.value.replace(",", ".").replace(/[^\d.]/g, ""); Q.supplCustom = Q.supplCustom || {}; if (v === "") delete Q.supplCustom[n]; else Q.supplCustom[n] = v; refreshLight(); return; }
+  if (!p) return;
   if (t.type === "checkbox") return;
   let v = t.value;
   if (/^sezioni\.\d+\.sub$/.test(p)) v = v.split(/\s*\/\s*/).join("\n");
@@ -1444,6 +1450,7 @@ editor.addEventListener("input", e => {
 });
 editor.addEventListener("change", e => {
   const t = e.target;
+  if (t.dataset.supitem !== undefined) { refreshAll(); return; }
   if (t.dataset.suppl) { const n = t.dataset.suppl; Q.supplScelti = (Q.supplScelti || []).filter(x => x !== n); if (t.checked) Q.supplScelti.push(n); refreshAll(); return; }
   if (t.type === "checkbox" && t.dataset.p) { setPath(Q, t.dataset.p, t.checked); refreshAll(); return; }
   if (t.id === "termsKey") { useTerms(Q, t.value); refreshAll(); return; }
