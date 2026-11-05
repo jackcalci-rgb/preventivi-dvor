@@ -1193,11 +1193,11 @@ function renderEditor(){
       <div class="totals" id="edTotals"></div>
     </div>
 
-    ${isNataleAz(Q) ? `<div class="card">
-      <h2>Email per il cliente<span class="spacer"></span><button type="button" data-act="copymail" style="text-transform:none;letter-spacing:0">Copia email</button></h2>
-      ${field("Link alla carta dei vini sul sito", "linkVini", { full: true })}
-      <div class="f full">Testo pronto da incollare (si aggiorna con il preventivo; i nomi dei piatti restano in grassetto)<div id="f_email_txt" class="email-box">${emailHTML(nataleEmail(Q))}</div></div>
-    </div>` : ""}
+    <div class="card">
+      <h2>Email per il cliente<span class="spacer"></span><button type="button" data-act="regenmail" style="text-transform:none;letter-spacing:0">Rigenera</button> <button type="button" data-act="copymail" style="text-transform:none;letter-spacing:0">Copia email</button></h2>
+      ${isNataleAz(Q) ? field("Link alla carta dei vini sul sito", "linkVini", { full: true }) : ""}
+      <div class="f full">Testo pronto da incollare: si aggiorna da solo con il preventivo. Puoi anche correggerlo qui sotto prima di copiarlo (dopo una modifica a mano non si aggiorna più finché non premi Rigenera).<div id="f_email_txt" class="email-box" contenteditable="true" spellcheck="true">${emailHTML(emailFor(Q))}</div></div>
+    </div>
 
     <div class="card">
       <h2>Termini & condizioni<span class="spacer"></span>
@@ -1297,8 +1297,65 @@ function nataleEmail(q){
   out.push("Un saluto,", "Osteria Dvor", "Via Castello 5, San Floriano del Collio (GO)", "info@osteriadvor.com");
   return out.join("\n");
 }
+// Email pronta da copiare per tutti gli altri preventivi: riassunto, come sono fatti i calcoli, bere a consumo
+const emailFor = q => isNataleAz(q) ? nataleEmail(q) : quoteEmail(q);
+function quoteEmail(q){
+  const c = compute(q), qi = Object.assign({}, q, { lang: "it" });
+  const ad = num(q.adulti), bb = num(q.bambini), e0 = v => eurPlain(v).replace(",00", "") + " €";
+  const nome = q.cliente.trim(), ogg = (q.oggetto || "evento").trim();
+  const quando = (q.dataEvento ? ` del ${dateIT(q.dataEvento)}` : "") + (q.oraInizio ? ` (inizio ore ${q.oraInizio})` : "");
+  const piatti = q.sezioni.filter(s => s.items.some(i => i.trim()));
+  const supp = [...new Set(piatti.flatMap(s => s.items.map(i => supOf(q, i)).filter(Boolean)))].sort((x, y) => x - y);
+  const two = q.opzioni.length > 1;
+  const out = [];
+  out.push(`Oggetto: Preventivo ${lc(ogg)}${q.dataEvento ? " " + dateIT(q.dataEvento) : ""} - Osteria Dvor`, "");
+  out.push(nome ? `Buongiorno ${nome},` : "Buongiorno,", "");
+  out.push(`grazie per averci scelto. Vi mando il preventivo per l'evento "${ogg}"${quando}, per ${ad} ${ad === 1 ? "adulto" : "adulti"}${bb ? ` e ${bb} ${bb === 1 ? "bambino" : "bambini"}` : ""}. In allegato trovate il PDF completo; qui vi faccio un breve riassunto.`, "");
+  // menu
+  if (two) {
+    out.push("Vi proponiamo due opzioni di menu:");
+    q.opzioni.forEach((o, i) => out.push(`- ${EB(e0(num(o.prezzo)) + " a persona")}${o.label ? `: ${o.label}` : ""}`));
+  } else out.push(`Il menu è a ${EB(e0(num(q.opzioni[0].prezzo)) + " a persona")}${q.opzioni[0].label ? ` (${q.opzioni[0].label})` : ""}.`);
+  out.push("");
+  piatti.forEach(s => {
+    out.push(`${EB(s.label.replace(/:\s*$/, ""))}${s.sub ? ` (${s.sub.replace(/\n/g, ", ")})` : ""}`);
+    s.items.map(i => i.trim()).filter(Boolean).forEach(i => out.push(`- ${i}${VEG.has(i) ? " (vegetariano)" : ""}${supOf(q, i) ? ` (+${e0(supOf(q, i))})` : ""}`));
+    // "4 portate da scegliere" / "Scelta possibile 2 primi": tell the client one more can be added
+    const m = (s.sub || "").match(/(\d+)\s*portat|scelta possibile\s*(\d+)/i);
+    if (m) { const n = +(m[1] || m[2]); out.push(`Le portate da scegliere sono ${n}, ma se volete potete aggiungerne ${n === 1 ? "un'altra" : "una in più"}: ditecelo e vi indichiamo il piccolo supplemento a persona.${/aperitiv/i.test(s.label) ? " Per la nostra esperienza, comunque, un mix di 4 aperitivi è la combinazione giusta." : ""}`); }
+    out.push("");
+  });
+  if (supp.length) out.push(`Dove vedete ${supp.map(v => "+" + e0(v)).join(" o ")} c'è un supplemento a persona, che aggiungiamo solo se scegliete quel piatto.`, "");
+  // calcoli
+  out.push(EB("Come abbiamo fatto i calcoli"));
+  q.opzioni.forEach((o, i) => out.push(`- Cibo${two ? ` (${o.label || "opzione " + (i + 1)})` : ""}: ${e0(num(o.prezzo))} × ${ad} adulti${bb ? ` + ${e0(num(q.prezzoBambino))} × ${bb} bambini` : ""} = ${eur(c.food[i])}`));
+  if (c.sup) out.push(`- Supplementi dei piatti scelti: ${e0(c.supp)} × ${ad} adulti = ${eur(c.sup)}`);
+  if (c.torta) out.push(`- Torta: circa ${num(q.torta.grammi)} g a persona per ${ad + bb} persone = ${kgFmt(c.kg)} kg × ${e0(num(q.torta.euroKg))} al kg = ${eur(c.torta)}`);
+  const drinkLines = [];
+  DRINKS.forEach(k => { const w = q[k], d = c.d[k]; if (!w.on || !d.bott) return;
+    const lab = (w.titolo || L.it[k]).replace(/:\s*$/, "");
+    const unit = k === "aperitivi" ? "caraffe" : k === "birra" ? "fusti" : "bottiglie";
+    drinkLines.push(`- ${lab}: ${d.bott} ${unit}${w.incluso ? " (incluso nel prezzo del menu)" : ` × ${e0(num(w.prezzo))} = ${eur(d.prezzo)}`}${d.cal ? `, circa ${d.cal} ${k === "aperitivi" ? "bicchieri" : k === "birra" ? "pinte" : "calici"}` : ""}`); });
+  drinkLines.forEach(l => out.push(l));
+  out.push(`- Il totale è la somma di queste voci; per confermare la data chiediamo un acconto del 50%${!two ? ` (${eur(c.acconto)})` : ""} con bonifico, il resto si salda il giorno dell'evento.`, "");
+  if (drinkLines.length || c.bere > 0) {
+    out.push(EB("Il bere è sempre conteggiato a consumo.") + " Le quantità di vino, birra e caraffe che trovate nel preventivo sono solo un'indicazione, calcolata in base alla nostra esperienza e al numero di persone: nel conto finale pagherete solo quello che verrà effettivamente bevuto.", "");
+  } else {
+    out.push(EB("Il bere è sempre conteggiato a consumo") + ": quello che ordinerete durante l'evento verrà aggiunto al conto finale in base a quanto effettivamente bevuto.", "");
+  }
+  out.push("In totale:");
+  totalRows(qi, c).filter(([, , k]) => k !== "acc").forEach(([l, v]) => out.push(`${l}: ${EB(eur(v))}`));
+  out.push("");
+  out.push(`Acqua e caffè sono a parte. Nel PDF trovate anche le condizioni${q.allergeniPag ? " e gli allergeni di ogni piatto" : ""}.`);
+  out.push("Se volete cambiare qualcosa nel menu, o avete esigenze particolari (allergie, intolleranze, menu per bambini), scrivetemi pure e lo sistemiamo insieme.", "");
+  out.push("Per qualsiasi domanda sono qui.", "");
+  out.push("Un saluto,", "Osteria Dvor", "Via Castello 5, San Floriano del Collio (GO)", "info@osteriadvor.com");
+  return out.join("\n");
+}
+// what to copy: the generated text, or the box as edited by hand
+const emailForCopy = () => { const em = $("#f_email_txt"); return em && em.dataset.edited ? { html: em.innerHTML, plain: em.innerText } : emailFor(Q); };
 async function copyText(txt){
-  const html = emailHTML(txt), plain = emailPlain(txt);
+  const html = typeof txt === "string" ? emailHTML(txt) : txt.html, plain = typeof txt === "string" ? emailPlain(txt) : txt.plain;
   try { await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([plain], { type: "text/plain" }) })]); return true; } catch (e) {}
   const box = $("#f_email_txt");
   if (box) { const r = document.createRange(); r.selectNodeContents(box); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); try { if (document.execCommand("copy")) return true; } catch (e) {} }
@@ -1307,7 +1364,7 @@ async function copyText(txt){
 function wineSuggTxt(bott){ return `Consigliati ${NATALE_CALICI} calici a testa: ${num(Q.adulti) * NATALE_CALICI} calici, circa <b>${nataleBottiglie(Q)} bottiglie</b> da 1 litro (ora ${bott}).`; }
 function renderTotalsBox(c){
   const ws = $("#wineSugg"); if (ws) ws.innerHTML = wineSuggTxt(c.d.vinoCasa.bott);
-  const em = $("#f_email_txt"); if (em) em.innerHTML = emailHTML(nataleEmail(Q));
+  const em = $("#f_email_txt"); if (em && !em.dataset.edited) em.innerHTML = emailHTML(emailFor(Q));
   const box = $("#edTotals"); if (!box) return;
   const rows = totalRows(Q, c);
   box.innerHTML = rows.map(([l, v, k]) => `<div class="${k === "acc" ? "acc" : (/finale|Totale|Final|Total/.test(l) ? "strong" : "")}"><span>${esc(l)}</span><span>${eur(v)}</span></div>`).join("");
@@ -1458,6 +1515,7 @@ function refreshAll(){ renderEditor(); renderPreview(); touch(); }
 
 const NUMERIC = /^(adulti|bambini|prezzoBambino|opzioni\.\d+\.prezzo|torta\.(grammi|euroKg)|(vino\w+|birra|aperitivi)\.prezzo|(vino\w+|birra|aperitivi)\.righe\.\d+\.bott)$/;
 editor.addEventListener("input", e => {
+  if (e.target.id === "f_email_txt") { e.target.dataset.edited = "1"; return; }
   const t = e.target, p = t.dataset.p;
   if (t.dataset.supitem !== undefined) { const n = t.dataset.supitem, v = t.value.replace(",", ".").replace(/[^\d.]/g, ""); Q.supplCustom = Q.supplCustom || {}; if (v === "") delete Q.supplCustom[n]; else Q.supplCustom[n] = v; refreshLight(); return; }
   if (!p) return;
@@ -1517,7 +1575,8 @@ editor.addEventListener("click", e => {
   else if (a === "delno") { pendingDelete = null; renderEditor(); return; }
   else if (a === "delyes") { removeQuote(b.dataset.id); return; }
   else if (a === "export") { exportArchive(); return; }
-  else if (a === "copymail") { copyText(nataleEmail(Q)).then(ok => toast(ok ? "Email copiata: incollala nel programma di posta" : "Seleziona il testo e copialo a mano")); return; }
+  else if (a === "regenmail") { const em = $("#f_email_txt"); if (em) { delete em.dataset.edited; em.innerHTML = emailHTML(emailFor(Q)); } toast("Email rigenerata dal preventivo"); return; }
+  else if (a === "copymail") { copyText(emailForCopy()).then(ok => toast(ok ? "Email copiata: incollala nel programma di posta" : "Seleziona il testo e copialo a mano")); return; }
   else return;
   refreshAll();
 });
