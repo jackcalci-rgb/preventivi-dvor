@@ -172,9 +172,15 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .d-sub { text-align: center; color: #d22b1f; font-family: var(--ui); font-size: 9px; font-weight: 600; line-height: 1.3; white-space: pre-line; margin-top: 3px; }
 .d-items { font-style: italic; margin-top: 6px; }
 .d-items > div + div { margin-top: 5px; }
+.d-items.two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 34px; width: 100%; align-items: start; }
+.d-items.two > div + div { margin-top: 0 !important; }
+.d-items.two > div > div + div { margin-top: 5px; }
+.page.compact .d-items.two > div > div + div { margin-top: 3px; }
+.page.compact2 .d-items.two > div > div + div { margin-top: 2px; }
+.page.compact3 .d-items.two > div > div + div { margin-top: 1px; }
 .leaf { width: 1em; height: 1em; vertical-align: -0.12em; margin-left: 4px; }
 .check.suppl { white-space: nowrap; font-size: 12px; color: #d22b1f; font-weight: 600; }
-.d-suppl { font-family: var(--ui); font-style: normal; font-size: 0.8em; font-weight: 600; color: #d22b1f; margin-left: 6px; white-space: nowrap; }
+.d-suppl { display: inline-block; font-family: var(--ui); font-style: normal; font-size: 0.82em; line-height: 1.35; font-weight: 700; color: #b8321f; background: #fbe9e5; border-radius: 9px; padding: 0 6px; margin-left: 6px; white-space: nowrap; vertical-align: 0.05em; }
 .d-holly { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px auto 12px; }
 .d-holly::before, .d-holly::after { content: ""; width: 34px; height: 1px; background: #c8432c; }
 .d-holly .holly { width: 46px; height: 16px; }
@@ -1342,14 +1348,20 @@ function allergPage(q){
 function renderDoc(q){
   const c = compute(q);
   const T = L[q.lang || "it"];
-  const secHtml = s => `
+  // a course with many dishes is split in two columns (read down the left one, then the right)
+  const secHtml = (s, narrow) => {
+    const its = s.items.filter(i => i.trim()), two = !narrow && its.length >= 5;
+    const dish = i => `<div>${esc(i)}${VEG.has(i.trim()) ? LEAF : ""}${supOf(q, i) ? `<span class="d-suppl">+${eurPlain(supOf(q, i)).replace(",00", "")} €</span>` : ""}</div>`;
+    const half = Math.ceil(its.length / 2);
+    const list = two ? `<div>${its.slice(0, half).map(dish).join("")}</div><div>${its.slice(half).map(dish).join("")}</div>` : its.map(dish).join("");
+    return `
     <div class="d-sec"><div class="k">${esc(s.label.replace(/:\s*$/, ""))}</div>${s.sub ? `<div class="d-sub">${esc(s.sub)}</div>` : ""}
-    <div class="d-items">${s.items.filter(i => i.trim()).map(i => `<div>${esc(i)}${VEG.has(i.trim()) ? LEAF : ""}${supOf(q, i) ? `<span class="d-suppl">+${eurPlain(supOf(q, i)).replace(",00", "")} €</span>` : ""}</div>`).join("")}</div></div>`;
+    <div class="d-items${two ? " two" : ""}">${list}</div></div>`; };
   // Primi and Secondi sit side by side; every other course runs the full width
   const used = q.sezioni.filter(s => s.items.some(i => i.trim()));
   const pair = ["primi", "secondi"].map(k => used.find(s => s.key === k));
   const secs = used.map(s => {
-    if (pair[0] && pair[1] && s.key === "primi") return `<div class="d-pair">${secHtml(pair[0])}${secHtml(pair[1])}</div>`;
+    if (pair[0] && pair[1] && s.key === "primi") return `<div class="d-pair">${secHtml(pair[0], true)}${secHtml(pair[1], true)}</div>`;
     if (pair[0] && pair[1] && s.key === "secondi") return "";
     return secHtml(s);
   }).join("");
@@ -1469,6 +1481,7 @@ editor.addEventListener("change", e => {
   if (t.id && t.id.startsWith("pick_")) {
     const si = +t.id.slice(5); let v = t.value; t.value = "";
     if (!v) return;
+    if (v !== "__free" && Q.sezioni[si].items.some(i => i.trim() === v)) { toast("Questo piatto è già nel menu"); return; }
     Q.sezioni[si].items.push(v === "__free" ? "" : v);
     refreshAll();
     if (v === "__free") { const inp = document.getElementById(`si_${si}_${Q.sezioni[si].items.length-1}`); inp && inp.focus(); }
