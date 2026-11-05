@@ -882,13 +882,13 @@ const lc = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : "";
 const L = {
   it: { tel: "Tel.", cliente: "Cliente:", numero: "Numero preventivo", data: "Data", oggetto: "Oggetto Preventivo", dataEvento: "Data Evento", inizio: "Inizio evento: ore", adulti: "Quantità adulti", bambini: "Quantità bambini", opzione: "Opzione:",
     torte: "Torte:", torteTxt: e => `Ci riforniamo da un partner di pasticceria che offre qualsiasi tipo di torta<br>con disegni o stampe a un prezzo vantaggioso di ${e} euro al kg.`, grammi: g => `${g} grammi circa a persona`, prezzo: "Prezzo",
-    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", aperitivi: "Aperitivi:", caraffe: "Caraffe (1,5 L)", bicchieri: "Bicchieri", vinoCasa: "Vino del Collio:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
+    bottiglie: "Bottiglie", calici: "Calici", litri: "Litri", fusti: "Fusti (30 litri)", pinte: "Pinte", aperitivi: "Aperitivi:", caraffe: "Caraffe", bicchieri: "Bicchieri", vinoCasa: "Vino del Collio:", litro1: "Bottiglia da 1 litro", vinoBott: "Vino Bottiglia:", birra: "Birra alla spina:",
     food: "Prezzo food", vini: "Prezzo vini", aper: "Prezzo aperitivi", torta: "Torta", finale: "Prezzo finale preventivo", conTorta: "Prezzo finale preventivo con torta", finaleTorta: "Prezzo finale con torta", totale: "Prezzo Totale",
     foodOpt: l => `Prezzo food ${l}`, suppl: e => `Supplemento piatti scelti (+${eurPlain(e).replace(",00", "")} € a persona)`, supplNota: "maggiorazione a persona", finaleOpt: l => `Prezzo finale ${l}`, opz: i => `opzione ${i}`, acconto: "Acconto",
     termini: "Termini & Condizioni", allergie: "Allergie e Preferenze Alimentari", firmaCliente: "Cliente", date: dateIT },
   en: { tel: "Phone:", cliente: "Customer:", numero: "Quotation Number", data: "Date:", oggetto: "Subject of Quotation", dataEvento: "Date Event:", inizio: "Start time:", adulti: "Adults", bambini: "Kids", opzione: "Price Option (pp):",
     torte: "Cakes:", torteTxt: e => `We work with a pastry partner who can make any kind of cake<br>with designs or prints at a convenient price of ${e} euros per kg.`, grammi: g => `About ${g} grams per person`, prezzo: "Price",
-    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", aperitivi: "Aperitifs:", caraffe: "Carafes (1.5 L)", bicchieri: "Glasses", vinoCasa: "Collio Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
+    bottiglie: "Bottles", calici: "Glasses", litri: "Liters", fusti: "Kegs (30 liters)", pinte: "Pints", aperitivi: "Aperitifs:", caraffe: "Carafes", bicchieri: "Glasses", vinoCasa: "Collio Wines:", litro1: "1-liter bottle", vinoBott: "Bottled Wines:", birra: "Tap Beers:",
     food: "Food price", vini: "Drinks price", aper: "Aperitif price", torta: "Cake", finale: "Final Price Quote", conTorta: "Final Price Quote with cake", finaleTorta: "Final price with cake", totale: "Total Price",
     foodOpt: l => `Food price ${l}`, suppl: e => `Supplement for chosen dishes (+${eurPlain(e).replace(",00", "")} € per person)`, supplNota: "supplement per person", finaleOpt: l => `Final price ${l}`, opz: i => `option ${i}`, acconto: "Deposit",
     termini: "Terms & Conditions", allergie: "Allergies and Dietary Preferences", firmaCliente: "Client", date: dateEN }
@@ -1309,11 +1309,13 @@ function drinkTable(q, k, cc, T){
   if (!w.on || !w.righe.length) return "";
   const unit = k === "aperitivi" ? T.caraffe : k === "birra" ? T.fusti : (k === "vinoCasa" && w.righe.some(r => /sfus|fuso|tap|spina/i.test(r.nome)) ? T.litri : T.bottiglie);
   const glass = k === "aperitivi" ? T.bicchieri : k === "birra" ? T.pinte : T.calici;
-  const rows = w.righe.map(r => `<tr><td style="width:250px;white-space:nowrap">${esc(r.nome)}</td><td class="c" style="width:70px">${esc(num(r.bott))}</td><td class="c" style="width:90px">${calici(r, k)}</td></tr>`).join("");
+  // aperitivi are quoted in carafes only, without a glasses column
+  const ap = k === "aperitivi";
+  const rows = w.righe.map(r => `<tr><td style="width:250px;white-space:nowrap">${esc(r.nome)}</td><td class="c" style="width:70px">${esc(num(r.bott))}</td><td class="c" style="width:90px">${ap ? "" : calici(r, k)}</td></tr>`).join("");
   return `<table class="tbl">
-    <tr class="h"><td></td><td class="c">${unit}</td><td class="c">${glass}</td></tr>
+    <tr class="h"><td></td><td class="c">${unit}</td><td class="c">${ap ? "" : glass}</td></tr>
     ${rows}
-    <tr class="t"><td></td><td class="c">${cc.bott}</td><td class="c">${cc.cal}</td></tr>
+    <tr class="t"><td></td><td class="c">${cc.bott}</td><td class="c">${ap ? "" : cc.cal}</td></tr>
     ${w.incluso ? "" : `<tr class="p"><td></td><td class="c">€</td><td class="c">${cc.prezzo ? eurPlain(cc.prezzo) : "-"}</td></tr>`}
   </table>`;
 }
